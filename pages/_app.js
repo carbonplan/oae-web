@@ -1,3 +1,4 @@
+import React from 'react'
 import { ThemeProvider } from 'theme-ui'
 import '@carbonplan/components/fonts.css'
 import '@carbonplan/components/globals.css'
