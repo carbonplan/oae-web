@@ -28,6 +28,7 @@
     "@carbonplan/charts": "^3.0.0",
     "@carbonplan/colormaps": "^4.0.0",
     "@carbonplan/components": "^12.0.0",
+    "@carbonplan/icons": "^2.0.0",
     "@carbonplan/layouts": "^4.0.0",
     "@carbonplan/maps": "^3.0.0",
     "@carbonplan/theme": "^7.0.0",
