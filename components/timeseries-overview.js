@@ -12,7 +12,13 @@ import {
 import { Button } from '@carbonplan/components'
 import { Down } from '@carbonplan/icons'
 
-function TimeseriesOverview({ sx }) {
+function TimeseriesOverview({
+  sx,
+  setSelectedRegion,
+  hoveredRegion,
+  setHoveredRegion,
+  timeHorizon,
+}) {
   return (
     <>
       <Box sx={sx.heading}>efficiency</Box>
@@ -41,26 +47,22 @@ function TimeseriesOverview({ sx }) {
           </AxisLabel>
           <Plot>
             <Line
+              onClick={(e) => setSelectedRegion(0)}
+              onMouseOver={(e) => setHoveredRegion(0)}
+              onMouseOut={(e) => setHoveredRegion(null)}
+              id='line0'
               sx={{
-                stroke: 'blue',
-                '&:hover': { stroke: 'red', cursor: 'pointer' },
+                stroke: hoveredRegion === 0 ? 'red' : 'blue',
+                strokeWidth: 2,
+                pointerEvents: 'visiblePainted',
+                '&:hover': {
+                  cursor: 'pointer',
+                },
               }}
               data={[
                 [2014, 0.9],
                 [2004, 0.75],
                 [2002, 0.5],
-                [1999, 0],
-              ]}
-            />
-            <Line
-              sx={{
-                stroke: 'blue',
-                '&:hover': { stroke: 'red', cursor: 'pointer' },
-              }}
-              data={[
-                [2014, 0.93],
-                [2004, 0.72],
-                [2002, 0.45],
                 [1999, 0],
               ]}
             />

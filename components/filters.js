@@ -1,16 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Row, Column, Filter, Input } from '@carbonplan/components'
 import { Box } from 'theme-ui'
 
-const Filters = ({ sx }) => {
-  const [seasons, setSeasons] = useState({
-    JAN: true,
-    APR: false,
-    JUL: false,
-    OCT: false,
-  })
-  const [timeHorizon, setTimeHorizon] = useState(15)
-
+const Filters = ({
+  sx,
+  timeHorizon,
+  setTimeHorizon,
+  injectionSeason,
+  setInjectionSeason,
+}) => {
   return (
     <>
       <Box sx={sx.heading}>injection</Box>
@@ -19,7 +17,10 @@ const Filters = ({ sx }) => {
           Season
         </Column>
         <Column start={[2]} width={[2]} sx={sx.label}>
-          <Filter values={seasons} setValues={(val) => setSeasons(val)} />
+          <Filter
+            values={injectionSeason}
+            setValues={(val) => setInjectionSeason(val)}
+          />
         </Column>
       </Row>
       <Row columns={[6, 8, 3, 3]}>

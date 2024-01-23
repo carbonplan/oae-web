@@ -29,6 +29,15 @@ const sx = {
 
 const Main = () => {
   const [expanded, setExpanded] = useState(true)
+  const [selectedRegion, setSelectedRegion] = useState(null)
+  const [hoveredRegion, setHoveredRegion] = useState(null)
+  const [timeHorizon, setTimeHorizon] = useState(15)
+  const [injectionSeason, setInjectionSeason] = useState({
+    JAN: true,
+    APR: false,
+    JUL: false,
+    OCT: false,
+  })
   return (
     <>
       <Header expanded={expanded} setExpanded={setExpanded} />
@@ -40,12 +49,16 @@ const Main = () => {
           width: '100%',
         }}
       >
-        <MapWrapper>
+        <MapWrapper
+          hoveredRegion={hoveredRegion}
+          setHoveredRegion={setHoveredRegion}
+          setSelectedRegion={setSelectedRegion}
+        >
           <Sidebar
             expanded={expanded}
             setExpanded={setExpanded}
             side='left'
-            width={3}
+            width={4}
             footer={<RegionFooter />}
           >
             <Box sx={{ fontSize: 4, fontWeight: 'bold', mb: 2 }}>
@@ -59,9 +72,21 @@ const Main = () => {
             <Box sx={{ fontSize: 2 }}>Created in collaboration with</Box>
             <Box sx={{ fontSize: 4 }}>[C]Worthy</Box>
             <Divider sx={{ mt: 4, mb: 5 }} />
-            <Filters sx={sx} />
+            <Filters
+              sx={sx}
+              timeHorizon={timeHorizon}
+              setTimeHorizon={setTimeHorizon}
+              injectionSeason={injectionSeason}
+              setInjectionSeason={setInjectionSeason}
+            />
             <Divider sx={{ mt: 4, mb: 5 }} />
-            <TimeseriesOverview sx={sx} />
+            <TimeseriesOverview
+              sx={sx}
+              selectedRegion={selectedRegion}
+              setSelectedRegion={setSelectedRegion}
+              hoveredRegion={hoveredRegion}
+              setHoveredRegion={setHoveredRegion}
+            />
           </Sidebar>
         </MapWrapper>
       </Box>
