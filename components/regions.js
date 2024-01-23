@@ -30,16 +30,18 @@ const Regions = ({ hoveredRegion, setHoveredRegion, setSelectedRegion }) => {
           filter: ['==', ['get', 'polygon_id'], ''], // Start with no features highlighted
         })
 
-        map.on('mouseover', 'geojson-layer', (e) => {
-          if (e.features.length > 0) {
-            const polygonId = e.features[0].properties.polygon_id
-            setHoveredRegion(polygonId)
-          }
-        })
+          map.on('mouseover', 'geojson-layer', (e) => {
+            map.getCanvas().style.cursor = 'pointer'
+            if (e.features.length > 0) {
+              const polygonId = e.features[0].properties.polygon_id
+              setHoveredRegion(polygonId)
+            }
+          })
 
-        map.on('mouseleave', 'geojson-layer', () => {
-          setHoveredRegion(null)
-        })
+          map.on('mouseleave', 'geojson-layer', () => {
+            map.getCanvas().style.cursor = ''
+            setHoveredRegion(null)
+          })
       } catch (error) {
         console.error('Error fetching or adding geojson:', error)
       }
