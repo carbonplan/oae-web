@@ -12,15 +12,15 @@ import {
 import { Button } from '@carbonplan/components'
 import { Down } from '@carbonplan/icons'
 
-function TimeseriesOverview({
+const TimeseriesOverview = ({
   sx,
   setSelectedRegion,
   hoveredRegion,
   setHoveredRegion,
   timeHorizon,
-}) {
+}) => {
   return (
-    <>
+    <Box sx={{ zIndex: 0, position: 'relative' }}>
       <Box sx={sx.heading}>efficiency</Box>
       <Box sx={{ width: '100%', height: '300px' }}>
         <Chart x={[1999, 2014]} y={[0, 1]} padding={{ left: 60, top: 50 }}>
@@ -69,7 +69,7 @@ function TimeseriesOverview({
           </Plot>
         </Chart>
       </Box>
-    </>
+    </Box>
   )
 }
 

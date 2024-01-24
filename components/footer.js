@@ -1,9 +1,10 @@
 import React from 'react'
-import { Box, Divider, Flex } from 'theme-ui'
+import { Box, Divider, Flex, useThemeUI } from 'theme-ui'
 import { SidebarFooter } from '@carbonplan/layouts'
-import { Badge } from '@carbonplan/components'
+import { Badge, Select } from '@carbonplan/components'
 import AnimateHeight from 'react-animate-height'
 import { X } from '@carbonplan/icons'
+import RegionDetail from './region-detail'
 
 const RegionFooter = ({
   hoveredRegion,
@@ -11,12 +12,20 @@ const RegionFooter = ({
   setSelectedRegion,
   sx,
 }) => {
+  const { theme } = useThemeUI()
   return (
     <AnimateHeight
       duration={500}
       height={selectedRegion !== null ? 'auto' : 73}
+      style={{ position: 'relative', zIndex: 2 }}
     >
-      <SidebarFooter sx={{ pt: 4, pb: 4 }}>
+      <SidebarFooter
+        sx={{
+          pt: 4,
+          pb: 4,
+          backgroundColor: theme.rawColors?.background,
+        }}
+      >
         <Flex
           sx={{
             alignItems: 'center',
@@ -68,12 +77,7 @@ const RegionFooter = ({
             )}
           </Box>
         </Flex>
-        {/* {selectedRegion !== null && ( */}
-        <>
-          <Divider sx={{ mt: 4, mb: 5 }} />
-          <Box sx={sx.heading}>Variables</Box>
-        </>
-        {/* )} */}
+        <RegionDetail sx={sx} />
       </SidebarFooter>
     </AnimateHeight>
   )
