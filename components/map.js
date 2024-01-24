@@ -24,12 +24,7 @@ const MapWrapper = ({
         source={bucket + 'basemaps/land'}
         variable={'land'}
       />
-      <Regions
-        hoveredRegion={hoveredRegion}
-        setHoveredRegion={setHoveredRegion}
-        setSelectedRegion={setSelectedRegion}
-      />
-      {selectedRegion !== null && (
+      {selectedRegion !== null ? (
         <Raster
           source={
             'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store2.zarr'
@@ -43,6 +38,12 @@ const MapWrapper = ({
             elapsed_time: 2,
             injection_date: 1,
           }}
+        />
+      ) : (
+        <Regions
+          hoveredRegion={hoveredRegion}
+          setHoveredRegion={setHoveredRegion}
+          setSelectedRegion={setSelectedRegion}
         />
       )}
 

@@ -70,6 +70,17 @@ const Regions = ({ hoveredRegion, setHoveredRegion, setSelectedRegion }) => {
     }
 
     fetchAndAddGeojson()
+    return () => {
+      if (map) {
+        map.removeLayer('regions-fill-layer')
+        map.removeLayer('regions-line-layer')
+        map.removeLayer('highlight-line-layer')
+        map.removeSource('geojson')
+        map.off('mousemove', 'regions-fill-layer')
+        map.off('mouseleave', 'regions-fill-layer')
+        map.off('click', 'regions-fill-layer')
+      }
+    }
   }, [map, setHoveredRegion])
 
   useEffect(() => {
