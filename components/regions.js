@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react'
 import { useMapbox } from '@carbonplan/maps'
+import { useThemeUI } from 'theme-ui'
 
 const Regions = ({ hoveredRegion, setHoveredRegion, setSelectedRegion }) => {
   const { map } = useMapbox()
+  const { theme } = useThemeUI()
 
   useEffect(() => {
     const fetchAndAddGeojson = async () => {
@@ -20,7 +22,7 @@ const Regions = ({ hoveredRegion, setHoveredRegion, setSelectedRegion }) => {
           type: 'fill',
           source: 'geojson',
           paint: {
-            'fill-color': 'white',
+            'fill-color': theme.rawColors.primary,
             'fill-opacity': 0.0,
           },
         })
@@ -30,7 +32,7 @@ const Regions = ({ hoveredRegion, setHoveredRegion, setSelectedRegion }) => {
           type: 'line',
           source: 'geojson',
           paint: {
-            'line-color': 'white',
+            'line-color': theme.rawColors.primary,
             'line-width': 0.5,
           },
         })
@@ -39,7 +41,7 @@ const Regions = ({ hoveredRegion, setHoveredRegion, setSelectedRegion }) => {
           id: 'highlight-line-layer',
           type: 'line',
           source: 'geojson',
-          paint: { 'line-width': 3, 'line-color': 'white' },
+          paint: { 'line-width': 3, 'line-color': theme.rawColors.primary },
           filter: ['==', ['get', 'polygon_id'], ''], // Start with no features highlighted
         })
 
@@ -91,6 +93,27 @@ const Regions = ({ hoveredRegion, setHoveredRegion, setSelectedRegion }) => {
       map.setFilter('highlight-line-layer', filter)
     }
   }, [map, hoveredRegion])
+
+  useEffect(() => {
+    if (map && map.getSource('geojson')) {
+      // set colors after theme change
+      map.setPaintProperty(
+        'regions-fill-layer',
+        'fill-color',
+        theme.rawColors.primary
+      )
+      map.setPaintProperty(
+        'regions-line-layer',
+        'line-color',
+        theme.rawColors.primary
+      )
+      map.setPaintProperty(
+        'highlight-line-layer',
+        'line-color',
+        theme.rawColors.primary
+      )
+    }
+  }, [map, theme])
 
   return null
 }
