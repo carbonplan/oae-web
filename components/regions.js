@@ -7,13 +7,13 @@ const Regions = ({ hoveredRegion, setHoveredRegion, setSelectedRegion }) => {
   useEffect(() => {
     const fetchAndAddGeojson = async () => {
       if (!map) return
-      if (map.getSource('geojson')) return
 
       try {
-        const response = await fetch('../data/regions.geojson')
-        const data = await response.json()
-
-        map.addSource('geojson', { type: 'geojson', data })
+        if (!map.getSource('geojson')) {
+          const response = await fetch('../data/regions.geojson')
+          const data = await response.json()
+          map.addSource('geojson', { type: 'geojson', data })
+        }
 
         map.addLayer({
           id: 'regions-fill-layer',
@@ -72,13 +72,12 @@ const Regions = ({ hoveredRegion, setHoveredRegion, setSelectedRegion }) => {
     fetchAndAddGeojson()
     return () => {
       if (map) {
-        map.removeLayer('regions-fill-layer')
-        map.removeLayer('regions-line-layer')
-        map.removeLayer('highlight-line-layer')
-        map.removeSource('geojson')
         map.off('mousemove', 'regions-fill-layer')
         map.off('mouseleave', 'regions-fill-layer')
         map.off('click', 'regions-fill-layer')
+        map.removeLayer('regions-fill-layer')
+        map.removeLayer('regions-line-layer')
+        map.removeLayer('highlight-line-layer')
       }
     }
   }, [map, setHoveredRegion])
