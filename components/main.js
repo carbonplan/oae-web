@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Sidebar, SidebarFooter } from '@carbonplan/layouts'
+import { Sidebar } from '@carbonplan/layouts'
 import { Box, Divider } from 'theme-ui'
 import Header from './header'
 import MapWrapper from './map'
@@ -60,9 +60,22 @@ const Main = () => {
             setExpanded={setExpanded}
             side='left'
             width={4}
-            footer={<RegionFooter />}
+            footer={
+              <RegionFooter
+                hoveredRegion={hoveredRegion}
+                selectedRegion={selectedRegion}
+                setSelectedRegion={setSelectedRegion}
+                sx={sx}
+              />
+            }
           >
-            <Box sx={{ fontSize: 4, fontWeight: 'bold', mb: 2 }}>
+            <Box
+              sx={{
+                fontSize: 4,
+                fontWeight: 'bold',
+                mb: 2,
+              }}
+            >
               Ocean alkalinity enhancement efficiency
             </Box>
             <Box sx={{ fontSize: 1, mb: 3 }}>
