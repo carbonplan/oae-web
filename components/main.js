@@ -52,6 +52,7 @@ const Main = () => {
         <MapWrapper
           hoveredRegion={hoveredRegion}
           setHoveredRegion={setHoveredRegion}
+          selectedRegion={selectedRegion}
           setSelectedRegion={setSelectedRegion}
         >
           <Sidebar

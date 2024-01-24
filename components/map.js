@@ -11,6 +11,7 @@ const MapWrapper = ({
   setLoading,
   hoveredRegion,
   setHoveredRegion,
+  selectedRegion,
   setSelectedRegion,
 }) => {
   const { theme } = useThemeUI()
@@ -28,21 +29,23 @@ const MapWrapper = ({
         setHoveredRegion={setHoveredRegion}
         setSelectedRegion={setSelectedRegion}
       />
+      {selectedRegion !== null && (
+        <Raster
+          source={
+            'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store2.zarr'
+          }
+          colormap={colormap}
+          clim={[0, 300]}
+          mode={'texture'}
+          variable={'ALK'}
+          selector={{
+            polygon_id: selectedRegion,
+            elapsed_time: 2,
+            injection_date: 1,
+          }}
+        />
+      )}
 
-      <Raster
-        source={
-          'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store2.zarr'
-        }
-        colormap={colormap}
-        clim={[0, 300]}
-        mode={'texture'}
-        variable={'ALK'}
-        selector={{
-          polygon_id: 0,
-          elapsed_time: 2,
-          injection_date: 1,
-        }}
-      />
       {children}
     </Map>
   )

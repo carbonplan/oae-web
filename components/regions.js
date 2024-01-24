@@ -16,21 +16,34 @@ const Regions = ({ hoveredRegion, setHoveredRegion, setSelectedRegion }) => {
         map.addSource('geojson', { type: 'geojson', data })
 
         map.addLayer({
-          id: 'geojson-layer',
+          id: 'regions-fill-layer',
           type: 'fill',
           source: 'geojson',
-          paint: { 'fill-color': 'white', 'fill-opacity': 0.5 },
+          paint: {
+            'fill-color': 'white',
+            'fill-opacity': 0.0,
+          },
+        })
+
+        map.addLayer({
+          id: 'regions-line-layer',
+          type: 'line',
+          source: 'geojson',
+          paint: {
+            'line-color': 'white',
+            'line-width': 0.5,
+          },
         })
 
         map.addLayer({
           id: 'highlight-line-layer',
           type: 'line',
           source: 'geojson',
-          paint: { 'line-width': 1, 'line-color': 'red' },
+          paint: { 'line-width': 3, 'line-color': 'white' },
           filter: ['==', ['get', 'polygon_id'], ''], // Start with no features highlighted
         })
 
-        map.on('mousemove', 'geojson-layer', (e) => {
+        map.on('mousemove', 'regions-fill-layer', (e) => {
           map.getCanvas().style.cursor = 'pointer'
           if (e.features.length > 0) {
             const polygonId = e.features[0].properties.polygon_id
@@ -40,9 +53,16 @@ const Regions = ({ hoveredRegion, setHoveredRegion, setSelectedRegion }) => {
           }
         })
 
-        map.on('mouseleave', 'geojson-layer', () => {
+        map.on('mouseleave', 'regions-fill-layer', () => {
           map.getCanvas().style.cursor = ''
           setHoveredRegion(null)
+        })
+
+        map.on('click', 'regions-fill-layer', (e) => {
+          if (e.features.length > 0) {
+            const polygonId = e.features[0].properties.polygon_id
+            setSelectedRegion(polygonId)
+          }
         })
       } catch (error) {
         console.error('Error fetching or adding geojson:', error)
