@@ -1,7 +1,7 @@
 import React from 'react'
-import { Box, Flex, useThemeUI } from 'theme-ui'
-import { useBreakpointIndex } from '@theme-ui/match-media'
+import { Box, Flex } from 'theme-ui'
 import { Badge } from '@carbonplan/components'
+import { SidebarFooter } from '@carbonplan/layouts'
 import AnimateHeight from 'react-animate-height'
 import { X } from '@carbonplan/icons'
 import RegionDetail from './region-detail'
@@ -15,26 +15,18 @@ const RegionFooter = ({
   timeHorizon,
   sx,
 }) => {
-  const { theme } = useThemeUI()
-  const breakpointIndex = useBreakpointIndex({ defaultIndex: 2 })
   return (
-    <AnimateHeight
-      duration={500}
-      height={selectedRegion !== null ? 'auto' : 73}
-      style={{
-        marginLeft: breakpointIndex <= 2 ? '-32px' : '-48px',
-        marginRight: breakpointIndex <= 2 ? '-32px' : '-48px',
-      }} // hack for footer gutter color stability
+    <SidebarFooter
+      sx={{
+        position: 'relative',
+        zIndex: 2,
+        bg: 'background',
+        '&:hover': { bg: 'background' },
+      }}
     >
-      <Box
-        sx={{
-          position: 'relative',
-          zIndex: 2,
-          py: 4,
-          px: 5,
-          backgroundColor: theme.rawColors?.background,
-          borderTop: '1px solid' + theme.rawColors?.muted,
-        }}
+      <AnimateHeight
+        duration={500}
+        height={selectedRegion !== null ? 'auto' : 25}
       >
         <Flex
           sx={{
@@ -44,7 +36,11 @@ const RegionFooter = ({
         >
           <Box
             as={'span'}
-            sx={{ textTransform: 'uppercase', fontSize: 3, color: 'secondary' }}
+            sx={{
+              textTransform: 'uppercase',
+              fontSize: 3,
+              color: 'secondary',
+            }}
           >
             <Box as={'span'}>Region</Box>
             <Box as={'span'} sx={{ ml: 2, color: 'primary' }}>
@@ -94,8 +90,8 @@ const RegionFooter = ({
           timeHorizon={timeHorizon}
           setElapsedTime={setElapsedTime}
         />
-      </Box>
-    </AnimateHeight>
+      </AnimateHeight>
+    </SidebarFooter>
   )
 }
 

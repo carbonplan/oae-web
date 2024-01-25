@@ -80,12 +80,14 @@ const Main = () => {
                 width: '100%',
                 height: '100%',
                 backgroundColor:
-                  selectedRegion !== null ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0)',
+                  selectedRegion !== null
+                    ? 'rgba(0,0,0,0.65)'
+                    : 'rgba(0,0,0,0)',
                 pointerEvents: selectedRegion !== null ? 'auto' : 'none',
                 transition: 'background-color 0.5s ease',
                 position: 'absolute',
-                ml: -6,
-                mt: -4,
+                left: 0,
+                top: 0,
                 zIndex: 1,
               }}
             />
