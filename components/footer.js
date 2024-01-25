@@ -33,6 +33,7 @@ const RegionFooter = ({
           py: 4,
           px: 5,
           backgroundColor: theme.rawColors?.background,
+          borderTop: '1px solid' + theme.rawColors?.muted,
         }}
       >
         <Flex
