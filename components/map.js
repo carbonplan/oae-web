@@ -31,7 +31,7 @@ const MapWrapper = ({
             'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store2.zarr'
           }
           colormap={colormap}
-          clim={[0, 1]}
+          clim={[0, 4000]}
           mode={'texture'}
           variable={'ALK'}
           selector={{
