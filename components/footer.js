@@ -10,6 +10,9 @@ const RegionFooter = ({
   hoveredRegion,
   selectedRegion,
   setSelectedRegion,
+  elapsedTime,
+  setElapsedTime,
+  timeHorizon,
   sx,
 }) => {
   const { theme } = useThemeUI()
@@ -19,10 +22,9 @@ const RegionFooter = ({
       height={selectedRegion !== null ? 'auto' : 73}
       style={{ position: 'relative', zIndex: 2 }}
     >
-      <SidebarFooter
+      <Box
         sx={{
-          pt: 4,
-          pb: 4,
+          py: 4,
           backgroundColor: theme.rawColors?.background,
         }}
       >
@@ -77,8 +79,13 @@ const RegionFooter = ({
             )}
           </Box>
         </Flex>
-        <RegionDetail sx={sx} />
-      </SidebarFooter>
+        <RegionDetail
+          sx={sx}
+          elapsedTime={elapsedTime}
+          timeHorizon={timeHorizon}
+          setElapsedTime={setElapsedTime}
+        />
+      </Box>
     </AnimateHeight>
   )
 }

@@ -13,6 +13,7 @@ const MapWrapper = ({
   setHoveredRegion,
   selectedRegion,
   setSelectedRegion,
+  elapsedTime,
 }) => {
   const { theme } = useThemeUI()
   const colormap = useThemedColormap('warm')
@@ -35,7 +36,7 @@ const MapWrapper = ({
           variable={'ALK'}
           selector={{
             polygon_id: selectedRegion,
-            elapsed_time: 2,
+            elapsed_time: elapsedTime,
             injection_date: 1,
           }}
         />

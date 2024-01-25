@@ -34,9 +34,10 @@ const Filters = ({
             type='number'
             min={0}
             max={15}
-            onChange={(e) =>
-              setTimeHorizon(e.target.value > 15 ? 15 : e.target.value)
-            }
+            onChange={(e) => {
+              const value = parseInt(e.target.value, 10)
+              setTimeHorizon(value > 15 ? 15 : value)
+            }}
           />
           years
         </Column>

@@ -32,6 +32,7 @@ const Main = () => {
   const [selectedRegion, setSelectedRegion] = useState(null)
   const [hoveredRegion, setHoveredRegion] = useState(null)
   const [timeHorizon, setTimeHorizon] = useState(15)
+  const [elapsedTime, setElapsedTime] = useState(0)
   const [injectionSeason, setInjectionSeason] = useState({
     JAN: true,
     APR: false,
@@ -54,6 +55,7 @@ const Main = () => {
           setHoveredRegion={setHoveredRegion}
           selectedRegion={selectedRegion}
           setSelectedRegion={setSelectedRegion}
+          elapsedTime={elapsedTime}
         >
           <Sidebar
             expanded={expanded}
@@ -65,6 +67,9 @@ const Main = () => {
                 hoveredRegion={hoveredRegion}
                 selectedRegion={selectedRegion}
                 setSelectedRegion={setSelectedRegion}
+                elapsedTime={elapsedTime}
+                setElapsedTime={setElapsedTime}
+                timeHorizon={timeHorizon}
                 sx={sx}
               />
             }
@@ -111,10 +116,10 @@ const Main = () => {
             <Divider sx={{ mt: 4, mb: 5 }} />
             <TimeseriesOverview
               sx={sx}
-              selectedRegion={selectedRegion}
               setSelectedRegion={setSelectedRegion}
               hoveredRegion={hoveredRegion}
               setHoveredRegion={setHoveredRegion}
+              timeHorizon={timeHorizon}
             />
           </Sidebar>
         </MapWrapper>
