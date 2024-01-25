@@ -1,5 +1,6 @@
 import React from 'react'
 import { Box, Divider, Flex, useThemeUI } from 'theme-ui'
+import { useBreakpointIndex } from '@theme-ui/match-media'
 import { SidebarFooter } from '@carbonplan/layouts'
 import { Badge, Select } from '@carbonplan/components'
 import AnimateHeight from 'react-animate-height'
@@ -16,11 +17,15 @@ const RegionFooter = ({
   sx,
 }) => {
   const { theme } = useThemeUI()
+  const breakpointIndex = useBreakpointIndex({ defaultIndex: 2 })
   return (
     <AnimateHeight
       duration={500}
       height={selectedRegion !== null ? 'auto' : 73}
-      style={{ marginLeft: '-32px', marginRight: '-32px' }} // hack for footer gutter color stability
+      style={{
+        marginLeft: breakpointIndex <= 2 ? '-32px' : '-48px',
+        marginRight: breakpointIndex <= 2 ? '-32px' : '-48px',
+      }} // hack for footer gutter color stability
     >
       <Box
         sx={{
