@@ -20,11 +20,14 @@ const RegionFooter = ({
     <AnimateHeight
       duration={500}
       height={selectedRegion !== null ? 'auto' : 73}
-      style={{ position: 'relative', zIndex: 2 }}
+      style={{ marginLeft: '-32px', marginRight: '-32px' }} // hack for footer gutter color stability
     >
       <Box
         sx={{
+          position: 'relative',
+          zIndex: 2,
           py: 4,
+          px: 5,
           backgroundColor: theme.rawColors?.background,
         }}
       >
@@ -58,6 +61,7 @@ const RegionFooter = ({
                   textTransform: 'uppercase',
                   fontSize: 3,
                   '&:hover #clear, &:hover': {
+                    cursor: 'pointer',
                     color: 'primary',
                   },
                 }}
