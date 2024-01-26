@@ -65,33 +65,30 @@ const TimeseriesOverview = ({
             Time
           </AxisLabel>
           <Plot>
-            {timeData.map(
-              (line, i) =>
-                hoveredRegion !== i && (
-                  <Line
-                    key={i}
-                    onClick={() => setSelectedRegion(i)}
-                    onMouseOver={() => setHoveredRegion(i)}
-                    onMouseOut={() => setHoveredRegion(null)}
-                    sx={{
-                      stroke: 'blue',
-                      strokeWidth: 2,
-                      pointerEvents: 'visiblePainted',
-                      '&:hover': {
-                        cursor: 'pointer',
-                      },
-                    }}
-                    data={line}
-                  />
-                )
-            )}
+            {timeData.map((line, i) => (
+              <Line
+                key={i}
+                onClick={() => setSelectedRegion(i)}
+                onMouseOver={() => setHoveredRegion(i)}
+                onMouseLeave={() => setHoveredRegion(null)}
+                sx={{
+                  stroke: 'blue',
+                  strokeWidth: 2,
+                  pointerEvents: 'visiblePainted',
+                  '&:hover': {
+                    cursor: 'pointer',
+                  },
+                }}
+                data={line}
+              />
+            ))}
             {/* bring hovered line to front */}
             {hoveredRegion !== null && timeData[hoveredRegion] && (
               <Line
                 key={hoveredRegion}
                 onClick={() => setSelectedRegion(hoveredRegion)}
                 onMouseOver={() => setHoveredRegion(hoveredRegion)}
-                onMouseOut={() => setHoveredRegion(null)}
+                onMouseLeave={() => setHoveredRegion(null)}
                 sx={{
                   stroke: 'primary',
                   strokeWidth: 3,
