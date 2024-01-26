@@ -18,6 +18,8 @@ const MapWrapper = ({
 }) => {
   const { theme } = useThemeUI()
   const colormap = useThemedColormap('warm')
+  const injectionDate =
+    Object.values(injectionSeason).findIndex((value) => value) + 1
 
   return (
     <Map zoom={0} center={[0, 0]} debug={false} setLoading={setLoading}>
@@ -38,9 +40,7 @@ const MapWrapper = ({
           selector={{
             polygon_id: selectedRegion,
             elapsed_time: elapsedTime,
-            injection_date: Object.values(injectionSeason).findIndex(
-              (value) => value
-            ),
+            injection_date: injectionDate,
           }}
         />
       ) : (
@@ -59,7 +59,7 @@ const MapWrapper = ({
             mode={'texture'}
             variable={'OAE_efficiency'}
             selector={{
-              injection_date: 1,
+              injection_date: injectionDate,
               elapsed_time: 173.5,
             }}
           />

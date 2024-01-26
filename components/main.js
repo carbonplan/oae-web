@@ -35,8 +35,8 @@ const Main = () => {
   const [timeHorizon, setTimeHorizon] = useState(15)
   const [elapsedTime, setElapsedTime] = useState(0)
   const [injectionSeason, setInjectionSeason] = useState({
-    JAN: false,
-    APR: true,
+    JAN: true,
+    APR: false,
     JUL: false,
     OCT: false,
   })

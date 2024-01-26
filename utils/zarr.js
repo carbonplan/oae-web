@@ -49,21 +49,21 @@ export const getChunk = async (get, chunk) => {
   })
 }
 
-export const getTimeSeriesData = (data, ids, injection_date) => {
+export const getTimeSeriesData = (chunk, ids) => {
   const timeData = []
   ids.forEach((id) => {
-    const line = data.pick(id, injection_date, null)
+    const line = chunk.pick(id, null, null)
     const sliceStart = line.offset
     const sliceEnd = line.offset + line.stride[0] * line.shape[0]
     if (
       sliceEnd > sliceStart &&
       sliceStart >= 0 &&
-      sliceEnd <= data.data.length
+      sliceEnd <= chunk.data.length
     ) {
       const timeSeriesLength = sliceEnd - sliceStart
       const transformed = new Array(timeSeriesLength)
       for (let i = 0; i < timeSeriesLength; i++) {
-        transformed[i] = [i, data.data[sliceStart + i]]
+        transformed[i] = [i, chunk.data[sliceStart + i]]
       }
       timeData.push(transformed)
     } else {

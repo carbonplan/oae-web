@@ -28,11 +28,11 @@ const TimeseriesOverview = ({
         'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr',
         variable
       )
-      const injectionDate = Object.values(injectionSeason).findIndex(
-        (value) => value
-      )
-      const raw = await getChunk(getter, [0, injectionDate, 0])
-      const timeSeriesData = getTimeSeriesData(raw, [0, 1], 0)
+      const injectionDate =
+        Object.values(injectionSeason).findIndex((value) => value) + 1
+      const injectionChunkIndex = injectionDate - 1
+      const raw = await getChunk(getter, [0, injectionChunkIndex, 0])
+      const timeSeriesData = getTimeSeriesData(raw, [0, 1])
       setTimeData(timeSeriesData)
     }
     fetchTimeSeriesData('OAE_efficiency')
