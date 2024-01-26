@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useMemo, useEffect, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 import {
   AxisLabel,
@@ -41,10 +41,9 @@ const TimeseriesOverview = ({
     fetchTimeSeriesData('OAE_efficiency')
   }, [injectionSeason])
 
-  const clippedTimeData = useCallback(
-    () => timeData.map((line) => line.filter((d) => d[0] <= endYear)),
-    [timeData, startYear, endYear]
-  )
+  const clippedTimeData = useMemo(() => {
+    return timeData.map((line) => line.filter((d) => d[0] <= endYear))
+  }, [timeData, endYear])
 
   return (
     <Box sx={{ zIndex: 0, position: 'relative' }}>
@@ -77,7 +76,7 @@ const TimeseriesOverview = ({
             Time
           </AxisLabel>
           <Plot>
-            {clippedTimeData().map((line, i) => (
+            {clippedTimeData.map((line, i) => (
               <Line
                 key={i}
                 onClick={() => setSelectedRegion(i)}
@@ -109,7 +108,7 @@ const TimeseriesOverview = ({
                     cursor: 'pointer',
                   },
                 }}
-                data={clippedTimeData()[hoveredRegion]}
+                data={clippedTimeData[hoveredRegion]}
               />
             )}
           </Plot>
