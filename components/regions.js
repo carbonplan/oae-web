@@ -74,12 +74,18 @@ const Regions = ({ hoveredRegion, setHoveredRegion, setSelectedRegion }) => {
     fetchAndAddGeojson()
     return () => {
       if (map) {
-        map.off('mousemove', 'regions-fill-layer')
-        map.off('mouseleave', 'regions-fill-layer')
-        map.off('click', 'regions-fill-layer')
-        map.removeLayer('regions-fill-layer')
-        map.removeLayer('regions-line-layer')
-        map.removeLayer('highlight-line-layer')
+        if (map.getLayer('regions-fill-layer')) {
+          map.off('mousemove', 'regions-fill-layer')
+          map.off('mouseleave', 'regions-fill-layer')
+          map.off('click', 'regions-fill-layer')
+          map.removeLayer('regions-fill-layer')
+        }
+        if (map.getLayer('regions-line-layer')) {
+          map.removeLayer('regions-line-layer')
+        }
+        if (map.getLayer('highlight-line-layer')) {
+          map.removeLayer('highlight-line-layer')
+        }
       }
     }
   }, [map, setHoveredRegion])
