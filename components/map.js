@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useThemeUI } from 'theme-ui'
 import { Map, Line, Raster } from '@carbonplan/maps'
 import { useThemedColormap } from '@carbonplan/colormaps'
@@ -18,8 +18,9 @@ const MapWrapper = ({
 }) => {
   const { theme } = useThemeUI()
   const colormap = useThemedColormap('warm')
-  const injectionDate =
-    Object.values(injectionSeason).findIndex((value) => value) + 1
+  const injectionDate = useMemo(() => {
+    return Object.values(injectionSeason).findIndex((value) => value) + 1
+  }, [injectionSeason])
 
   return (
     <Map zoom={0} center={[0, 0]} debug={false} setLoading={setLoading}>
