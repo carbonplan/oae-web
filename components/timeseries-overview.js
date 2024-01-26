@@ -6,10 +6,12 @@ import {
   Grid,
   Line,
   Plot,
+  Point,
+  Scatter,
   TickLabels,
   Ticks,
 } from '@carbonplan/charts'
-import { Button } from '@carbonplan/components'
+import { Badge, Button } from '@carbonplan/components'
 import { Down } from '@carbonplan/icons'
 import { openZarr, getChunk, getTimeSeriesData } from '../utils/zarr'
 
@@ -75,7 +77,39 @@ const TimeseriesOverview = ({
           <AxisLabel sx={{ fontSize: 0 }} bottom>
             Time
           </AxisLabel>
+          {hoveredRegion !== null &&
+            clippedTimeData[hoveredRegion] &&
+            (() => {
+              const lastDataPoint =
+                clippedTimeData[hoveredRegion][
+                  clippedTimeData[hoveredRegion].length - 1
+                ]
+              const y = lastDataPoint[1]
+              return (
+                <Point x={endYear} y={y}>
+                  <Badge sx={{ fontSize: 1, height: '18px' }}>
+                    {lastDataPoint[1].toFixed(2)}
+                  </Badge>
+                </Point>
+              )
+            })()}
+
           <Plot>
+            {hoveredRegion !== null && clippedTimeData[hoveredRegion] && (
+              <Scatter
+                size={10}
+                x={(d) => d.x}
+                y={(d) => d.y}
+                data={[
+                  {
+                    x: endYear,
+                    y: clippedTimeData[hoveredRegion][
+                      clippedTimeData[hoveredRegion].length - 1
+                    ][1],
+                  },
+                ]}
+              ></Scatter>
+            )}
             {clippedTimeData.map((line, i) => (
               <Line
                 key={i}
@@ -94,7 +128,7 @@ const TimeseriesOverview = ({
               />
             ))}
             {/* bring hovered line to front */}
-            {hoveredRegion !== null && timeData[hoveredRegion] && (
+            {hoveredRegion !== null && clippedTimeData[hoveredRegion] && (
               <Line
                 key={hoveredRegion}
                 onClick={() => setSelectedRegion(hoveredRegion)}
