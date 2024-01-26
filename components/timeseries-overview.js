@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 import {
   AxisLabel,
@@ -22,6 +22,9 @@ const TimeseriesOverview = ({
   injectionSeason,
 }) => {
   const [timeData, setTimeData] = useState([])
+  const startYear = 1999
+  const endYear = startYear + timeHorizon
+
   useEffect(() => {
     const fetchTimeSeriesData = async (variable) => {
       const getter = await openZarr(
@@ -32,17 +35,26 @@ const TimeseriesOverview = ({
         Object.values(injectionSeason).findIndex((value) => value) + 1
       const injectionChunkIndex = injectionDate - 1
       const raw = await getChunk(getter, [0, injectionChunkIndex, 0])
-      const timeSeriesData = getTimeSeriesData(raw, [0, 1])
+      const timeSeriesData = getTimeSeriesData(raw, [0, 1], startYear)
       setTimeData(timeSeriesData)
     }
     fetchTimeSeriesData('OAE_efficiency')
   }, [injectionSeason])
 
+  const clippedTimeData = useCallback(
+    () => timeData.map((line) => line.filter((d) => d[0] <= endYear)),
+    [timeData, startYear, endYear]
+  )
+
   return (
     <Box sx={{ zIndex: 0, position: 'relative' }}>
       <Box sx={sx.heading}>efficiency</Box>
       <Box sx={{ width: '100%', height: '300px' }}>
-        <Chart x={[0, 180]} y={[0, 1]} padding={{ left: 60, top: 50 }}>
+        <Chart
+          x={[startYear, endYear]}
+          y={[0, 1]}
+          padding={{ left: 60, top: 50 }}
+        >
           <Flex sx={{ justifyContent: 'end', mb: 0 }}>
             <Button
               sx={{
@@ -65,7 +77,7 @@ const TimeseriesOverview = ({
             Time
           </AxisLabel>
           <Plot>
-            {timeData.map((line, i) => (
+            {clippedTimeData().map((line, i) => (
               <Line
                 key={i}
                 onClick={() => setSelectedRegion(i)}
@@ -97,7 +109,7 @@ const TimeseriesOverview = ({
                     cursor: 'pointer',
                   },
                 }}
-                data={timeData[hoveredRegion]}
+                data={clippedTimeData()[hoveredRegion]}
               />
             )}
           </Plot>

@@ -49,7 +49,7 @@ export const getChunk = async (get, chunk) => {
   })
 }
 
-export const getTimeSeriesData = (chunk, ids) => {
+export const getTimeSeriesData = (chunk, ids, startYear) => {
   const timeData = []
   ids.forEach((id) => {
     const line = chunk.pick(id, null, null)
@@ -63,7 +63,8 @@ export const getTimeSeriesData = (chunk, ids) => {
       const timeSeriesLength = sliceEnd - sliceStart
       const transformed = new Array(timeSeriesLength)
       for (let i = 0; i < timeSeriesLength; i++) {
-        transformed[i] = [i, chunk.data[sliceStart + i]]
+        const toYear = startYear + i / 12
+        transformed[i] = [toYear, chunk.data[sliceStart + i]]
       }
       timeData.push(transformed)
     } else {
