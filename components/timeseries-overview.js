@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 import {
   AxisLabel,
@@ -11,6 +11,7 @@ import {
 } from '@carbonplan/charts'
 import { Button } from '@carbonplan/components'
 import { Down } from '@carbonplan/icons'
+import { openZarr, getChunk, getTimeSeriesData } from '../utils/zarr'
 
 const TimeseriesOverview = ({
   sx,
@@ -18,16 +19,30 @@ const TimeseriesOverview = ({
   hoveredRegion,
   setHoveredRegion,
   timeHorizon,
+  injectionSeason,
 }) => {
+  const [timeData, setTimeData] = useState([])
+  useEffect(() => {
+    const fetchTimeSeriesData = async (variable) => {
+      const getter = await openZarr(
+        'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr',
+        variable
+      )
+      const injectionDate = Object.values(injectionSeason).findIndex(
+        (value) => value
+      )
+      const raw = await getChunk(getter, [0, injectionDate, 0])
+      const timeSeriesData = getTimeSeriesData(raw, [0, 1], 0)
+      setTimeData(timeSeriesData)
+    }
+    fetchTimeSeriesData('OAE_efficiency')
+  }, [injectionSeason])
+
   return (
     <Box sx={{ zIndex: 0, position: 'relative' }}>
       <Box sx={sx.heading}>efficiency</Box>
       <Box sx={{ width: '100%', height: '300px' }}>
-        <Chart
-          x={[1999, 1999 + timeHorizon]}
-          y={[0, 1]}
-          padding={{ left: 60, top: 50 }}
-        >
+        <Chart x={[0, 180]} y={[0, 1]} padding={{ left: 60, top: 50 }}>
           <Flex sx={{ justifyContent: 'end', mb: 0 }}>
             <Button
               sx={{
@@ -50,26 +65,23 @@ const TimeseriesOverview = ({
             Time
           </AxisLabel>
           <Plot>
-            <Line
-              onClick={(e) => setSelectedRegion(0)}
-              onMouseOver={(e) => setHoveredRegion(0)}
-              onMouseOut={(e) => setHoveredRegion(null)}
-              id='line0'
-              sx={{
-                stroke: hoveredRegion === 0 ? 'red' : 'blue',
-                strokeWidth: 2,
-                pointerEvents: 'visiblePainted',
-                '&:hover': {
-                  cursor: 'pointer',
-                },
-              }}
-              data={[
-                [2014, 0.9],
-                [2004, 0.75],
-                [2002, 0.5],
-                [1999, 0],
-              ]}
-            />
+            {timeData.map((line, i) => (
+              <Line
+                key={i}
+                onClick={() => setSelectedRegion(i)}
+                onMouseOver={() => setHoveredRegion(i)}
+                onMouseOut={() => setHoveredRegion(null)}
+                sx={{
+                  stroke: hoveredRegion === i ? 'red' : 'blue',
+                  strokeWidth: 2,
+                  pointerEvents: 'visiblePainted',
+                  '&:hover': {
+                    cursor: 'pointer',
+                  },
+                }}
+                data={line}
+              />
+            ))}
           </Plot>
         </Chart>
       </Box>

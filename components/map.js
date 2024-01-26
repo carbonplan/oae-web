@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useThemeUI } from 'theme-ui'
 import { Map, Line, Raster } from '@carbonplan/maps'
 import { useThemedColormap } from '@carbonplan/colormaps'
@@ -14,6 +14,7 @@ const MapWrapper = ({
   selectedRegion,
   setSelectedRegion,
   elapsedTime,
+  injectionSeason,
 }) => {
   const { theme } = useThemeUI()
   const colormap = useThemedColormap('warm')
@@ -37,7 +38,9 @@ const MapWrapper = ({
           selector={{
             polygon_id: selectedRegion,
             elapsed_time: elapsedTime,
-            injection_date: 1,
+            injection_date: Object.values(injectionSeason).findIndex(
+              (value) => value
+            ),
           }}
         />
       ) : (
@@ -56,8 +59,8 @@ const MapWrapper = ({
             mode={'texture'}
             variable={'OAE_efficiency'}
             selector={{
-              elapsed_time: 173.5,
               injection_date: 1,
+              elapsed_time: 173.5,
             }}
           />
         </>

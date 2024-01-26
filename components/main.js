@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Sidebar } from '@carbonplan/layouts'
 import { Box, Divider } from 'theme-ui'
 import Header from './header'
@@ -6,6 +6,7 @@ import MapWrapper from './map'
 import RegionFooter from './footer'
 import Filters from './filters'
 import TimeseriesOverview from './timeseries-overview'
+
 const sx = {
   heading: {
     fontFamily: 'heading',
@@ -34,11 +35,12 @@ const Main = () => {
   const [timeHorizon, setTimeHorizon] = useState(15)
   const [elapsedTime, setElapsedTime] = useState(0)
   const [injectionSeason, setInjectionSeason] = useState({
-    JAN: true,
-    APR: false,
+    JAN: false,
+    APR: true,
     JUL: false,
     OCT: false,
   })
+
   return (
     <>
       <Header expanded={expanded} setExpanded={setExpanded} />
@@ -56,6 +58,7 @@ const Main = () => {
           selectedRegion={selectedRegion}
           setSelectedRegion={setSelectedRegion}
           elapsedTime={elapsedTime}
+          injectionSeason={injectionSeason}
         >
           <Sidebar
             expanded={expanded}
@@ -122,6 +125,7 @@ const Main = () => {
               hoveredRegion={hoveredRegion}
               setHoveredRegion={setHoveredRegion}
               timeHorizon={timeHorizon}
+              injectionSeason={injectionSeason}
             />
           </Sidebar>
         </MapWrapper>
