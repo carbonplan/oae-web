@@ -72,23 +72,23 @@ const Regions = ({
           }
         })
 
-        const getRenderedIds = () => {
-          const features = map.queryRenderedFeatures({
-            layers: ['regions-fill-layer'],
-          })
-          const ids = [...new Set(features.map((f) => f.properties.polygon_id))]
-          return ids
+        const handleRegionsInView = () => {
+          if (map.getLayer('regions-fill-layer')) {
+            const features = map.queryRenderedFeatures({
+              layers: ['regions-fill-layer'],
+            })
+            const ids = [
+              ...new Set(features.map((f) => f.properties.polygon_id)),
+            ]
+            setRegionsInView(ids)
+          }
         }
         map.on('moveend', () => {
-          const ids = getRenderedIds()
-          setRegionsInView(ids)
+          handleRegionsInView()
         })
         map.on('idle', () => {
           // set regions in view for first load
-          if (map.getLayer('regions-fill-layer')) {
-            const ids = getRenderedIds()
-            setRegionsInView(ids)
-          }
+          handleRegionsInView()
           map.off('idle')
         })
       } catch (error) {
