@@ -13,7 +13,10 @@ import {
 } from '@carbonplan/charts'
 import { Badge, Button } from '@carbonplan/components'
 import { Down } from '@carbonplan/icons'
-import { openZarr, getChunk, getTimeSeriesData } from '../utils/zarr'
+import { openZarr, getChunk, getTimeSeriesData, loadZarr } from '../utils/zarr'
+
+const zarrUrl =
+  'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr'
 
 const TimeseriesOverview = ({
   sx,
@@ -28,19 +31,19 @@ const TimeseriesOverview = ({
   const endYear = startYear + timeHorizon
 
   useEffect(() => {
-    const fetchTimeSeriesData = async (variable) => {
-      const getter = await openZarr(
-        'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr',
-        variable
-      )
+    const fetchTimeSeriesData = async () => {
+      const variable = 'OAE_efficiency'
+      const idZarr = await loadZarr(zarrUrl, 'polygon_id')
+      const ids = idZarr.data
+      const getter = await openZarr(zarrUrl, variable)
       const injectionDate =
         Object.values(injectionSeason).findIndex((value) => value) + 1
       const injectionChunkIndex = injectionDate - 1
       const raw = await getChunk(getter, [0, injectionChunkIndex, 0])
-      const timeSeriesData = getTimeSeriesData(raw, [0, 1], startYear)
+      const timeSeriesData = getTimeSeriesData(raw, ids, startYear)
       setTimeData(timeSeriesData)
     }
-    fetchTimeSeriesData('OAE_efficiency')
+    fetchTimeSeriesData()
   }, [injectionSeason])
 
   const clippedTimeData = useMemo(() => {
