@@ -2,7 +2,12 @@ import React, { useEffect } from 'react'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 
-const Regions = ({ hoveredRegion, setHoveredRegion, setSelectedRegion }) => {
+const Regions = ({
+  hoveredRegion,
+  setHoveredRegion,
+  setSelectedRegion,
+  setRegionsInView,
+}) => {
   const { map } = useMapbox()
   const { theme } = useThemeUI()
 
@@ -66,6 +71,14 @@ const Regions = ({ hoveredRegion, setHoveredRegion, setSelectedRegion }) => {
             setSelectedRegion(polygonId)
           }
         })
+
+        map.on('moveend', () => {
+          const features = map.queryRenderedFeatures({
+            layers: ['regions-fill-layer'],
+          })
+          const ids = [...new Set(features.map((f) => f.properties.polygon_id))]
+          setRegionsInView(ids)
+        })
       } catch (error) {
         console.error('Error fetching or adding geojson:', error)
       }
@@ -78,6 +91,7 @@ const Regions = ({ hoveredRegion, setHoveredRegion, setSelectedRegion }) => {
           map.off('mousemove', 'regions-fill-layer')
           map.off('mouseleave', 'regions-fill-layer')
           map.off('click', 'regions-fill-layer')
+          map.off('moveend')
           map.removeLayer('regions-fill-layer')
         }
         if (map.getLayer('regions-line-layer')) {

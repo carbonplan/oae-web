@@ -34,6 +34,7 @@ const Main = () => {
   const [hoveredRegion, setHoveredRegion] = useState(null)
   const [timeHorizon, setTimeHorizon] = useState(15)
   const [elapsedTime, setElapsedTime] = useState(0)
+  const [regionsInView, setRegionsInView] = useState([])
   const [injectionSeason, setInjectionSeason] = useState({
     JAN: true,
     APR: false,
@@ -59,6 +60,7 @@ const Main = () => {
           setSelectedRegion={setSelectedRegion}
           elapsedTime={elapsedTime}
           injectionSeason={injectionSeason}
+          setRegionsInView={setRegionsInView}
         >
           <Sidebar
             expanded={expanded}
@@ -126,6 +128,7 @@ const Main = () => {
               setHoveredRegion={setHoveredRegion}
               timeHorizon={timeHorizon}
               injectionSeason={injectionSeason}
+              regionsInView={regionsInView}
             />
           </Sidebar>
         </MapWrapper>

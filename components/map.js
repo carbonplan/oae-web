@@ -15,6 +15,7 @@ const MapWrapper = ({
   setSelectedRegion,
   elapsedTime,
   injectionSeason,
+  setRegionsInView,
 }) => {
   const { theme } = useThemeUI()
   const colormap = useThemedColormap('warm')
@@ -50,6 +51,7 @@ const MapWrapper = ({
             hoveredRegion={hoveredRegion}
             setHoveredRegion={setHoveredRegion}
             setSelectedRegion={setSelectedRegion}
+            setRegionsInView={setRegionsInView}
           />
           <Raster
             source={

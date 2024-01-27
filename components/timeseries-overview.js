@@ -25,6 +25,7 @@ const TimeseriesOverview = ({
   setHoveredRegion,
   timeHorizon,
   injectionSeason,
+  regionsInView,
 }) => {
   const [timeData, setTimeData] = useState([])
   const startYear = 1999
@@ -47,8 +48,14 @@ const TimeseriesOverview = ({
   }, [injectionSeason])
 
   const clippedTimeData = useMemo(() => {
-    return timeData.map((line) => line.filter((d) => d[0] <= endYear))
-  }, [timeData, endYear])
+    // filter out regions not in view
+    return timeData.filter((line, index) => {
+      if (regionsInView.includes(index)) {
+        // filter out data not in time horizon
+        return line.filter((d) => d[0] <= endYear)
+      }
+    })
+  }, [timeData, endYear, regionsInView])
 
   return (
     <Box sx={{ zIndex: 0, position: 'relative' }}>
