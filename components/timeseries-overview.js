@@ -49,11 +49,12 @@ const TimeseriesOverview = ({
 
   const clippedTimeData = useMemo(() => {
     // filter out regions not in view
-    return timeData.filter((line, index) => {
+    return timeData.map((line, index) => {
       if (regionsInView.includes(index)) {
         // filter out data not in time horizon
         return line.filter((d) => d[0] <= endYear)
       }
+      return []
     })
   }, [timeData, endYear, regionsInView])
 
@@ -88,7 +89,7 @@ const TimeseriesOverview = ({
             Time
           </AxisLabel>
           {hoveredRegion !== null &&
-            clippedTimeData[hoveredRegion] &&
+            clippedTimeData[hoveredRegion]?.length &&
             (() => {
               const lastDataPoint =
                 clippedTimeData[hoveredRegion][
@@ -105,7 +106,7 @@ const TimeseriesOverview = ({
             })()}
 
           <Plot>
-            {hoveredRegion !== null && clippedTimeData[hoveredRegion] && (
+            {hoveredRegion !== null && clippedTimeData[hoveredRegion]?.length && (
               <Scatter
                 size={10}
                 x={(d) => d.x}
