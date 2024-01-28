@@ -8,6 +8,7 @@ import RegionDetail from './region-detail'
 
 const RegionFooter = ({
   hoveredRegion,
+  setHoveredRegion,
   selectedRegion,
   setSelectedRegion,
   elapsedTime,
@@ -15,6 +16,11 @@ const RegionFooter = ({
   timeHorizon,
   sx,
 }) => {
+  const handleClear = () => {
+    setSelectedRegion(null)
+    setHoveredRegion(null)
+  }
+
   return (
     <SidebarFooter
       sx={{
@@ -56,7 +62,7 @@ const RegionFooter = ({
           <Box as={'span'} sx={{ fontSize: 0, color: 'primary' }}>
             {selectedRegion !== null ? (
               <Box
-                onClick={() => setSelectedRegion(null)}
+                onClick={handleClear}
                 as={'span'}
                 sx={{
                   textTransform: 'uppercase',

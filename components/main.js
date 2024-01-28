@@ -70,6 +70,7 @@ const Main = () => {
             footer={
               <RegionFooter
                 hoveredRegion={hoveredRegion}
+                setHoveredRegion={setHoveredRegion}
                 selectedRegion={selectedRegion}
                 setSelectedRegion={setSelectedRegion}
                 elapsedTime={elapsedTime}
