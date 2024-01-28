@@ -12,7 +12,6 @@ const Regions = ({
   const { theme } = useThemeUI()
 
   const hoveredRegionRef = useRef(hoveredRegion)
-  hoveredRegionRef.current = hoveredRegion
 
   const handleMouseMove = (e) => {
     map.getCanvas().style.cursor = 'pointer'
@@ -64,7 +63,11 @@ const Regions = ({
         if (!map.getSource('geojson')) {
           const response = await fetch('../data/regions.geojson')
           const data = await response.json()
-          map.addSource('geojson', { type: 'geojson', data })
+          map.addSource('geojson', {
+            type: 'geojson',
+            data,
+            promoteId: 'polygon_id',
+          })
         }
 
         map.addLayer({
@@ -83,16 +86,13 @@ const Regions = ({
           source: 'geojson',
           paint: {
             'line-color': theme.rawColors.primary,
-            'line-width': 0.5,
+            'line-width': [
+              'case',
+              ['boolean', ['feature-state', 'hover'], false],
+              3, // Width when hovered
+              0.5, // Default width
+            ],
           },
-        })
-
-        map.addLayer({
-          id: 'highlight-line-layer',
-          type: 'line',
-          source: 'geojson',
-          paint: { 'line-width': 3, 'line-color': theme.rawColors.primary },
-          filter: ['==', ['get', 'polygon_id'], ''], // Start with no features highlighted
         })
 
         map.on('mousemove', 'regions-fill-layer', handleMouseMove)
@@ -115,14 +115,19 @@ const Regions = ({
         map.off('moveend', handleMoveEnd)
         map.off('idle', onIdle)
 
+        if (hoveredRegionRef.current !== null) {
+          map.setFeatureState(
+            { source: 'geojson', id: hoveredRegionRef.current },
+            { hover: false }
+          )
+          hoveredRegionRef.current = null
+        }
+
         if (map.getLayer('regions-fill-layer')) {
           map.removeLayer('regions-fill-layer')
         }
         if (map.getLayer('regions-line-layer')) {
           map.removeLayer('regions-line-layer')
-        }
-        if (map.getLayer('highlight-line-layer')) {
-          map.removeLayer('highlight-line-layer')
         }
       }
     }
@@ -130,28 +135,30 @@ const Regions = ({
 
   useEffect(() => {
     if (map && map.getSource('geojson')) {
-      const filter =
-        hoveredRegion !== null
-          ? ['==', ['get', 'polygon_id'], hoveredRegion]
-          : ['==', ['get', 'polygon_id'], '']
-      map.setFilter('highlight-line-layer', filter)
+      if (hoveredRegion !== hoveredRegionRef.current) {
+        if (hoveredRegionRef.current !== null) {
+          map.setFeatureState(
+            { source: 'geojson', id: hoveredRegionRef.current },
+            { hover: false }
+          )
+        }
+
+        if (hoveredRegion !== null) {
+          map.setFeatureState(
+            { source: 'geojson', id: hoveredRegion },
+            { hover: true }
+          )
+        }
+
+        hoveredRegionRef.current = hoveredRegion
+      }
     }
   }, [map, hoveredRegion])
 
   useEffect(() => {
-    if (map && map.getSource('geojson')) {
-      map.setPaintProperty(
-        'regions-fill-layer',
-        'fill-color',
-        theme.rawColors.primary
-      )
+    if (map && map.getSource('geojson') && map.getLayer('regions-line-layer')) {
       map.setPaintProperty(
         'regions-line-layer',
-        'line-color',
-        theme.rawColors.primary
-      )
-      map.setPaintProperty(
-        'highlight-line-layer',
         'line-color',
         theme.rawColors.primary
       )
