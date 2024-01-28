@@ -31,11 +31,14 @@ const Filters = ({
           <Input
             sx={{
               ...sx.label,
-              width: '35px',
+              width: '40px',
               my: 0,
               pt: 0,
               color: 'primary',
               display: 'inline',
+              '&::-webkit-inner-spin-button': {
+                opacity: 1,
+              },
             }}
             value={timeHorizon}
             type='number'
