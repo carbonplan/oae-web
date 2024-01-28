@@ -50,16 +50,67 @@ const TimeseriesOverview = ({
   }, [injectionSeason])
 
   const clippedTimeData = useMemo(() => {
-    // filter out regions not in map view
     return timeData.map((line, index) => {
-      if (regionsInView.has(index)) {
-        // chop off data not in time horizon
-        return line.slice(0, toMonthsIndex(endYear, startYear))
-      }
-      // return empty [] to maintain index (polygon_id)
-      return []
+      return regionsInView.has(index)
+        ? line.slice(0, toMonthsIndex(endYear, startYear))
+        : []
     })
   }, [timeData, endYear, regionsInView])
+
+  const renderHoveredLine = () => {
+    if (hoveredRegion === null || !clippedTimeData[hoveredRegion]?.length) {
+      return null
+    }
+
+    return (
+      <>
+        <Line
+          key={hoveredRegion}
+          onClick={() => setSelectedRegion(hoveredRegion)}
+          onMouseOver={() => setHoveredRegion(hoveredRegion)}
+          onMouseLeave={() => setHoveredRegion(null)}
+          sx={{
+            stroke: 'primary',
+            strokeWidth: 3,
+            pointerEvents: 'visiblePainted',
+            '&:hover': {
+              cursor: 'pointer',
+            },
+          }}
+          data={clippedTimeData[hoveredRegion]}
+        />
+        <Scatter
+          size={10}
+          x={(d) => d.x}
+          y={(d) => d.y}
+          data={[
+            {
+              x: endYear,
+              y: clippedTimeData[hoveredRegion].slice(-1)[0][1],
+            },
+          ]}
+        />
+      </>
+    )
+  }
+
+  const renderDataBadge = () => {
+    if (hoveredRegion === null || !clippedTimeData[hoveredRegion]?.length) {
+      return null
+    }
+
+    const lastDataPoint = clippedTimeData[hoveredRegion].slice(-1)[0]
+    const y = lastDataPoint[1]
+    return (
+      <div style={{ pointerEvents: 'none' }}>
+        <Point x={endYear} y={y} align={'center'} width={2}>
+          <Badge sx={{ fontSize: 1, height: '20px', mt: 2 }}>
+            {y.toFixed(2)}
+          </Badge>
+        </Point>
+      </div>
+    )
+  }
 
   return (
     <Box sx={{ zIndex: 0, position: 'relative' }}>
@@ -91,39 +142,7 @@ const TimeseriesOverview = ({
           <AxisLabel sx={{ fontSize: 0 }} bottom>
             Time
           </AxisLabel>
-          {hoveredRegion !== null &&
-            clippedTimeData[hoveredRegion]?.length &&
-            (() => {
-              const lastDataPoint =
-                clippedTimeData[hoveredRegion][
-                  clippedTimeData[hoveredRegion].length - 1
-                ]
-              const y = lastDataPoint[1]
-              return (
-                <Point x={endYear} y={y}>
-                  <Badge sx={{ fontSize: 1, height: '18px' }}>
-                    {lastDataPoint[1].toFixed(2)}
-                  </Badge>
-                </Point>
-              )
-            })()}
-
           <Plot>
-            {hoveredRegion !== null && clippedTimeData[hoveredRegion]?.length && (
-              <Scatter
-                size={10}
-                x={(d) => d.x}
-                y={(d) => d.y}
-                data={[
-                  {
-                    x: endYear,
-                    y: clippedTimeData[hoveredRegion][
-                      clippedTimeData[hoveredRegion].length - 1
-                    ][1],
-                  },
-                ]}
-              ></Scatter>
-            )}
             {clippedTimeData.map((line, i) => (
               <Line
                 key={i}
@@ -141,25 +160,9 @@ const TimeseriesOverview = ({
                 data={line}
               />
             ))}
-            {/* bring hovered line to front */}
-            {hoveredRegion !== null && clippedTimeData[hoveredRegion] && (
-              <Line
-                key={hoveredRegion}
-                onClick={() => setSelectedRegion(hoveredRegion)}
-                onMouseOver={() => setHoveredRegion(hoveredRegion)}
-                onMouseLeave={() => setHoveredRegion(null)}
-                sx={{
-                  stroke: 'primary',
-                  strokeWidth: 3,
-                  pointerEvents: 'visiblePainted',
-                  '&:hover': {
-                    cursor: 'pointer',
-                  },
-                }}
-                data={clippedTimeData[hoveredRegion]}
-              />
-            )}
+            {renderHoveredLine()}
           </Plot>
+          {renderDataBadge()}
         </Chart>
       </Box>
     </Box>
