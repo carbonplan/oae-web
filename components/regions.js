@@ -11,6 +11,48 @@ const Regions = ({
   const { map } = useMapbox()
   const { theme } = useThemeUI()
 
+  const handleMouseMove = (e) => {
+    map.getCanvas().style.cursor = 'pointer'
+    if (e.features.length > 0) {
+      const polygonId = e.features[0].properties.polygon_id
+      if (polygonId !== hoveredRegion) {
+        setHoveredRegion(polygonId)
+      }
+    }
+  }
+
+  const handleMouseLeave = () => {
+    map.getCanvas().style.cursor = ''
+    setHoveredRegion(null)
+  }
+
+  const handleClick = (e) => {
+    if (e.features.length > 0) {
+      const polygonId = e.features[0].properties.polygon_id
+      setSelectedRegion(polygonId)
+    }
+  }
+
+  const handleRegionsInView = () => {
+    if (map.getLayer('regions-fill-layer')) {
+      const features = map.queryRenderedFeatures({
+        layers: ['regions-fill-layer'],
+      })
+      const ids = [...new Set(features.map((f) => f.properties.polygon_id))]
+      setRegionsInView(ids)
+    }
+  }
+
+  const handleMoveEnd = () => {
+    handleRegionsInView()
+  }
+
+  // set regions in initial view
+  const onIdle = () => {
+    handleRegionsInView()
+    map.off('idle', onIdle)
+  }
+
   useEffect(() => {
     const fetchAndAddGeojson = async () => {
       if (!map) return
@@ -50,60 +92,27 @@ const Regions = ({
           filter: ['==', ['get', 'polygon_id'], ''], // Start with no features highlighted
         })
 
-        map.on('mousemove', 'regions-fill-layer', (e) => {
-          map.getCanvas().style.cursor = 'pointer'
-          if (e.features.length > 0) {
-            const polygonId = e.features[0].properties.polygon_id
-            if (polygonId !== hoveredRegion) {
-              setHoveredRegion(polygonId)
-            }
-          }
-        })
-
-        map.on('mouseleave', 'regions-fill-layer', () => {
-          map.getCanvas().style.cursor = ''
-          setHoveredRegion(null)
-        })
-
-        map.on('click', 'regions-fill-layer', (e) => {
-          if (e.features.length > 0) {
-            const polygonId = e.features[0].properties.polygon_id
-            setSelectedRegion(polygonId)
-          }
-        })
-
-        const handleRegionsInView = () => {
-          if (map.getLayer('regions-fill-layer')) {
-            const features = map.queryRenderedFeatures({
-              layers: ['regions-fill-layer'],
-            })
-            const ids = [
-              ...new Set(features.map((f) => f.properties.polygon_id)),
-            ]
-            setRegionsInView(ids)
-          }
-        }
-        map.on('moveend', () => {
-          handleRegionsInView()
-        })
-        map.on('idle', () => {
-          // set regions in view for first load
-          handleRegionsInView()
-          map.off('idle')
-        })
+        map.on('mousemove', 'regions-fill-layer', handleMouseMove)
+        map.on('mouseleave', 'regions-fill-layer', handleMouseLeave)
+        map.on('click', 'regions-fill-layer', handleClick)
+        map.on('moveend', handleMoveEnd)
+        map.on('idle', onIdle)
       } catch (error) {
         console.error('Error fetching or adding geojson:', error)
       }
     }
 
     fetchAndAddGeojson()
+
     return () => {
       if (map) {
+        map.off('mousemove', 'regions-fill-layer', handleMouseMove)
+        map.off('mouseleave', 'regions-fill-layer', handleMouseLeave)
+        map.off('click', 'regions-fill-layer', handleClick)
+        map.off('moveend', handleMoveEnd)
+        map.off('idle', onIdle)
+
         if (map.getLayer('regions-fill-layer')) {
-          map.off('mousemove', 'regions-fill-layer')
-          map.off('mouseleave', 'regions-fill-layer')
-          map.off('click', 'regions-fill-layer')
-          map.off('moveend')
           map.removeLayer('regions-fill-layer')
         }
         if (map.getLayer('regions-line-layer')) {
@@ -114,7 +123,14 @@ const Regions = ({
         }
       }
     }
-  }, [map, setHoveredRegion])
+  }, [
+    map,
+    setHoveredRegion,
+    hoveredRegion,
+    setSelectedRegion,
+    setRegionsInView,
+    theme,
+  ])
 
   useEffect(() => {
     if (map && map.getSource('geojson')) {
@@ -128,7 +144,6 @@ const Regions = ({
 
   useEffect(() => {
     if (map && map.getSource('geojson')) {
-      // set colors after theme change
       map.setPaintProperty(
         'regions-fill-layer',
         'fill-color',
