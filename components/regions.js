@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 
@@ -11,11 +11,14 @@ const Regions = ({
   const { map } = useMapbox()
   const { theme } = useThemeUI()
 
+  const hoveredRegionRef = useRef(hoveredRegion)
+  hoveredRegionRef.current = hoveredRegion
+
   const handleMouseMove = (e) => {
     map.getCanvas().style.cursor = 'pointer'
     if (e.features.length > 0) {
       const polygonId = e.features[0].properties.polygon_id
-      if (polygonId !== hoveredRegion) {
+      if (polygonId !== hoveredRegionRef.current) {
         setHoveredRegion(polygonId)
       }
     }
@@ -123,14 +126,7 @@ const Regions = ({
         }
       }
     }
-  }, [
-    map,
-    setHoveredRegion,
-    hoveredRegion,
-    setSelectedRegion,
-    setRegionsInView,
-    theme,
-  ])
+  }, [])
 
   useEffect(() => {
     if (map && map.getSource('geojson')) {
