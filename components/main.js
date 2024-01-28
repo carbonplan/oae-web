@@ -34,7 +34,7 @@ const Main = () => {
   const [hoveredRegion, setHoveredRegion] = useState(null)
   const [timeHorizon, setTimeHorizon] = useState(15)
   const [elapsedTime, setElapsedTime] = useState(0)
-  const [regionsInView, setRegionsInView] = useState([])
+  const [regionsInView, setRegionsInView] = useState(new Set())
   const [injectionSeason, setInjectionSeason] = useState({
     JAN: true,
     APR: false,

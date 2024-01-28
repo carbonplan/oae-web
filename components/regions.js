@@ -38,7 +38,7 @@ const Regions = ({
       const features = map.queryRenderedFeatures({
         layers: ['regions-fill-layer'],
       })
-      const ids = [...new Set(features.map((f) => f.properties.polygon_id))]
+      const ids = new Set(features.map((f) => f.properties.polygon_id))
       setRegionsInView(ids)
     }
   }

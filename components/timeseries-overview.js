@@ -18,6 +18,8 @@ import { openZarr, getChunk, getTimeSeriesData, loadZarr } from '../utils/zarr'
 const zarrUrl =
   'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr'
 
+const toMonthsIndex = (year, startYear) => (year - startYear) * 12
+
 const TimeseriesOverview = ({
   sx,
   setSelectedRegion,
@@ -48,12 +50,13 @@ const TimeseriesOverview = ({
   }, [injectionSeason])
 
   const clippedTimeData = useMemo(() => {
-    // filter out regions not in view
+    // filter out regions not in map view
     return timeData.map((line, index) => {
-      if (regionsInView.includes(index)) {
-        // filter out data not in time horizon
-        return line.filter((d) => d[0] <= endYear)
+      if (regionsInView.has(index)) {
+        // chop off data not in time horizon
+        return line.slice(0, toMonthsIndex(endYear, startYear))
       }
+      // return empty [] to maintain index (polygon_id)
       return []
     })
   }, [timeData, endYear, regionsInView])
