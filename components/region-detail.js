@@ -27,7 +27,7 @@ const RegionDetail = ({ sx, elapsedTime, setElapsedTime, timeHorizon }) => {
         sx={{ mt: 4 }}
         value={elapsedTime}
         min={0}
-        max={timeHorizon} // will likely need to handle months here
+        max={179}
         step={1}
         onChange={(e) => setElapsedTime(parseFloat(e.target.value))}
       />
