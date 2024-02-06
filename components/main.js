@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Sidebar } from '@carbonplan/layouts'
 import { useThemedColormap } from '@carbonplan/colormaps'
+import { Colorbar } from '@carbonplan/components'
 import { Box, Divider } from 'theme-ui'
 import Header from './header'
 import MapWrapper from './map'
@@ -42,7 +43,16 @@ const Main = () => {
     JUL: false,
     OCT: false,
   })
-  const colormap = useThemedColormap('warm', { format: 'hex', count: 200 })
+  const colorCount = 200
+  const colormapName = 'warm'
+  const colormap = useThemedColormap(colormapName, {
+    format: 'hex',
+    count: colorCount,
+  })
+  const colormapRGB = useThemedColormap(colormapName, {
+    format: 'rgb',
+    count: colorCount,
+  })
   const efficiencyColorLimits = [0.65, 0.85]
 
   return (
@@ -140,6 +150,19 @@ const Main = () => {
               efficiencyColorLimits={efficiencyColorLimits}
             />
           </Sidebar>
+          <Colorbar
+            colormap={colormapRGB}
+            label={'efficiency'}
+            clim={efficiencyColorLimits}
+            horizontal
+            width={'100%'}
+            sx={{
+              width: '30%',
+              position: 'absolute',
+              bottom: 3,
+              right: 3,
+            }}
+          />
         </MapWrapper>
       </Box>
     </>
