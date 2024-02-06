@@ -1,15 +1,38 @@
 import { useEffect, useRef } from 'react'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
+import { useThemedColormap } from '@carbonplan/colormaps'
 
 const Regions = ({
   hoveredRegion,
   setHoveredRegion,
   setSelectedRegion,
   setRegionsInView,
+  timeHorizon,
+  injectionSeason,
 }) => {
   const { map } = useMapbox()
   const { theme } = useThemeUI()
+  const colormap = useThemedColormap('warm', { format: 'hex', count: 20 })
+  const injectionDate =
+    Object.values(injectionSeason).findIndex((value) => value) + 1
+
+  const buildColorExpression = () => {
+    const steps = colormap.length
+    const stepSize = 1 / (steps - 1)
+
+    const fillColorExpression = [
+      'interpolate',
+      ['linear'],
+      ['get', `eff_inj_${injectionDate}_year_${timeHorizon}`],
+    ]
+
+    colormap.forEach((color, index) => {
+      const value = index / (colormap.length - 1)
+      fillColorExpression.push(value, color)
+    })
+    return fillColorExpression
+  }
 
   const hoveredRegionRef = useRef(hoveredRegion)
 
@@ -36,9 +59,9 @@ const Regions = ({
   }
 
   const handleRegionsInView = () => {
-    if (map.getLayer('regions-fill-layer')) {
+    if (map.getLayer('regions-fill')) {
       const features = map.queryRenderedFeatures({
-        layers: ['regions-fill-layer'],
+        layers: ['regions-fill'],
       })
       const ids = new Set(features.map((f) => f.properties.polygon_id))
       setRegionsInView(ids)
@@ -56,34 +79,36 @@ const Regions = ({
   }
 
   useEffect(() => {
-    const fetchAndAddGeojson = async () => {
+    const addRegions = async () => {
       if (!map) return
 
       try {
-        if (!map.getSource('geojson')) {
-          const response = await fetch('../data/regions.geojson')
-          const data = await response.json()
-          map.addSource('geojson', {
-            type: 'geojson',
-            data,
+        if (!map.getSource('regions')) {
+          map.addSource('regions', {
+            type: 'vector',
             promoteId: 'polygon_id',
+            maxzoom: 0,
+            tiles: [
+              'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/tiles/{z}/{x}/{y}.pbf',
+            ],
           })
         }
 
         map.addLayer({
-          id: 'regions-fill-layer',
+          id: 'regions-fill',
           type: 'fill',
-          source: 'geojson',
+          source: 'regions',
+          'source-layer': 'regions_joined',
           paint: {
-            'fill-color': theme.rawColors.primary,
-            'fill-opacity': 0.0,
+            'fill-color': buildColorExpression(),
           },
         })
 
         map.addLayer({
-          id: 'regions-line-layer',
+          id: 'regions-line',
           type: 'line',
-          source: 'geojson',
+          source: 'regions',
+          'source-layer': 'regions_joined',
           paint: {
             'line-color': theme.rawColors.primary,
             'line-width': [
@@ -95,57 +120,62 @@ const Regions = ({
           },
         })
 
-        map.on('mousemove', 'regions-fill-layer', handleMouseMove)
-        map.on('mouseleave', 'regions-fill-layer', handleMouseLeave)
-        map.on('click', 'regions-fill-layer', handleClick)
+        map.on('mousemove', 'regions-fill', handleMouseMove)
+        map.on('mouseleave', 'regions-fill', handleMouseLeave)
+        map.on('click', 'regions-fill', handleClick)
         map.on('moveend', handleMoveEnd)
         map.on('idle', onIdle)
       } catch (error) {
-        console.error('Error fetching or adding geojson:', error)
+        console.error('Error fetching or adding regions:', error)
       }
     }
 
-    fetchAndAddGeojson()
+    addRegions()
 
     return () => {
       if (map) {
-        map.off('mousemove', 'regions-fill-layer', handleMouseMove)
-        map.off('mouseleave', 'regions-fill-layer', handleMouseLeave)
-        map.off('click', 'regions-fill-layer', handleClick)
+        map.off('mousemove', 'regions-fill', handleMouseMove)
+        map.off('mouseleave', 'regions-fill', handleMouseLeave)
+        map.off('click', 'regions-fill', handleClick)
         map.off('moveend', handleMoveEnd)
         map.off('idle', onIdle)
 
-        if (hoveredRegionRef.current !== null) {
-          map.setFeatureState(
-            { source: 'geojson', id: hoveredRegionRef.current },
-            { hover: false }
-          )
-          hoveredRegionRef.current = null
-        }
+        map.removeFeatureState({
+          source: 'regions',
+          sourceLayer: 'regions_joined',
+        })
 
-        if (map.getLayer('regions-fill-layer')) {
-          map.removeLayer('regions-fill-layer')
+        if (map.getLayer('regions-fill')) {
+          map.removeLayer('regions-fill')
         }
-        if (map.getLayer('regions-line-layer')) {
-          map.removeLayer('regions-line-layer')
+        if (map.getLayer('regions-line')) {
+          map.removeLayer('regions-line')
         }
       }
     }
   }, [])
 
   useEffect(() => {
-    if (map && map.getSource('geojson')) {
+    if (map && map.getSource('regions')) {
       if (hoveredRegion !== hoveredRegionRef.current) {
         if (hoveredRegionRef.current !== null) {
           map.setFeatureState(
-            { source: 'geojson', id: hoveredRegionRef.current },
+            {
+              source: 'regions',
+              sourceLayer: 'regions_joined',
+              id: hoveredRegionRef.current,
+            },
             { hover: false }
           )
         }
 
         if (hoveredRegion !== null) {
           map.setFeatureState(
-            { source: 'geojson', id: hoveredRegion },
+            {
+              source: 'regions',
+              sourceLayer: 'regions_joined',
+              id: hoveredRegion,
+            },
             { hover: true }
           )
         }
@@ -156,14 +186,22 @@ const Regions = ({
   }, [map, hoveredRegion])
 
   useEffect(() => {
-    if (map && map.getSource('geojson') && map.getLayer('regions-line-layer')) {
+    if (map && map.getSource('regions') && map.getLayer('regions-line')) {
       map.setPaintProperty(
-        'regions-line-layer',
+        'regions-line',
         'line-color',
         theme.rawColors.primary
       )
     }
   }, [map, theme])
+
+  useEffect(() => {
+    if (map && map.getSource('regions') && map.getLayer('regions-fill')) {
+      map.setPaintProperty('regions-fill', 'fill-opacity', 1)
+
+      map.setPaintProperty('regions-fill', 'fill-color', buildColorExpression())
+    }
+  }, [map, colormap, injectionDate, timeHorizon])
 
   return null
 }

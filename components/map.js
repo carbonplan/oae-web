@@ -16,6 +16,7 @@ const MapWrapper = ({
   elapsedTime,
   injectionSeason,
   setRegionsInView,
+  timeHorizon,
 }) => {
   const { theme } = useThemeUI()
   const colormap = useThemedColormap('warm')
@@ -46,27 +47,14 @@ const MapWrapper = ({
           }}
         />
       ) : (
-        <>
-          <Regions
-            hoveredRegion={hoveredRegion}
-            setHoveredRegion={setHoveredRegion}
-            setSelectedRegion={setSelectedRegion}
-            setRegionsInView={setRegionsInView}
-          />
-          <Raster
-            source={
-              'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1a.zarr'
-            }
-            colormap={colormap}
-            clim={[0, 1]}
-            mode={'texture'}
-            variable={'OAE_efficiency'}
-            selector={{
-              injection_date: injectionDate,
-              elapsed_time: 173.5,
-            }}
-          />
-        </>
+        <Regions
+          hoveredRegion={hoveredRegion}
+          setHoveredRegion={setHoveredRegion}
+          setSelectedRegion={setSelectedRegion}
+          setRegionsInView={setRegionsInView}
+          timeHorizon={timeHorizon}
+          injectionSeason={injectionSeason}
+        />
       )}
 
       {children}

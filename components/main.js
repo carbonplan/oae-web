@@ -61,6 +61,7 @@ const Main = () => {
           elapsedTime={elapsedTime}
           injectionSeason={injectionSeason}
           setRegionsInView={setRegionsInView}
+          timeHorizon={timeHorizon}
         >
           <Sidebar
             expanded={expanded}
