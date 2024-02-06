@@ -17,6 +17,7 @@ const MapWrapper = ({
   setRegionsInView,
   timeHorizon,
   colormap,
+  efficiencyColorLimits,
 }) => {
   const { theme } = useThemeUI()
   const injectionDate = useMemo(() => {
@@ -54,6 +55,7 @@ const MapWrapper = ({
           timeHorizon={timeHorizon}
           injectionSeason={injectionSeason}
           colormap={colormap}
+          efficiencyColorLimits={efficiencyColorLimits}
         />
       )}
 

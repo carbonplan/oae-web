@@ -29,6 +29,7 @@ const TimeseriesOverview = ({
   injectionSeason,
   regionsInView,
   colormap,
+  efficiencyColorLimits,
 }) => {
   const [timeData, setTimeData] = useState([])
   const startYear = 0
@@ -114,7 +115,11 @@ const TimeseriesOverview = ({
   }
 
   const getColorForValue = (value) => {
-    const index = Math.floor(value * (colormap.length - 1))
+    let scaledValue =
+      (value - efficiencyColorLimits[0]) /
+      (efficiencyColorLimits[1] - efficiencyColorLimits[0])
+    scaledValue = Math.max(0, Math.min(1, scaledValue))
+    const index = Math.floor(scaledValue * (colormap.length - 1))
     return colormap[index]
   }
 

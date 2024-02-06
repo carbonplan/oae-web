@@ -10,6 +10,7 @@ const Regions = ({
   timeHorizon,
   injectionSeason,
   colormap,
+  efficiencyColorLimits,
 }) => {
   const { map } = useMapbox()
   const { theme } = useThemeUI()
@@ -18,14 +19,15 @@ const Regions = ({
     Object.values(injectionSeason).findIndex((value) => value) + 1
 
   const buildColorExpression = () => {
-    const fillColorExpression = [
+    let fillColorExpression = [
       'step',
       ['get', `eff_inj_${injectionDate}_year_${timeHorizon}`],
       colormap[0],
     ]
-
+    const totalRange = efficiencyColorLimits[1] - efficiencyColorLimits[0]
+    const stepIncrement = totalRange / (colormap.length - 1)
     for (let i = 1; i < colormap.length; i++) {
-      const threshold = i / (colormap.length - 1)
+      const threshold = efficiencyColorLimits[0] + stepIncrement * i
       fillColorExpression.push(threshold, colormap[i])
     }
     return fillColorExpression

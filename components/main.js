@@ -43,6 +43,7 @@ const Main = () => {
     OCT: false,
   })
   const colormap = useThemedColormap('warm', { format: 'hex', count: 200 })
+  const efficiencyColorLimits = [0.65, 0.85]
 
   return (
     <>
@@ -65,6 +66,7 @@ const Main = () => {
           setRegionsInView={setRegionsInView}
           timeHorizon={timeHorizon}
           colormap={colormap}
+          efficiencyColorLimits={efficiencyColorLimits}
         >
           <Sidebar
             expanded={expanded}
@@ -135,6 +137,7 @@ const Main = () => {
               injectionSeason={injectionSeason}
               regionsInView={regionsInView}
               colormap={colormap}
+              efficiencyColorLimits={efficiencyColorLimits}
             />
           </Sidebar>
         </MapWrapper>
