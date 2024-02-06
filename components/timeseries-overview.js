@@ -115,7 +115,6 @@ const TimeseriesOverview = ({
 
   const getColorForValue = (value) => {
     const index = Math.floor(value * (colormap.length - 1))
-    console.log(colormap[index])
     return colormap[index]
   }
 
