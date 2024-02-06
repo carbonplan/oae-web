@@ -14,13 +14,11 @@ const Regions = ({
   const { map } = useMapbox()
   const { theme } = useThemeUI()
   const colormap = useThemedColormap('warm', { format: 'hex', count: 20 })
+  const hoveredRegionRef = useRef(hoveredRegion)
   const injectionDate =
     Object.values(injectionSeason).findIndex((value) => value) + 1
 
   const buildColorExpression = () => {
-    const steps = colormap.length
-    const stepSize = 1 / (steps - 1)
-
     const fillColorExpression = [
       'interpolate',
       ['linear'],
@@ -33,8 +31,6 @@ const Regions = ({
     })
     return fillColorExpression
   }
-
-  const hoveredRegionRef = useRef(hoveredRegion)
 
   const handleMouseMove = (e) => {
     map.getCanvas().style.cursor = 'pointer'
@@ -197,8 +193,6 @@ const Regions = ({
 
   useEffect(() => {
     if (map && map.getSource('regions') && map.getLayer('regions-fill')) {
-      map.setPaintProperty('regions-fill', 'fill-opacity', 1)
-
       map.setPaintProperty('regions-fill', 'fill-color', buildColorExpression())
     }
   }, [map, colormap, injectionDate, timeHorizon])
