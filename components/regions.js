@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
-import { useThemedColormap } from '@carbonplan/colormaps'
 
 const Regions = ({
   hoveredRegion,
@@ -10,25 +9,25 @@ const Regions = ({
   setRegionsInView,
   timeHorizon,
   injectionSeason,
+  colormap,
 }) => {
   const { map } = useMapbox()
   const { theme } = useThemeUI()
-  const colormap = useThemedColormap('warm', { format: 'hex', count: 20 })
   const hoveredRegionRef = useRef(hoveredRegion)
   const injectionDate =
     Object.values(injectionSeason).findIndex((value) => value) + 1
 
   const buildColorExpression = () => {
     const fillColorExpression = [
-      'interpolate',
-      ['linear'],
+      'step',
       ['get', `eff_inj_${injectionDate}_year_${timeHorizon}`],
+      colormap[0],
     ]
 
-    colormap.forEach((color, index) => {
-      const value = index / (colormap.length - 1)
-      fillColorExpression.push(value, color)
-    })
+    for (let i = 1; i < colormap.length; i++) {
+      const threshold = i / (colormap.length - 1)
+      fillColorExpression.push(threshold, colormap[i])
+    }
     return fillColorExpression
   }
 

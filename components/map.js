@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import { useThemeUI } from 'theme-ui'
 import { Map, Line, Raster } from '@carbonplan/maps'
-import { useThemedColormap } from '@carbonplan/colormaps'
 import Regions from './regions'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
@@ -17,9 +16,9 @@ const MapWrapper = ({
   injectionSeason,
   setRegionsInView,
   timeHorizon,
+  colormap,
 }) => {
   const { theme } = useThemeUI()
-  const colormap = useThemedColormap('warm')
   const injectionDate = useMemo(() => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
   }, [injectionSeason])
@@ -54,6 +53,7 @@ const MapWrapper = ({
           setRegionsInView={setRegionsInView}
           timeHorizon={timeHorizon}
           injectionSeason={injectionSeason}
+          colormap={colormap}
         />
       )}
 

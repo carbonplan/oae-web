@@ -28,9 +28,10 @@ const TimeseriesOverview = ({
   timeHorizon,
   injectionSeason,
   regionsInView,
+  colormap,
 }) => {
   const [timeData, setTimeData] = useState([])
-  const startYear = 1999
+  const startYear = 0
   const endYear = startYear + timeHorizon
 
   useEffect(() => {
@@ -112,6 +113,12 @@ const TimeseriesOverview = ({
     )
   }
 
+  const getColorForValue = (value) => {
+    const index = Math.floor(value * (colormap.length - 1))
+    console.log(colormap[index])
+    return colormap[index]
+  }
+
   return (
     <Box sx={{ zIndex: 0, position: 'relative' }}>
       <Box sx={sx.heading}>efficiency</Box>
@@ -140,7 +147,7 @@ const TimeseriesOverview = ({
             OAE efficiency
           </AxisLabel>
           <AxisLabel sx={{ fontSize: 0 }} bottom>
-            Time
+            Time (years)
           </AxisLabel>
           <Plot>
             {clippedTimeData.map((line, i) => (
@@ -150,7 +157,7 @@ const TimeseriesOverview = ({
                 onMouseOver={() => setHoveredRegion(i)}
                 onMouseLeave={() => setHoveredRegion(null)}
                 sx={{
-                  stroke: 'blue',
+                  stroke: getColorForValue(line?.slice(-1)?.[0]?.[1]),
                   strokeWidth: 2,
                   pointerEvents: 'visiblePainted',
                   '&:hover': {

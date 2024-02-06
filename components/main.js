@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Sidebar } from '@carbonplan/layouts'
+import { useThemedColormap } from '@carbonplan/colormaps'
 import { Box, Divider } from 'theme-ui'
 import Header from './header'
 import MapWrapper from './map'
@@ -41,6 +42,7 @@ const Main = () => {
     JUL: false,
     OCT: false,
   })
+  const colormap = useThemedColormap('warm', { format: 'hex', count: 200 })
 
   return (
     <>
@@ -62,6 +64,7 @@ const Main = () => {
           injectionSeason={injectionSeason}
           setRegionsInView={setRegionsInView}
           timeHorizon={timeHorizon}
+          colormap={colormap}
         >
           <Sidebar
             expanded={expanded}
@@ -131,6 +134,7 @@ const Main = () => {
               timeHorizon={timeHorizon}
               injectionSeason={injectionSeason}
               regionsInView={regionsInView}
+              colormap={colormap}
             />
           </Sidebar>
         </MapWrapper>
