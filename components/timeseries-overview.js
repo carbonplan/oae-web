@@ -7,6 +7,7 @@ import {
   Line,
   Plot,
   Point,
+  Rect,
   Scatter,
   TickLabels,
   Ticks,
@@ -196,6 +197,7 @@ const TimeseriesOverview = ({
                 data={line}
               />
             ))}
+            <Rect x={[endYear, 15]} y={[0, 1]} color='muted' opacity={0.2} />
             {renderHoveredLine()}
           </Plot>
           {renderDataBadge()}
