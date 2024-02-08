@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 
@@ -10,7 +10,7 @@ const Regions = ({
   timeHorizon,
   injectionSeason,
   colormap,
-  efficiencyColorLimits,
+  colorLimits,
 }) => {
   const { map } = useMapbox()
   const { theme } = useThemeUI()
@@ -18,17 +18,23 @@ const Regions = ({
   const injectionDate =
     Object.values(injectionSeason).findIndex((value) => value) + 1
 
+  const safeColorMap = useMemo(() => {
+    return colormap[0].length === 3
+      ? colormap.map((rgb) => `rgb(${rgb.join(',')})`)
+      : colormap
+  }, [colormap])
+
   const buildColorExpression = () => {
-    let fillColorExpression = [
+    const fillColorExpression = [
       'step',
       ['get', `eff_inj_${injectionDate}_year_${timeHorizon}`],
-      colormap[0],
+      safeColorMap[0],
     ]
-    const totalRange = efficiencyColorLimits[1] - efficiencyColorLimits[0]
-    const stepIncrement = totalRange / (colormap.length - 1)
-    for (let i = 1; i < colormap.length; i++) {
-      const threshold = efficiencyColorLimits[0] + stepIncrement * i
-      fillColorExpression.push(threshold, colormap[i])
+    const totalRange = colorLimits[1] - colorLimits[0]
+    const stepIncrement = totalRange / (safeColorMap.length - 1)
+    for (let i = 1; i < safeColorMap.length; i++) {
+      const threshold = colorLimits[0] + stepIncrement * i
+      fillColorExpression.push(threshold, safeColorMap[i])
     }
     return fillColorExpression
   }

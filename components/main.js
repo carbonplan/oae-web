@@ -43,13 +43,24 @@ const Main = () => {
     JUL: false,
     OCT: false,
   })
-  const colorCount = 200
-  const colormapName = 'warm'
-  const colormap = useThemedColormap(colormapName, {
-    format: 'hex',
-    count: colorCount,
-  })
+  const efficiencyColorMap = useThemedColormap('warm', { format: 'hex' }) || []
   const efficiencyColorLimits = [0.65, 0.85]
+  const regionDetailColorMap = useThemedColormap('cool') || []
+  const regionColorLimits = [0, 4000]
+  const [currentColormap, setCurrentColormap] = useState(efficiencyColorMap)
+  const [currentColorLimits, setCurrentColorLimits] = useState(
+    efficiencyColorLimits
+  )
+
+  useEffect(() => {
+    if (selectedRegion !== null) {
+      setCurrentColormap(regionDetailColorMap)
+      setCurrentColorLimits(regionColorLimits)
+    } else {
+      setCurrentColormap(efficiencyColorMap)
+      setCurrentColorLimits(efficiencyColorLimits)
+    }
+  }, [selectedRegion])
 
   return (
     <>
@@ -71,8 +82,8 @@ const Main = () => {
           injectionSeason={injectionSeason}
           setRegionsInView={setRegionsInView}
           timeHorizon={timeHorizon}
-          colormap={colormap}
-          efficiencyColorLimits={efficiencyColorLimits}
+          colormap={currentColormap}
+          colorLimits={currentColorLimits}
         >
           <Sidebar
             expanded={expanded}
@@ -142,14 +153,13 @@ const Main = () => {
               timeHorizon={timeHorizon}
               injectionSeason={injectionSeason}
               regionsInView={regionsInView}
-              colormap={colormap}
+              colormap={efficiencyColorMap}
               efficiencyColorLimits={efficiencyColorLimits}
             />
           </Sidebar>
           <Colorbar
-            colormap={colormap}
-            label={'efficiency'}
-            clim={efficiencyColorLimits}
+            colormap={currentColormap}
+            clim={currentColorLimits}
             horizontal
             width={'100%'}
             sx={{

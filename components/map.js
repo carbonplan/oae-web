@@ -17,7 +17,7 @@ const MapWrapper = ({
   setRegionsInView,
   timeHorizon,
   colormap,
-  efficiencyColorLimits,
+  colorLimits,
 }) => {
   const { theme } = useThemeUI()
   const injectionDate = useMemo(() => {
@@ -37,7 +37,7 @@ const MapWrapper = ({
             'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store2.zarr'
           }
           colormap={colormap}
-          clim={[0, 4000]}
+          clim={colorLimits}
           mode={'texture'}
           variable={'ALK'}
           selector={{
@@ -55,7 +55,7 @@ const MapWrapper = ({
           timeHorizon={timeHorizon}
           injectionSeason={injectionSeason}
           colormap={colormap}
-          efficiencyColorLimits={efficiencyColorLimits}
+          colorLimits={colorLimits}
         />
       )}
       {children}
