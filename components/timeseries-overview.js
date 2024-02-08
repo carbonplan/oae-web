@@ -151,8 +151,8 @@ const TimeseriesOverview = ({
           <AxisLabel sx={{ fontSize: 0 }} left>
             OAE efficiency
           </AxisLabel>
-          <AxisLabel sx={{ fontSize: 0 }} bottom>
-            Time (years)
+          <AxisLabel units='years' sx={{ fontSize: 0 }} bottom>
+            Time
           </AxisLabel>
           <Plot>
             {selectedLines.map((line, i) => (
