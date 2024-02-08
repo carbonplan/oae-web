@@ -52,8 +52,8 @@ const TimeseriesOverview = ({
   }, [injectionSeason])
 
   const { selectedLines, unselectedLines } = useMemo(() => {
-    let selectedLines = []
-    let unselectedLines = []
+    const selectedLines = []
+    const unselectedLines = []
     timeData.forEach((line, index) => {
       if (regionsInView.has(index)) {
         const cutIndex = toMonthsIndex(endYear, startYear)
