@@ -109,13 +109,18 @@ const TimeseriesOverview = ({
     const lastDataPoint = selectedLines[hoveredRegion].slice(-1)[0]
     const y = lastDataPoint[1]
     return (
-      <div style={{ pointerEvents: 'none' }}>
-        <Point x={endYear} y={y} align={'center'} width={2}>
-          <Badge sx={{ fontSize: 1, height: '20px', mt: 2 }}>
-            {y.toFixed(2)}
-          </Badge>
-        </Point>
-      </div>
+      <Point x={endYear} y={y} align={'center'} width={2}>
+        <Badge
+          sx={{
+            fontSize: 1,
+            height: '20px',
+            mt: 2,
+            bg: getColorForValue(y),
+          }}
+        >
+          {y.toFixed(2)}
+        </Badge>
+      </Point>
     )
   }
 
@@ -131,7 +136,7 @@ const TimeseriesOverview = ({
   return (
     <Box sx={{ zIndex: 0, position: 'relative' }}>
       <Box sx={sx.heading}>efficiency</Box>
-      <Box sx={{ width: '100%', height: '300px' }}>
+      <Box sx={{ width: '100%', height: '300px', pointerEvents: 'none' }}>
         <Chart x={[startYear, 15]} y={[0, 1]} padding={{ left: 60, top: 50 }}>
           <Flex sx={{ justifyContent: 'end', mb: 0 }}>
             <Button
