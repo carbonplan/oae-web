@@ -58,7 +58,6 @@ const MapWrapper = ({
           efficiencyColorLimits={efficiencyColorLimits}
         />
       )}
-
       {children}
     </Map>
   )

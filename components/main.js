@@ -49,10 +49,6 @@ const Main = () => {
     format: 'hex',
     count: colorCount,
   })
-  const colormapRGB = useThemedColormap(colormapName, {
-    format: 'rgb',
-    count: colorCount,
-  })
   const efficiencyColorLimits = [0.65, 0.85]
 
   return (
@@ -151,7 +147,7 @@ const Main = () => {
             />
           </Sidebar>
           <Colorbar
-            colormap={colormapRGB}
+            colormap={colormap}
             label={'efficiency'}
             clim={efficiencyColorLimits}
             horizontal
