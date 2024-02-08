@@ -68,6 +68,7 @@ const TimeseriesOverview = ({
     if (hoveredRegion === null || !selectedLines[hoveredRegion]?.length) {
       return null
     }
+    const color = getColorForValue(selectedLines[hoveredRegion].slice(-1)[0][1])
 
     return (
       <>
@@ -77,8 +78,8 @@ const TimeseriesOverview = ({
           onMouseOver={() => setHoveredRegion(hoveredRegion)}
           onMouseLeave={() => setHoveredRegion(null)}
           sx={{
-            stroke: 'primary',
-            strokeWidth: 3,
+            stroke: color,
+            strokeWidth: 4,
             pointerEvents: 'visiblePainted',
             '&:hover': {
               cursor: 'pointer',
@@ -87,6 +88,7 @@ const TimeseriesOverview = ({
           data={selectedLines[hoveredRegion]}
         />
         <Scatter
+          color={color}
           size={10}
           x={(d) => d.x}
           y={(d) => d.y}
