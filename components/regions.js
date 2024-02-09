@@ -5,22 +5,22 @@ import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 
 const Regions = ({ colormap, colorLimits }) => {
-  const {
+  const [
     hoveredRegion,
     setHoveredRegion,
     setSelectedRegion,
     setRegionsInView,
     timeHorizon,
     injectionSeason,
-  } = useStore(
-    useShallow((state) => ({
-      hoveredRegion: state.hoveredRegion,
-      setHoveredRegion: state.setHoveredRegion,
-      setSelectedRegion: state.setSelectedRegion,
-      setRegionsInView: state.setRegionsInView,
-      timeHorizon: state.timeHorizon,
-      injectionSeason: state.injectionSeason,
-    }))
+  ] = useStore(
+    useShallow((state) => [
+      state.hoveredRegion,
+      state.setHoveredRegion,
+      state.setSelectedRegion,
+      state.setRegionsInView,
+      state.timeHorizon,
+      state.injectionSeason,
+    ])
   )
   const { map } = useMapbox()
   const { theme } = useThemeUI()

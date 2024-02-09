@@ -9,7 +9,7 @@ import { X } from '@carbonplan/icons'
 import RegionDetail from './region-detail'
 
 const RegionFooter = ({ sx }) => {
-  const {
+  const [
     hoveredRegion,
     setHoveredRegion,
     selectedRegion,
@@ -17,16 +17,16 @@ const RegionFooter = ({ sx }) => {
     elapsedTime,
     setElapsedTime,
     timeHorizon,
-  } = useStore(
-    useShallow((state) => ({
-      hoveredRegion: state.hoveredRegion,
-      setHoveredRegion: state.setHoveredRegion,
-      selectedRegion: state.selectedRegion,
-      setSelectedRegion: state.setSelectedRegion,
-      elapsedTime: state.elapsedTime,
-      setElapsedTime: state.setElapsedTime,
-      timeHorizon: state.timeHorizon,
-    }))
+  ] = useStore(
+    useShallow((state) => [
+      state.hoveredRegion,
+      state.setHoveredRegion,
+      state.selectedRegion,
+      state.setSelectedRegion,
+      state.elapsedTime,
+      state.setElapsedTime,
+      state.timeHorizon,
+    ])
   )
 
   const handleClear = () => {

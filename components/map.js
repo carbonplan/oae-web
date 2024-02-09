@@ -8,12 +8,12 @@ import Regions from './regions'
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
 const MapWrapper = ({ children, setLoading, colormap, colorLimits }) => {
-  const { selectedRegion, elapsedTime, injectionSeason } = useStore(
-    useShallow((state) => ({
-      selectedRegion: state.selectedRegion,
-      elapsedTime: state.elapsedTime,
-      injectionSeason: state.injectionSeason,
-    }))
+  const [selectedRegion, elapsedTime, injectionSeason] = useStore(
+    useShallow((state) => [
+      state.selectedRegion,
+      state.elapsedTime,
+      state.injectionSeason,
+    ])
   )
   const { theme } = useThemeUI()
   const injectionDate = useMemo(() => {

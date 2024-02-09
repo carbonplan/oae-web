@@ -24,22 +24,22 @@ const zarrUrl =
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12
 
 const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
-  const {
+  const [
     setSelectedRegion,
     hoveredRegion,
     setHoveredRegion,
     timeHorizon,
     injectionSeason,
     regionsInView,
-  } = useStore(
-    useShallow((state) => ({
-      setSelectedRegion: state.setSelectedRegion,
-      hoveredRegion: state.hoveredRegion,
-      setHoveredRegion: state.setHoveredRegion,
-      timeHorizon: state.timeHorizon,
-      injectionSeason: state.injectionSeason,
-      regionsInView: state.regionsInView,
-    }))
+  ] = useStore(
+    useShallow((state) => [
+      state.setSelectedRegion,
+      state.hoveredRegion,
+      state.setHoveredRegion,
+      state.timeHorizon,
+      state.injectionSeason,
+      state.regionsInView,
+    ])
   )
   const [timeData, setTimeData] = useState([])
   const startYear = 0

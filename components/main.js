@@ -33,12 +33,12 @@ const sx = {
 }
 
 const Main = () => {
-  const { expanded, setExpanded, selectedRegion } = useStore(
-    useShallow((state) => ({
-      expanded: state.expanded,
-      setExpanded: state.setExpanded,
-      selectedRegion: state.selectedRegion,
-    }))
+  const [expanded, setExpanded, selectedRegion] = useStore(
+    useShallow((state) => [
+      state.expanded,
+      state.setExpanded,
+      state.selectedRegion,
+    ])
   )
 
   const efficiencyColorMap = useThemedColormap('warm', { format: 'hex' }) || []
