@@ -146,7 +146,7 @@ const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
       <Box sx={sx.heading}>efficiency</Box>
       <Box sx={{ width: '100%', height: '300px', pointerEvents: 'none' }}>
         <Chart x={[startYear, 15]} y={[0, 1]} padding={{ left: 60, top: 50 }}>
-          <Flex sx={{ justifyContent: 'end', mb: 0 }}>
+          <Flex sx={{ justifyContent: 'end', mb: 0, pointerEvents: 'auto' }}>
             <Button
               sx={{
                 ...sx.label,
