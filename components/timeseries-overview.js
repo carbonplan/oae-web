@@ -73,14 +73,12 @@ const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
     return (
       <>
         <Line
-          key={hoveredRegion}
+          key={hoveredRegion + '-hovered'}
           onClick={() => setSelectedRegion(hoveredRegion)}
-          onMouseOver={() => setHoveredRegion(hoveredRegion)}
-          onMouseLeave={() => setHoveredRegion(null)}
           sx={{
             stroke: color,
             strokeWidth: 4,
-            pointerEvents: 'visiblePainted',
+            pointerEvents: 'none',
             '&:hover': {
               cursor: 'pointer',
             },
@@ -88,6 +86,7 @@ const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
           data={selectedLines[hoveredRegion]}
         />
         <Scatter
+          sx={{ pointerEvents: 'none' }}
           color={color}
           size={10}
           x={(d) => d.x}
@@ -171,7 +170,7 @@ const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
           <Plot>
             {selectedLines.map((line, i) => (
               <Line
-                key={i}
+                key={i + '-selected'}
                 onClick={() => setSelectedRegion(i)}
                 onMouseOver={() => setHoveredRegion(i)}
                 onMouseLeave={() => setHoveredRegion(null)}
@@ -188,7 +187,7 @@ const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
             ))}
             {unselectedLines.map((line, i) => (
               <Line
-                key={i}
+                key={i + '-unselected'}
                 onClick={() => setSelectedRegion(i)}
                 onMouseOver={() => setHoveredRegion(i)}
                 onMouseLeave={() => setHoveredRegion(null)}
