@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import useStore from '../store'
+import { useShallow } from 'zustand/react/shallow'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 
@@ -11,7 +12,16 @@ const Regions = ({ colormap, colorLimits }) => {
     setRegionsInView,
     timeHorizon,
     injectionSeason,
-  } = useStore()
+  } = useStore(
+    useShallow((state) => ({
+      hoveredRegion: state.hoveredRegion,
+      setHoveredRegion: state.setHoveredRegion,
+      setSelectedRegion: state.setSelectedRegion,
+      setRegionsInView: state.setRegionsInView,
+      timeHorizon: state.timeHorizon,
+      injectionSeason: state.injectionSeason,
+    }))
+  )
   const { map } = useMapbox()
   const { theme } = useThemeUI()
   const hoveredRegionRef = useRef(hoveredRegion)

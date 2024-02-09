@@ -1,11 +1,19 @@
 import React from 'react'
+import useStore from '../store'
+import { useShallow } from 'zustand/react/shallow'
 import { Row, Column, Filter, Input } from '@carbonplan/components'
 import { Box } from 'theme-ui'
-import useStore from '../store'
 
 const Filters = ({ sx }) => {
   const { timeHorizon, setTimeHorizon, injectionSeason, setInjectionSeason } =
-    useStore()
+    useStore(
+      useShallow((state) => ({
+        timeHorizon: state.timeHorizon,
+        setTimeHorizon: state.setTimeHorizon,
+        injectionSeason: state.injectionSeason,
+        setInjectionSeason: state.setInjectionSeason,
+      }))
+    )
   return (
     <>
       <Box sx={sx.heading}>injection</Box>

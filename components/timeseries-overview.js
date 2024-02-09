@@ -1,5 +1,6 @@
 import React, { useMemo, useEffect, useState } from 'react'
 import useStore from '../store'
+import { useShallow } from 'zustand/react/shallow'
 import { Box, Flex } from 'theme-ui'
 import {
   AxisLabel,
@@ -30,7 +31,16 @@ const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
     timeHorizon,
     injectionSeason,
     regionsInView,
-  } = useStore()
+  } = useStore(
+    useShallow((state) => ({
+      setSelectedRegion: state.setSelectedRegion,
+      hoveredRegion: state.hoveredRegion,
+      setHoveredRegion: state.setHoveredRegion,
+      timeHorizon: state.timeHorizon,
+      injectionSeason: state.injectionSeason,
+      regionsInView: state.regionsInView,
+    }))
+  )
   const [timeData, setTimeData] = useState([])
   const startYear = 0
   const endYear = startYear + timeHorizon
