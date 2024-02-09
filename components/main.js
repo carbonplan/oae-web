@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import useStore from '../store/store'
 import { Sidebar } from '@carbonplan/layouts'
-import { colormaps, useThemedColormap } from '@carbonplan/colormaps'
+import { useThemedColormap } from '@carbonplan/colormaps'
 import { Colorbar } from '@carbonplan/components'
 import { Box, Divider } from 'theme-ui'
 import Header from './header'
@@ -32,18 +32,6 @@ const sx = {
 }
 
 const Main = () => {
-  // const [expanded, setExpanded] = useState(true)
-  // const [selectedRegion, setSelectedRegion] = useState(null)
-  const [hoveredRegion, setHoveredRegion] = useState(null)
-  const [timeHorizon, setTimeHorizon] = useState(15)
-  const [elapsedTime, setElapsedTime] = useState(0)
-  const [regionsInView, setRegionsInView] = useState(new Set())
-  const [injectionSeason, setInjectionSeason] = useState({
-    JAN: true,
-    APR: false,
-    JUL: false,
-    OCT: false,
-  })
   const { expanded, setExpanded, selectedRegion } = useStore()
 
   const efficiencyColorMap = useThemedColormap('warm', { format: 'hex' }) || []
