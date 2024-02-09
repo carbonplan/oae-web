@@ -13,8 +13,6 @@ const MapWrapper = ({ children, setLoading, colormap, colorLimits }) => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
   }, [injectionSeason])
 
-  // switch to usestore zustand
-
   return (
     <Map zoom={0} center={[0, 0]} debug={false} setLoading={setLoading}>
       <Line
