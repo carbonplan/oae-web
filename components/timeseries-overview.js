@@ -7,6 +7,7 @@ import {
   Line,
   Plot,
   Point,
+  Rect,
   Scatter,
   TickLabels,
   Ticks,
@@ -51,18 +52,24 @@ const TimeseriesOverview = ({
     fetchTimeSeriesData()
   }, [injectionSeason])
 
-  const clippedTimeData = useMemo(() => {
-    return timeData.map((line, index) => {
-      return regionsInView.has(index)
-        ? line.slice(0, toMonthsIndex(endYear, startYear))
-        : []
+  const { selectedLines, unselectedLines } = useMemo(() => {
+    const selectedLines = []
+    const unselectedLines = []
+    timeData.forEach((line, index) => {
+      if (regionsInView.has(index)) {
+        const cutIndex = toMonthsIndex(endYear, startYear)
+        selectedLines.push(line.slice(0, cutIndex + 1))
+        unselectedLines.push(line.slice(cutIndex + 1))
+      }
     })
-  }, [timeData, endYear, regionsInView])
+    return { selectedLines, unselectedLines }
+  }, [timeData, endYear, regionsInView, toMonthsIndex])
 
   const renderHoveredLine = () => {
-    if (hoveredRegion === null || !clippedTimeData[hoveredRegion]?.length) {
+    if (hoveredRegion === null || !selectedLines[hoveredRegion]?.length) {
       return null
     }
+    const color = getColorForValue(selectedLines[hoveredRegion].slice(-1)[0][1])
 
     return (
       <>
@@ -72,23 +79,24 @@ const TimeseriesOverview = ({
           onMouseOver={() => setHoveredRegion(hoveredRegion)}
           onMouseLeave={() => setHoveredRegion(null)}
           sx={{
-            stroke: 'primary',
-            strokeWidth: 3,
+            stroke: color,
+            strokeWidth: 4,
             pointerEvents: 'visiblePainted',
             '&:hover': {
               cursor: 'pointer',
             },
           }}
-          data={clippedTimeData[hoveredRegion]}
+          data={selectedLines[hoveredRegion]}
         />
         <Scatter
+          color={color}
           size={10}
           x={(d) => d.x}
           y={(d) => d.y}
           data={[
             {
               x: endYear,
-              y: clippedTimeData[hoveredRegion].slice(-1)[0][1],
+              y: selectedLines[hoveredRegion].slice(-1)[0][1],
             },
           ]}
         />
@@ -97,20 +105,25 @@ const TimeseriesOverview = ({
   }
 
   const renderDataBadge = () => {
-    if (hoveredRegion === null || !clippedTimeData[hoveredRegion]?.length) {
+    if (hoveredRegion === null || !selectedLines[hoveredRegion]?.length) {
       return null
     }
 
-    const lastDataPoint = clippedTimeData[hoveredRegion].slice(-1)[0]
+    const lastDataPoint = selectedLines[hoveredRegion].slice(-1)[0]
     const y = lastDataPoint[1]
     return (
-      <div style={{ pointerEvents: 'none' }}>
-        <Point x={endYear} y={y} align={'center'} width={2}>
-          <Badge sx={{ fontSize: 1, height: '20px', mt: 2 }}>
-            {y.toFixed(2)}
-          </Badge>
-        </Point>
-      </div>
+      <Point x={endYear} y={y} align={'center'} width={2}>
+        <Badge
+          sx={{
+            fontSize: 1,
+            height: '20px',
+            mt: 2,
+            bg: getColorForValue(y),
+          }}
+        >
+          {y.toFixed(2)}
+        </Badge>
+      </Point>
     )
   }
 
@@ -133,12 +146,8 @@ const TimeseriesOverview = ({
   return (
     <Box sx={{ zIndex: 0, position: 'relative' }}>
       <Box sx={sx.heading}>efficiency</Box>
-      <Box sx={{ width: '100%', height: '300px' }}>
-        <Chart
-          x={[startYear, endYear]}
-          y={[0, 1]}
-          padding={{ left: 60, top: 50 }}
-        >
+      <Box sx={{ width: '100%', height: '300px', pointerEvents: 'none' }}>
+        <Chart x={[startYear, 15]} y={[0, 1]} padding={{ left: 60, top: 50 }}>
           <Flex sx={{ justifyContent: 'end', mb: 0 }}>
             <Button
               sx={{
@@ -157,11 +166,11 @@ const TimeseriesOverview = ({
           <AxisLabel sx={{ fontSize: 0 }} left>
             OAE efficiency
           </AxisLabel>
-          <AxisLabel sx={{ fontSize: 0 }} bottom>
-            Time (years)
+          <AxisLabel units='years' sx={{ fontSize: 0 }} bottom>
+            Time
           </AxisLabel>
           <Plot>
-            {clippedTimeData.map((line, i) => (
+            {selectedLines.map((line, i) => (
               <Line
                 key={i}
                 onClick={() => setSelectedRegion(i)}
@@ -178,6 +187,24 @@ const TimeseriesOverview = ({
                 data={line}
               />
             ))}
+            {unselectedLines.map((line, i) => (
+              <Line
+                key={i}
+                onClick={() => setSelectedRegion(i)}
+                onMouseOver={() => setHoveredRegion(i)}
+                onMouseLeave={() => setHoveredRegion(null)}
+                sx={{
+                  stroke: 'muted',
+                  strokeWidth: 2,
+                  pointerEvents: 'visiblePainted',
+                  '&:hover': {
+                    cursor: 'pointer',
+                  },
+                }}
+                data={line}
+              />
+            ))}
+            <Rect x={[endYear, 15]} y={[0, 1]} color='muted' opacity={0.2} />
             {renderHoveredLine()}
           </Plot>
           {renderDataBadge()}

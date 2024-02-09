@@ -64,7 +64,10 @@ export const getTimeSeriesData = (chunk, ids, startYear) => {
       const transformed = new Array(timeSeriesLength)
       for (let i = 0; i < timeSeriesLength; i++) {
         const toYear = startYear + i / 12
-        transformed[i] = [toYear, chunk.data[sliceStart + i]]
+        transformed[i] = [
+          toYear,
+          parseFloat(chunk.data[sliceStart + i].toFixed(3)),
+        ]
       }
       timeData.push(transformed)
     } else {
