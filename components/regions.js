@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useRef } from 'react'
+import useStore from '../store/store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 
-const Regions = ({
-  hoveredRegion,
-  setHoveredRegion,
-  setSelectedRegion,
-  setRegionsInView,
-  timeHorizon,
-  injectionSeason,
-  colormap,
-  colorLimits,
-}) => {
+const Regions = ({ colormap, colorLimits }) => {
+  const {
+    hoveredRegion,
+    setHoveredRegion,
+    setSelectedRegion,
+    setRegionsInView,
+    timeHorizon,
+    injectionSeason,
+  } = useStore()
   const { map } = useMapbox()
   const { theme } = useThemeUI()
   const hoveredRegionRef = useRef(hoveredRegion)

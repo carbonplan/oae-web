@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
+import useStore from '../store/store'
 import { Sidebar } from '@carbonplan/layouts'
-import { useThemedColormap } from '@carbonplan/colormaps'
+import { colormaps, useThemedColormap } from '@carbonplan/colormaps'
 import { Colorbar } from '@carbonplan/components'
 import { Box, Divider } from 'theme-ui'
 import Header from './header'
@@ -31,8 +32,8 @@ const sx = {
 }
 
 const Main = () => {
-  const [expanded, setExpanded] = useState(true)
-  const [selectedRegion, setSelectedRegion] = useState(null)
+  // const [expanded, setExpanded] = useState(true)
+  // const [selectedRegion, setSelectedRegion] = useState(null)
   const [hoveredRegion, setHoveredRegion] = useState(null)
   const [timeHorizon, setTimeHorizon] = useState(15)
   const [elapsedTime, setElapsedTime] = useState(0)
@@ -43,6 +44,8 @@ const Main = () => {
     JUL: false,
     OCT: false,
   })
+  const { expanded, setExpanded, selectedRegion } = useStore()
+
   const efficiencyColorMap = useThemedColormap('warm', { format: 'hex' }) || []
   const efficiencyColorLimits = [0.65, 0.85]
   const regionDetailColorMap = useThemedColormap('cool') || []
@@ -73,35 +76,13 @@ const Main = () => {
           width: '100%',
         }}
       >
-        <MapWrapper
-          hoveredRegion={hoveredRegion}
-          setHoveredRegion={setHoveredRegion}
-          selectedRegion={selectedRegion}
-          setSelectedRegion={setSelectedRegion}
-          elapsedTime={elapsedTime}
-          injectionSeason={injectionSeason}
-          setRegionsInView={setRegionsInView}
-          timeHorizon={timeHorizon}
-          colormap={currentColormap}
-          colorLimits={currentColorLimits}
-        >
+        <MapWrapper colormap={currentColormap} colorLimits={currentColorLimits}>
           <Sidebar
             expanded={expanded}
             setExpanded={setExpanded}
             side='left'
             width={4}
-            footer={
-              <RegionFooter
-                hoveredRegion={hoveredRegion}
-                setHoveredRegion={setHoveredRegion}
-                selectedRegion={selectedRegion}
-                setSelectedRegion={setSelectedRegion}
-                elapsedTime={elapsedTime}
-                setElapsedTime={setElapsedTime}
-                timeHorizon={timeHorizon}
-                sx={sx}
-              />
-            }
+            footer={<RegionFooter sx={sx} />}
           >
             <Box
               sx={{
@@ -137,22 +118,10 @@ const Main = () => {
             <Box sx={{ fontSize: 2 }}>Created in collaboration with</Box>
             <Box sx={{ fontSize: 4 }}>[C]Worthy</Box>
             <Divider sx={{ mt: 4, mb: 5 }} />
-            <Filters
-              sx={sx}
-              timeHorizon={timeHorizon}
-              setTimeHorizon={setTimeHorizon}
-              injectionSeason={injectionSeason}
-              setInjectionSeason={setInjectionSeason}
-            />
+            <Filters sx={sx} />
             <Divider sx={{ mt: 4, mb: 5 }} />
             <TimeseriesOverview
               sx={sx}
-              setSelectedRegion={setSelectedRegion}
-              hoveredRegion={hoveredRegion}
-              setHoveredRegion={setHoveredRegion}
-              timeHorizon={timeHorizon}
-              injectionSeason={injectionSeason}
-              regionsInView={regionsInView}
               colormap={efficiencyColorMap}
               efficiencyColorLimits={efficiencyColorLimits}
             />

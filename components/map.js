@@ -2,27 +2,18 @@ import React, { useMemo } from 'react'
 import { useThemeUI } from 'theme-ui'
 import { Map, Line, Raster } from '@carbonplan/maps'
 import Regions from './regions'
+import useStore from '../store/store'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
-const MapWrapper = ({
-  children,
-  setLoading,
-  hoveredRegion,
-  setHoveredRegion,
-  selectedRegion,
-  setSelectedRegion,
-  elapsedTime,
-  injectionSeason,
-  setRegionsInView,
-  timeHorizon,
-  colormap,
-  colorLimits,
-}) => {
+const MapWrapper = ({ children, setLoading, colormap, colorLimits }) => {
+  const { selectedRegion, elapsedTime, injectionSeason } = useStore()
   const { theme } = useThemeUI()
   const injectionDate = useMemo(() => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
   }, [injectionSeason])
+
+  // switch to usestore zustand
 
   return (
     <Map zoom={0} center={[0, 0]} debug={false} setLoading={setLoading}>
@@ -47,16 +38,7 @@ const MapWrapper = ({
           }}
         />
       ) : (
-        <Regions
-          hoveredRegion={hoveredRegion}
-          setHoveredRegion={setHoveredRegion}
-          setSelectedRegion={setSelectedRegion}
-          setRegionsInView={setRegionsInView}
-          timeHorizon={timeHorizon}
-          injectionSeason={injectionSeason}
-          colormap={colormap}
-          colorLimits={colorLimits}
-        />
+        <Regions colormap={colormap} colorLimits={colorLimits} />
       )}
       {children}
     </Map>

@@ -1,4 +1,5 @@
 import React, { useMemo, useEffect, useState } from 'react'
+import useStore from '../store/store'
 import { Box, Flex } from 'theme-ui'
 import {
   AxisLabel,
@@ -21,17 +22,15 @@ const zarrUrl =
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12
 
-const TimeseriesOverview = ({
-  sx,
-  setSelectedRegion,
-  hoveredRegion,
-  setHoveredRegion,
-  timeHorizon,
-  injectionSeason,
-  regionsInView,
-  colormap,
-  efficiencyColorLimits,
-}) => {
+const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
+  const {
+    setSelectedRegion,
+    hoveredRegion,
+    setHoveredRegion,
+    timeHorizon,
+    injectionSeason,
+    regionsInView,
+  } = useStore()
   const [timeData, setTimeData] = useState([])
   const startYear = 0
   const endYear = startYear + timeHorizon
