@@ -57,18 +57,25 @@ const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
     timeData.forEach((line, index) => {
       if (regionsInView.has(index)) {
         const cutIndex = toMonthsIndex(endYear, startYear)
-        selectedLines.push(line.slice(0, cutIndex + 1))
-        unselectedLines.push(line.slice(cutIndex + 1))
+        selectedLines.push({ id: index, data: line.slice(0, cutIndex + 1) })
+        unselectedLines.push({ id: index, data: line.slice(cutIndex + 1) })
       }
     })
     return { selectedLines, unselectedLines }
   }, [timeData, endYear, regionsInView, toMonthsIndex])
 
-  const renderHoveredLine = () => {
-    if (hoveredRegion === null || !selectedLines[hoveredRegion]?.length) {
+  const hoveredLine = useMemo(() => {
+    if (hoveredRegion === null) {
       return null
     }
-    const color = getColorForValue(selectedLines[hoveredRegion].slice(-1)[0][1])
+    return selectedLines.find((line) => line.id === hoveredRegion)
+  }, [hoveredRegion, selectedLines])
+
+  const renderHoveredLine = () => {
+    if (!hoveredLine) {
+      return null
+    }
+    const color = getColorForValue(hoveredLine.data.slice(-1)[0][1])
 
     return (
       <>
@@ -83,7 +90,7 @@ const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
               cursor: 'pointer',
             },
           }}
-          data={selectedLines[hoveredRegion]}
+          data={hoveredLine.data}
         />
         <Scatter
           sx={{ pointerEvents: 'none' }}
@@ -94,7 +101,7 @@ const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
           data={[
             {
               x: endYear,
-              y: selectedLines[hoveredRegion].slice(-1)[0][1],
+              y: hoveredLine.data.slice(-1)[0][1],
             },
           ]}
         />
@@ -103,11 +110,10 @@ const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
   }
 
   const renderDataBadge = () => {
-    if (hoveredRegion === null || !selectedLines[hoveredRegion]?.length) {
+    if (!hoveredLine) {
       return null
     }
-
-    const lastDataPoint = selectedLines[hoveredRegion].slice(-1)[0]
+    const lastDataPoint = hoveredLine?.data.slice(-1)[0]
     const y = lastDataPoint[1]
     return (
       <Point x={endYear} y={y} align={'center'} width={2}>
@@ -171,25 +177,25 @@ const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
             {selectedLines.map((line, i) => (
               <Line
                 key={i + '-selected'}
-                onClick={() => setSelectedRegion(i)}
-                onMouseOver={() => setHoveredRegion(i)}
+                onClick={() => setSelectedRegion(line.id)}
+                onMouseOver={() => setHoveredRegion(line.id)}
                 onMouseLeave={() => setHoveredRegion(null)}
                 sx={{
-                  stroke: getColorForValue(line?.slice(-1)?.[0]?.[1]),
+                  stroke: getColorForValue(line.data?.slice(-1)?.[0]?.[1]),
                   strokeWidth: 2,
                   pointerEvents: 'visiblePainted',
                   '&:hover': {
                     cursor: 'pointer',
                   },
                 }}
-                data={line}
+                data={line.data}
               />
             ))}
             {unselectedLines.map((line, i) => (
               <Line
                 key={i + '-unselected'}
-                onClick={() => setSelectedRegion(i)}
-                onMouseOver={() => setHoveredRegion(i)}
+                onClick={() => setSelectedRegion(line.id)}
+                onMouseOver={() => setHoveredRegion(line.id)}
                 onMouseLeave={() => setHoveredRegion(null)}
                 sx={{
                   stroke: 'muted',
@@ -199,7 +205,7 @@ const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
                     cursor: 'pointer',
                   },
                 }}
-                data={line}
+                data={line.data}
               />
             ))}
             <Rect x={[endYear, 15]} y={[0, 1]} color='muted' opacity={0.2} />
