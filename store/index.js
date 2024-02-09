@@ -2,22 +2,23 @@ import { create } from 'zustand'
 
 const useStore = create((set) => ({
   expanded: true,
-  setExpanded: (expanded) => set(() => ({ expanded })),
+  setExpanded: (expanded) => set({ expanded }),
 
   selectedRegion: null,
-  setSelectedRegion: (selectedRegion) => set(() => ({ selectedRegion })),
+  setSelectedRegion: (selectedRegion) => set({ selectedRegion }),
 
   hoveredRegion: null,
-  setHoveredRegion: (hoveredRegion) => set(() => ({ hoveredRegion })),
+  setHoveredRegion: (hoveredRegion) => set({ hoveredRegion }),
 
   timeHorizon: 15,
-  setTimeHorizon: (timeHorizon) => set(() => ({ timeHorizon })),
+  setTimeHorizon: (timeHorizon) => set({ timeHorizon }),
 
   elapsedTime: 0,
-  setElapsedTime: (elapsedTime) => set(() => ({ elapsedTime })),
+  setElapsedTime: (elapsedTime) => set({ elapsedTime }),
 
   regionsInView: new Set(),
-  setRegionsInView: (regionsInView) => set(() => ({ regionsInView })),
+  setRegionsInView: (regionsInView) =>
+    set({ regionsInView: new Set(regionsInView) }),
 
   injectionSeason: {
     JAN: true,
@@ -25,7 +26,7 @@ const useStore = create((set) => ({
     JUL: false,
     OCT: false,
   },
-  setInjectionSeason: (injectionSeason) => set(() => ({ injectionSeason })),
+  setInjectionSeason: (injectionSeason) => set({ injectionSeason }),
 }))
 
 export default useStore
