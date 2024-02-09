@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
-import useStore from '../store/store'
+import useStore from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 

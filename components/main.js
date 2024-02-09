@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import useStore from '../store/store'
+import useStore from '../store'
 import { Sidebar } from '@carbonplan/layouts'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import { Colorbar } from '@carbonplan/components'

@@ -1,5 +1,5 @@
 import React from 'react'
-import useStore from '../store/store'
+import useStore from '../store'
 import { Box, Flex } from 'theme-ui'
 import { Badge } from '@carbonplan/components'
 import { SidebarFooter } from '@carbonplan/layouts'

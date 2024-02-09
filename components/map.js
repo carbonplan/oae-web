@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { useThemeUI } from 'theme-ui'
 import { Map, Line, Raster } from '@carbonplan/maps'
 import Regions from './regions'
-import useStore from '../store/store'
+import useStore from '../store'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 

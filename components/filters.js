@@ -1,7 +1,7 @@
 import React from 'react'
 import { Row, Column, Filter, Input } from '@carbonplan/components'
 import { Box } from 'theme-ui'
-import useStore from '../store/store'
+import useStore from '../store'
 
 const Filters = ({ sx }) => {
   const { timeHorizon, setTimeHorizon, injectionSeason, setInjectionSeason } =

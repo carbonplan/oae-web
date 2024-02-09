@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect, useState } from 'react'
-import useStore from '../store/store'
+import useStore from '../store'
 import { Box, Flex } from 'theme-ui'
 import {
   AxisLabel,
