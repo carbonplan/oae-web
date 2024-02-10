@@ -65,7 +65,7 @@ const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
     const selectedLines = []
     const unselectedLines = []
     timeData.forEach((line, index) => {
-      if (regionsInView.has(index)) {
+      if (regionsInView.includes(index)) {
         const cutIndex = toMonthsIndex(endYear, startYear)
         selectedLines.push({ id: index, data: line.slice(0, cutIndex + 1) })
         unselectedLines.push({ id: index, data: line.slice(cutIndex + 1) })
