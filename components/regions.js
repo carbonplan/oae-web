@@ -76,7 +76,7 @@ const Regions = ({ colormap, colorLimits }) => {
       const features = map.queryRenderedFeatures({
         layers: ['regions-fill'],
       })
-      const ids = new Set(features.map((f) => f.properties.polygon_id))
+      const ids = features.map((f) => f.properties.polygon_id)
       setRegionsInView(ids)
     }
   }

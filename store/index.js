@@ -16,9 +16,9 @@ const useStore = create((set) => ({
   elapsedTime: 0,
   setElapsedTime: (elapsedTime) => set({ elapsedTime }),
 
-  regionsInView: [],
+  regionsInView: undefined,
   setRegionsInView: (regionsInView) =>
-    set({ regionsInView: Array.from(new Set(regionsInView)) }),
+    set({ regionsInView: new Set(regionsInView) }),
 
   injectionSeason: {
     JAN: true,
