@@ -1,5 +1,4 @@
 import React, { useMemo, useEffect, useState } from 'react'
-import useStore from '../store'
 import { Box, Flex } from 'theme-ui'
 import {
   AxisLabel,
@@ -15,7 +14,9 @@ import {
 } from '@carbonplan/charts'
 import { Badge, Button } from '@carbonplan/components'
 import { Down } from '@carbonplan/icons'
+
 import { openZarr, getChunk, getTimeSeriesData, loadZarr } from '../utils/zarr'
+import useStore from '../store'
 
 const zarrUrl =
   'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr'
