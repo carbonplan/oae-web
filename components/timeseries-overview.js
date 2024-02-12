@@ -1,6 +1,5 @@
 import React, { useMemo, useEffect, useState } from 'react'
 import useStore from '../store'
-import { useShallow } from 'zustand/react/shallow'
 import { Box, Flex } from 'theme-ui'
 import {
   AxisLabel,
@@ -24,23 +23,12 @@ const zarrUrl =
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12
 
 const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
-  const [
-    setSelectedRegion,
-    hoveredRegion,
-    setHoveredRegion,
-    timeHorizon,
-    injectionSeason,
-    regionsInView,
-  ] = useStore(
-    useShallow((state) => [
-      state.setSelectedRegion,
-      state.hoveredRegion,
-      state.setHoveredRegion,
-      state.timeHorizon,
-      state.injectionSeason,
-      state.regionsInView,
-    ])
-  )
+  const setSelectedRegion = useStore((state) => state.setSelectedRegion)
+  const hoveredRegion = useStore((state) => state.hoveredRegion)
+  const setHoveredRegion = useStore((state) => state.setHoveredRegion)
+  const timeHorizon = useStore((state) => state.timeHorizon)
+  const injectionSeason = useStore((state) => state.injectionSeason)
+  const regionsInView = useStore((state) => state.regionsInView)
   const [timeData, setTimeData] = useState([])
   const startYear = 0
   const endYear = startYear + timeHorizon

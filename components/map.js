@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react'
 import useStore from '../store'
-import { useShallow } from 'zustand/react/shallow'
 import { useThemeUI } from 'theme-ui'
 import { Map, Line, Raster } from '@carbonplan/maps'
 import Regions from './regions'
@@ -8,13 +7,9 @@ import Regions from './regions'
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
 const MapWrapper = ({ children, setLoading, colormap, colorLimits }) => {
-  const [selectedRegion, elapsedTime, injectionSeason] = useStore(
-    useShallow((state) => [
-      state.selectedRegion,
-      state.elapsedTime,
-      state.injectionSeason,
-    ])
-  )
+  const selectedRegion = useStore((state) => state.selectedRegion)
+  const elapsedTime = useStore((state) => state.elapsedTime)
+  const injectionSeason = useStore((state) => state.injectionSeason)
   const { theme } = useThemeUI()
   const injectionDate = useMemo(() => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1

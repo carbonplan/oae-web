@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import useStore from '../store'
-import { useShallow } from 'zustand/react/shallow'
 import { Sidebar } from '@carbonplan/layouts'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import { Colorbar } from '@carbonplan/components'
@@ -33,13 +32,9 @@ const sx = {
 }
 
 const Main = () => {
-  const [expanded, setExpanded, selectedRegion] = useStore(
-    useShallow((state) => [
-      state.expanded,
-      state.setExpanded,
-      state.selectedRegion,
-    ])
-  )
+  const expanded = useStore((state) => state.expanded)
+  const setExpanded = useStore((state) => state.setExpanded)
+  const selectedRegion = useStore((state) => state.selectedRegion)
 
   const efficiencyColorMap = useThemedColormap('warm', { format: 'hex' }) || []
   const efficiencyColorLimits = [0.65, 0.85]
