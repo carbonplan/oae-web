@@ -1,17 +1,15 @@
 import { useEffect, useMemo, useRef } from 'react'
+import useStore from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 
-const Regions = ({
-  hoveredRegion,
-  setHoveredRegion,
-  setSelectedRegion,
-  setRegionsInView,
-  timeHorizon,
-  injectionSeason,
-  colormap,
-  colorLimits,
-}) => {
+const Regions = ({ colormap, colorLimits }) => {
+  const hoveredRegion = useStore((state) => state.hoveredRegion)
+  const setHoveredRegion = useStore((state) => state.setHoveredRegion)
+  const setSelectedRegion = useStore((state) => state.setSelectedRegion)
+  const setRegionsInView = useStore((state) => state.setRegionsInView)
+  const timeHorizon = useStore((state) => state.timeHorizon)
+  const injectionSeason = useStore((state) => state.injectionSeason)
   const { map } = useMapbox()
   const { theme } = useThemeUI()
   const hoveredRegionRef = useRef(hoveredRegion)
@@ -66,7 +64,7 @@ const Regions = ({
       const features = map.queryRenderedFeatures({
         layers: ['regions-fill'],
       })
-      const ids = new Set(features.map((f) => f.properties.polygon_id))
+      const ids = features.map((f) => f.properties.polygon_id)
       setRegionsInView(ids)
     }
   }

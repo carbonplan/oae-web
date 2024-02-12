@@ -1,14 +1,14 @@
 import React from 'react'
+import useStore from '../store'
 import { Row, Column, Filter, Input } from '@carbonplan/components'
 import { Box } from 'theme-ui'
 
-const Filters = ({
-  sx,
-  timeHorizon,
-  setTimeHorizon,
-  injectionSeason,
-  setInjectionSeason,
-}) => {
+const Filters = ({ sx }) => {
+  const timeHorizon = useStore((state) => state.timeHorizon)
+  const setTimeHorizon = useStore((state) => state.setTimeHorizon)
+  const injectionSeason = useStore((state) => state.injectionSeason)
+  const setInjectionSeason = useStore((state) => state.setInjectionSeason)
+
   return (
     <>
       <Box sx={sx.heading}>injection</Box>

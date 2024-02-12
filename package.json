@@ -37,7 +37,8 @@
     "react-animate-height": "^3.2.3",
     "react-dom": "^18.2.0",
     "theme-ui": "^0.16.1",
-    "zarr-js": "^3.3.0"
+    "zarr-js": "^3.3.0",
+    "zustand": "^4.5.0"
   },
   "devDependencies": {
     "prettier": "2.3.2"

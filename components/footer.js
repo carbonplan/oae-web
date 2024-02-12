@@ -1,4 +1,6 @@
 import React from 'react'
+import useStore from '../store'
+import { useShallow } from 'zustand/react/shallow'
 import { Box, Flex } from 'theme-ui'
 import { Badge } from '@carbonplan/components'
 import { SidebarFooter } from '@carbonplan/layouts'
@@ -6,16 +8,27 @@ import AnimateHeight from 'react-animate-height'
 import { X } from '@carbonplan/icons'
 import RegionDetail from './region-detail'
 
-const RegionFooter = ({
-  hoveredRegion,
-  setHoveredRegion,
-  selectedRegion,
-  setSelectedRegion,
-  elapsedTime,
-  setElapsedTime,
-  timeHorizon,
-  sx,
-}) => {
+const RegionFooter = ({ sx }) => {
+  const [
+    hoveredRegion,
+    setHoveredRegion,
+    selectedRegion,
+    setSelectedRegion,
+    elapsedTime,
+    setElapsedTime,
+    timeHorizon,
+  ] = useStore(
+    useShallow((state) => [
+      state.hoveredRegion,
+      state.setHoveredRegion,
+      state.selectedRegion,
+      state.setSelectedRegion,
+      state.elapsedTime,
+      state.setElapsedTime,
+      state.timeHorizon,
+    ])
+  )
+
   const handleClear = () => {
     setSelectedRegion(null)
     setHoveredRegion(null)
