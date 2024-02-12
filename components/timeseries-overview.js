@@ -22,6 +22,13 @@ const zarrUrl =
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12
 
+const INJECTION_SEASON_TO_CHUNK_INDEX = {
+  JAN: 0,
+  APR: 0, // not present; temporarily show JAN data
+  JUL: 0, // not present; temporarily show JAN data
+  OCT: 1, // temporarily stored in second chunk
+}
+
 const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
   const hoveredRegion = useStore((state) => state.hoveredRegion)
@@ -39,9 +46,12 @@ const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
       const idZarr = await loadZarr(zarrUrl, 'polygon_id')
       const ids = idZarr.data
       const getter = await openZarr(zarrUrl, variable)
-      const injectionDate =
-        Object.values(injectionSeason).findIndex((value) => value) + 1
-      const injectionChunkIndex = injectionDate - 1
+      const season = Object.keys(injectionSeason).find(
+        (k) => injectionSeason[k]
+      )
+      // const injectionChunkIndex =
+      //   Object.values(injectionSeason).findIndex((value) => value)
+      const injectionChunkIndex = INJECTION_SEASON_TO_CHUNK_INDEX[season]
       const raw = await getChunk(getter, [0, injectionChunkIndex, 0])
       const timeSeriesData = getTimeSeriesData(raw, ids, startYear)
       setTimeData(timeSeriesData)
