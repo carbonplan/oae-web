@@ -2,6 +2,7 @@ import React from 'react'
 import { Box, Divider } from 'theme-ui'
 import { Select } from '@carbonplan/components'
 import TimeSlider from './time-slider'
+import { SidebarDivider } from '@carbonplan/layouts'
 
 const RegionDetail = ({ sx }) => {
   return (
@@ -24,7 +25,10 @@ const RegionDetail = ({ sx }) => {
         <option>something</option>
         <option>something</option>
       </Select>
-      <TimeSlider />
+      <SidebarDivider sx={{ mt: 4, mb: 3 }} />
+      <Box sx={{ mb: [-3, -3, -3, -2] }}>
+        <TimeSlider />
+      </Box>
     </>
   )
 }

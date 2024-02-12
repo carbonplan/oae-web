@@ -1,10 +1,11 @@
 import React from 'react'
-import useStore from '../store'
 import { Box, Flex } from 'theme-ui'
 import { Badge } from '@carbonplan/components'
 import { SidebarFooter } from '@carbonplan/layouts'
 import AnimateHeight from 'react-animate-height'
 import { X } from '@carbonplan/icons'
+
+import useStore from '../store'
 import RegionDetail from './region-detail'
 
 const RegionFooter = ({ sx }) => {
