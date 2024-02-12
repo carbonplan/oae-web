@@ -9,7 +9,7 @@ import MapWrapper from './map'
 import RegionFooter from './footer'
 import Filters from './filters'
 import TimeseriesOverview from './timeseries-overview'
-import CworthyLogo from './cworthy-logo'
+import CWorthyLogo from './cworthy-logo'
 
 const sx = {
   heading: {
@@ -107,7 +107,7 @@ const Main = () => {
               explainer article for more details about the model.
             </Box>
             <Box sx={{ fontSize: 2 }}>Created in collaboration with</Box>
-            <CworthyLogo />
+            <CWorthyLogo />
             <Divider sx={{ mt: 4, mb: 5 }} />
             <Filters sx={sx} />
             <Divider sx={{ mt: 4, mb: 5 }} />

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Button } from 'theme-ui'
 
-const CworthyLogo = () => {
+const CWorthyLogo = () => {
   return (
     <Box
       as={'svg'}
@@ -34,4 +34,4 @@ const CworthyLogo = () => {
   )
 }
 
-export default CworthyLogo
+export default CWorthyLogo
