@@ -11,6 +11,13 @@ const sx = {
     fontSize: [1],
   },
 }
+
+const OFFSETS = {
+  JAN: 0,
+  APR: 3,
+  JUL: 6,
+  OCT: 9,
+}
 const UnitSlider = ({
   value,
   range,
@@ -81,6 +88,9 @@ const UnitSlider = ({
 const TimeSlider = ({}) => {
   const elapsedTime = useStore((state) => state.elapsedTime)
   const setElapsedTime = useStore((state) => state.setElapsedTime)
+  const injectionSeason = useStore((state) =>
+    Object.keys(state.injectionSeason).find((k) => state.injectionSeason[k])
+  )
 
   const handleMonthChange = useCallback(
     (month) => {
@@ -105,9 +115,12 @@ const TimeSlider = ({}) => {
         range={[0, 11]}
         onChange={handleMonthChange}
         formatLabel={(d) =>
-          new Date(2024, d, 1).toLocaleString('default', {
-            month: 'short',
-          })
+          new Date(2024, d + OFFSETS[injectionSeason], 1).toLocaleString(
+            'default',
+            {
+              month: 'short',
+            }
+          )
         }
         showValue
       />
@@ -115,6 +128,7 @@ const TimeSlider = ({}) => {
         value={Math.floor(elapsedTime / 12)}
         range={[0, 14]}
         onChange={handleYearChange}
+        formatLabel={(d) => `Year ${d + 1}`}
         debounce
         showValue
       />
