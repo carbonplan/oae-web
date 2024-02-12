@@ -6,10 +6,13 @@ import Regions from './regions'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
-const MapWrapper = ({ children, setLoading, colormap, colorLimits }) => {
+const MapWrapper = ({ children, setLoading }) => {
   const selectedRegion = useStore((state) => state.selectedRegion)
   const elapsedTime = useStore((state) => state.elapsedTime)
   const injectionSeason = useStore((state) => state.injectionSeason)
+  const colormap = useStore((state) => state.colormap)
+  const colorLimits = useStore((state) => state.currentVariable.colorLimits)
+
   const { theme } = useThemeUI()
   const injectionDate = useMemo(() => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
@@ -38,7 +41,7 @@ const MapWrapper = ({ children, setLoading, colormap, colorLimits }) => {
           }}
         />
       ) : (
-        <Regions colormap={colormap} colorLimits={colorLimits} />
+        <Regions />
       )}
       {children}
     </Map>

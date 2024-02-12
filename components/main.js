@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import useStore from '../store'
+import React, { useEffect } from 'react'
+import useStore, { variables } from '../store'
 import { Sidebar } from '@carbonplan/layouts'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import { Colorbar } from '@carbonplan/components'
@@ -36,24 +36,23 @@ const Main = () => {
   const expanded = useStore((state) => state.expanded)
   const setExpanded = useStore((state) => state.setExpanded)
   const selectedRegion = useStore((state) => state.selectedRegion)
+  const currentVariable = useStore((state) => state.currentVariable)
+  const setCurrentVariable = useStore((state) => state.setCurrentVariable)
+  const colormap = useStore((state) => state.colormap)
+  const setColormap = useStore((state) => state.setColormap)
 
-  const efficiencyColorMap = useThemedColormap('warm', { format: 'hex' }) || []
-  const efficiencyColorLimits = [0.65, 0.85]
-  const regionDetailColorMap = useThemedColormap('cool') || []
-  const regionColorLimits = [0, 4000]
-  const [currentColormap, setCurrentColormap] = useState(efficiencyColorMap)
-  const [currentColorLimits, setCurrentColorLimits] = useState(
-    efficiencyColorLimits
-  )
+  const generatedColormap = useThemedColormap(currentVariable.colormap)
 
   useEffect(() => {
-    if (selectedRegion !== null) {
-      setCurrentColormap(regionDetailColorMap)
-      setCurrentColorLimits(regionColorLimits)
-    } else {
-      setCurrentColormap(efficiencyColorMap)
-      setCurrentColorLimits(efficiencyColorLimits)
-    }
+    setColormap(generatedColormap)
+  }, [setColormap, generatedColormap])
+
+  useEffect(() => {
+    const detailCondition = selectedRegion !== null
+    const newVariable = Object.keys(variables).find(
+      (variable) => variables[variable].detail === detailCondition
+    )
+    setCurrentVariable(newVariable)
   }, [selectedRegion])
 
   return (
@@ -67,7 +66,7 @@ const Main = () => {
           width: '100%',
         }}
       >
-        <MapWrapper colormap={currentColormap} colorLimits={currentColorLimits}>
+        <MapWrapper>
           <Sidebar
             expanded={expanded}
             setExpanded={setExpanded}
@@ -111,15 +110,12 @@ const Main = () => {
             <Divider sx={{ mt: 4, mb: 5 }} />
             <Filters sx={sx} />
             <Divider sx={{ mt: 4, mb: 5 }} />
-            <TimeseriesOverview
-              sx={sx}
-              colormap={efficiencyColorMap}
-              efficiencyColorLimits={efficiencyColorLimits}
-            />
+            <TimeseriesOverview sx={sx} />
           </Sidebar>
           <Colorbar
-            colormap={currentColormap}
-            clim={currentColorLimits}
+            colormap={colormap}
+            clim={currentVariable.colorLimits}
+            label={currentVariable.label}
             horizontal
             width={'100%'}
             sx={{

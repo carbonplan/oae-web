@@ -3,13 +3,16 @@ import { Box, Divider } from 'theme-ui'
 import { Select } from '@carbonplan/components'
 import TimeSlider from './time-slider'
 import { SidebarDivider } from '@carbonplan/layouts'
+import useStore, { variables } from '../store'
 
 const RegionDetail = ({ sx }) => {
+  const setCurrentVariable = useStore((state) => state.setCurrentVariable)
   return (
     <>
       <Divider sx={{ mt: 4, mb: 5 }} />
       <Box sx={sx.heading}>Variables</Box>
       <Select
+        onChange={(e) => setCurrentVariable(e.target.value)}
         size='xs'
         sx={{
           width: '100%',
@@ -21,9 +24,13 @@ const RegionDetail = ({ sx }) => {
           mt: 2,
         }}
       >
-        <option>Alkalinity</option>
-        <option>something</option>
-        <option>something</option>
+        {Object.keys(variables)
+          .filter((variable) => variables[variable].detail)
+          .map((variable) => (
+            <option key={variable} value={variable}>
+              {variables[variable].label}
+            </option>
+          ))}
       </Select>
       <SidebarDivider sx={{ mt: 4, mb: 3 }} />
       <Box sx={{ mb: [-3, -3, -3, -2] }}>
