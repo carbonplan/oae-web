@@ -1,8 +1,10 @@
 import React from 'react'
 import { Box, Divider } from 'theme-ui'
-import { Select, Slider } from '@carbonplan/components'
+import { Select } from '@carbonplan/components'
+import TimeSlider from './time-slider'
+import { SidebarDivider } from '@carbonplan/layouts'
 
-const RegionDetail = ({ sx, elapsedTime, setElapsedTime, timeHorizon }) => {
+const RegionDetail = ({ sx }) => {
   return (
     <>
       <Divider sx={{ mt: 4, mb: 5 }} />
@@ -23,14 +25,10 @@ const RegionDetail = ({ sx, elapsedTime, setElapsedTime, timeHorizon }) => {
         <option>something</option>
         <option>something</option>
       </Select>
-      <Slider
-        sx={{ mt: 4 }}
-        value={elapsedTime}
-        min={0}
-        max={179}
-        step={1}
-        onChange={(e) => setElapsedTime(parseFloat(e.target.value))}
-      />
+      <SidebarDivider sx={{ mt: 4, mb: 3 }} />
+      <Box sx={{ mb: [-3, -3, -3, -2] }}>
+        <TimeSlider />
+      </Box>
     </>
   )
 }
