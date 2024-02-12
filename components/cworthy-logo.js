@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button } from 'theme-ui'
+import { Box } from 'theme-ui'
 
 const CWorthyLogo = () => {
   return (
