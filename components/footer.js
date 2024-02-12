@@ -12,9 +12,6 @@ const RegionFooter = ({ sx }) => {
   const setHoveredRegion = useStore((state) => state.setHoveredRegion)
   const selectedRegion = useStore((state) => state.selectedRegion)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
-  const elapsedTime = useStore((state) => state.elapsedTime)
-  const setElapsedTime = useStore((state) => state.setElapsedTime)
-  const timeHorizon = useStore((state) => state.timeHorizon)
 
   const handleClear = () => {
     setSelectedRegion(null)
@@ -90,12 +87,7 @@ const RegionFooter = ({ sx }) => {
             )}
           </Box>
         </Flex>
-        <RegionDetail
-          sx={sx}
-          elapsedTime={elapsedTime}
-          timeHorizon={timeHorizon}
-          setElapsedTime={setElapsedTime}
-        />
+        <RegionDetail sx={sx} />
       </AnimateHeight>
     </SidebarFooter>
   )
