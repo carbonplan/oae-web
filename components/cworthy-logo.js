@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box } from 'theme-ui'
+import { Box, Button } from 'theme-ui'
 
 const CworthyLogo = () => {
   return (
@@ -10,7 +10,9 @@ const CworthyLogo = () => {
         fill: 'primary',
         width: 125,
         mt: '10px',
+        cursor: 'pointer',
       }}
+      onClick={() => window.open('https://cworthy.org/', '_blank')}
     >
       <path d='m0,.56c9.36.07,18.72.13,28.08.2,1.27,0,2.55,0,4.05,0v11.08H12.73v114.72h19.8v11.45H0V.56Z' />
       <path d='m105.33,138v-11.26h19.8V12.02h-19.4V.96h31.94c0,1.24,0,2.39,0,3.55,0,43.32,0,86.63,0,129.95,0,1.18.12,2.37.19,3.55h-32.54Z' />
