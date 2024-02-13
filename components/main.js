@@ -116,6 +116,7 @@ const Main = () => {
             colormap={colormap}
             clim={currentVariable.colorLimits}
             label={currentVariable.label}
+            units={currentVariable.unit}
             horizontal
             width={'100%'}
             sx={{
