@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import useStore from '../store'
 import { Sidebar } from '@carbonplan/layouts'
 import { useThemedColormap } from '@carbonplan/colormaps'
-import { Colorbar } from '@carbonplan/components'
 import { Box, Divider } from 'theme-ui'
 import Header from './header'
 import MapWrapper from './map'
@@ -37,25 +36,6 @@ const Main = () => {
   const setExpanded = useStore((state) => state.setExpanded)
   const selectedRegion = useStore((state) => state.selectedRegion)
 
-  const efficiencyColorMap = useThemedColormap('warm', { format: 'hex' }) || []
-  const efficiencyColorLimits = [0.65, 0.85]
-  const regionDetailColorMap = useThemedColormap('cool') || []
-  const regionColorLimits = [0, 4000]
-  const [currentColormap, setCurrentColormap] = useState(efficiencyColorMap)
-  const [currentColorLimits, setCurrentColorLimits] = useState(
-    efficiencyColorLimits
-  )
-
-  useEffect(() => {
-    if (selectedRegion !== null) {
-      setCurrentColormap(regionDetailColorMap)
-      setCurrentColorLimits(regionColorLimits)
-    } else {
-      setCurrentColormap(efficiencyColorMap)
-      setCurrentColorLimits(efficiencyColorLimits)
-    }
-  }, [selectedRegion])
-
   return (
     <>
       <Header expanded={expanded} setExpanded={setExpanded} />
@@ -67,7 +47,7 @@ const Main = () => {
           width: '100%',
         }}
       >
-        <MapWrapper colormap={currentColormap} colorLimits={currentColorLimits}>
+        <MapWrapper>
           <Sidebar
             expanded={expanded}
             setExpanded={setExpanded}
@@ -111,24 +91,8 @@ const Main = () => {
             <Divider sx={{ mt: 4, mb: 5 }} />
             <Filters sx={sx} />
             <Divider sx={{ mt: 4, mb: 5 }} />
-            <TimeseriesOverview
-              sx={sx}
-              colormap={efficiencyColorMap}
-              efficiencyColorLimits={efficiencyColorLimits}
-            />
+            <TimeseriesOverview sx={sx} />
           </Sidebar>
-          <Colorbar
-            colormap={currentColormap}
-            clim={currentColorLimits}
-            horizontal
-            width={'100%'}
-            sx={{
-              width: '30%',
-              position: 'absolute',
-              bottom: 3,
-              right: 3,
-            }}
-          />
         </MapWrapper>
       </Box>
     </>

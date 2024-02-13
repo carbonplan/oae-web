@@ -3,14 +3,21 @@ import useStore from '../store'
 import { useThemeUI } from 'theme-ui'
 import { Map, Line, Raster } from '@carbonplan/maps'
 import Regions from './regions'
+import { Colorbar } from '@carbonplan/components'
+import { useThemedColormap } from '@carbonplan/colormaps'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
-const MapWrapper = ({ children, setLoading, colormap, colorLimits }) => {
+const MapWrapper = ({ children, setLoading }) => {
   const selectedRegion = useStore((state) => state.selectedRegion)
   const elapsedTime = useStore((state) => state.elapsedTime)
   const injectionSeason = useStore((state) => state.injectionSeason)
+  const currentVariable = useStore((state) => state.currentVariable)
+
+  const colormap = useThemedColormap(currentVariable.colormap)
+
   const { theme } = useThemeUI()
+
   const injectionDate = useMemo(() => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
   }, [injectionSeason])
@@ -28,7 +35,7 @@ const MapWrapper = ({ children, setLoading, colormap, colorLimits }) => {
             'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store2.zarr'
           }
           colormap={colormap}
-          clim={colorLimits}
+          clim={currentVariable.colorLimits}
           mode={'texture'}
           variable={'ALK'}
           selector={{
@@ -38,9 +45,23 @@ const MapWrapper = ({ children, setLoading, colormap, colorLimits }) => {
           }}
         />
       ) : (
-        <Regions colormap={colormap} colorLimits={colorLimits} />
+        <Regions />
       )}
       {children}
+      <Colorbar
+        colormap={colormap}
+        clim={currentVariable.colorLimits}
+        label={currentVariable.label}
+        units={currentVariable.unit}
+        horizontal
+        width={'100%'}
+        sx={{
+          width: '30%',
+          position: 'absolute',
+          bottom: 3,
+          right: 3,
+        }}
+      />
     </Map>
   )
 }

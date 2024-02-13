@@ -1,15 +1,20 @@
 import { useEffect, useMemo, useRef } from 'react'
-import useStore from '../store'
+import useStore, { overviewVariable } from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
+import { useThemedColormap } from '@carbonplan/colormaps'
 
-const Regions = ({ colormap, colorLimits }) => {
+const Regions = () => {
   const hoveredRegion = useStore((state) => state.hoveredRegion)
   const setHoveredRegion = useStore((state) => state.setHoveredRegion)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
   const setRegionsInView = useStore((state) => state.setRegionsInView)
   const timeHorizon = useStore((state) => state.timeHorizon)
   const injectionSeason = useStore((state) => state.injectionSeason)
+
+  const colormap = useThemedColormap(overviewVariable.colormap)
+  const colorLimits = overviewVariable.colorLimits
+
   const { map } = useMapbox()
   const { theme } = useThemeUI()
   const hoveredRegionRef = useRef(hoveredRegion)

@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect, useState } from 'react'
-import useStore from '../store'
+import useStore, { overviewVariable } from '../store'
 import { Box, Flex } from 'theme-ui'
 import {
   AxisLabel,
@@ -16,19 +16,22 @@ import {
 import { Badge, Button } from '@carbonplan/components'
 import { Down } from '@carbonplan/icons'
 import { openZarr, getChunk, getTimeSeriesData, loadZarr } from '../utils/zarr'
+import { useThemedColormap } from '@carbonplan/colormaps'
 
 const zarrUrl =
   'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12
 
-const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
+const TimeseriesOverview = ({ sx }) => {
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
   const hoveredRegion = useStore((state) => state.hoveredRegion)
   const setHoveredRegion = useStore((state) => state.setHoveredRegion)
   const timeHorizon = useStore((state) => state.timeHorizon)
   const injectionSeason = useStore((state) => state.injectionSeason)
   const regionsInView = useStore((state) => state.regionsInView)
+  const colormap = useThemedColormap(overviewVariable?.colormap)
+  const colorLimits = overviewVariable.colorLimits
   const [timeData, setTimeData] = useState([])
   const startYear = 0
   const endYear = startYear + timeHorizon
@@ -131,8 +134,7 @@ const TimeseriesOverview = ({ sx, colormap, efficiencyColorLimits }) => {
 
   const getColorForValue = (value) => {
     let scaledValue =
-      (value - efficiencyColorLimits[0]) /
-      (efficiencyColorLimits[1] - efficiencyColorLimits[0])
+      (value - colorLimits[0]) / (colorLimits[1] - colorLimits[0])
     scaledValue = Math.max(0, Math.min(1, scaledValue))
     const index = Math.floor(scaledValue * (colormap.length - 1))
     if (!colormap[index]) {
