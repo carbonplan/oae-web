@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect, useState } from 'react'
-import useStore, { variables } from '../store'
+import useStore, { overviewVariable } from '../store'
 import { Box, Flex } from 'theme-ui'
 import {
   AxisLabel,
@@ -30,9 +30,6 @@ const TimeseriesOverview = ({ sx }) => {
   const timeHorizon = useStore((state) => state.timeHorizon)
   const injectionSeason = useStore((state) => state.injectionSeason)
   const regionsInView = useStore((state) => state.regionsInView)
-  const overviewVariable = Object.values(variables).find(
-    (variable) => !variable.detail
-  )
   const colormap = useThemedColormap(overviewVariable?.colormap)
   const colorLimits = overviewVariable.colorLimits
   const [timeData, setTimeData] = useState([])

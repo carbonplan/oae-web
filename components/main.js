@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react'
-import useStore, { variables } from '../store'
+import React from 'react'
+import useStore from '../store'
 import { Sidebar } from '@carbonplan/layouts'
 import { useThemedColormap } from '@carbonplan/colormaps'
-import { Colorbar } from '@carbonplan/components'
 import { Box, Divider } from 'theme-ui'
 import Header from './header'
 import MapWrapper from './map'
@@ -36,24 +35,6 @@ const Main = () => {
   const expanded = useStore((state) => state.expanded)
   const setExpanded = useStore((state) => state.setExpanded)
   const selectedRegion = useStore((state) => state.selectedRegion)
-  const currentVariable = useStore((state) => state.currentVariable)
-  const setCurrentVariable = useStore((state) => state.setCurrentVariable)
-  const colormap = useStore((state) => state.colormap)
-  const setColormap = useStore((state) => state.setColormap)
-
-  const generatedColormap = useThemedColormap(currentVariable.colormap)
-
-  useEffect(() => {
-    setColormap(generatedColormap)
-  }, [setColormap, generatedColormap])
-
-  useEffect(() => {
-    const detailCondition = selectedRegion !== null
-    const newVariable = Object.keys(variables).find(
-      (variable) => variables[variable].detail === detailCondition
-    )
-    setCurrentVariable(newVariable)
-  }, [selectedRegion])
 
   return (
     <>
@@ -112,20 +93,6 @@ const Main = () => {
             <Divider sx={{ mt: 4, mb: 5 }} />
             <TimeseriesOverview sx={sx} />
           </Sidebar>
-          <Colorbar
-            colormap={colormap}
-            clim={currentVariable.colorLimits}
-            label={currentVariable.label}
-            units={currentVariable.unit}
-            horizontal
-            width={'100%'}
-            sx={{
-              width: '30%',
-              position: 'absolute',
-              bottom: 3,
-              right: 3,
-            }}
-          />
         </MapWrapper>
       </Box>
     </>

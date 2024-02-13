@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
-import useStore, { variables } from '../store'
+import useStore, { overviewVariable } from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
@@ -12,12 +12,8 @@ const Regions = () => {
   const timeHorizon = useStore((state) => state.timeHorizon)
   const injectionSeason = useStore((state) => state.injectionSeason)
 
-  // always use the first variable that doesn't have a detail view
-  const overviewVariable = Object.values(variables).find(
-    (variable) => !variable.detail
-  )
-  const colormap = useThemedColormap(overviewVariable?.colormap)
-  const colorLimits = overviewVariable?.colorLimits
+  const colormap = useThemedColormap(overviewVariable.colormap)
+  const colorLimits = overviewVariable.colorLimits
 
   const { map } = useMapbox()
   const { theme } = useThemeUI()

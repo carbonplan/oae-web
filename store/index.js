@@ -1,53 +1,53 @@
 import { create } from 'zustand'
 
-export const variables = {
-  EFFICIENCY: {
-    colorLimits: [0.65, 0.85],
-    colormap: 'warm',
-    label: 'Efficiency',
-    unit: '',
-    description: 'tk',
-    detail: false,
-  },
-  ALK: {
+export const overviewVariable = {
+  key: 'EFFICIENCY',
+  colorLimits: [0.65, 0.85],
+  colormap: 'warm',
+  label: 'Efficiency',
+  unit: '',
+  description: 'tk',
+}
+
+export const variables = [
+  {
+    key: 'ALK',
     colorLimits: [0, 4000],
     colormap: 'warm',
     label: 'Alkalinity',
     unit: 'unit',
     description: 'tk',
-    detail: true,
   },
-  ALK_ALT_CO2: {
+  {
+    key: 'ALK_ALT_CO2',
     colorLimits: [0, 4000],
     colormap: 'cool',
     label: 'Alkalinity',
     unit: 'unit',
     description: 'tk',
-    detail: true,
   },
-  DIC: {
+  {
+    key: 'DIC',
     colorLimits: [0, 4000],
     colormap: 'teals',
     label: 'DIC',
     unit: 'unit',
     description: 'tk',
-    detail: true,
   },
-}
+]
 
 const useStore = create((set) => ({
   expanded: true,
   setExpanded: (expanded) => set({ expanded }),
 
-  currentVariable: variables.EFFICIENCY,
-  setCurrentVariable: (variableKey) =>
-    set({ currentVariable: variables[variableKey] }),
-
-  colormap: undefined,
-  setColormap: (colormap) => set({ colormap }),
+  currentVariable: overviewVariable,
+  setCurrentVariable: (currentVariable) => set({ currentVariable }),
 
   selectedRegion: null,
-  setSelectedRegion: (selectedRegion) => set({ selectedRegion }),
+  setSelectedRegion: (selectedRegion) =>
+    selectedRegion !== null
+      ? set({ selectedRegion, currentVariable: variables[0] })
+      : set({ selectedRegion, currentVariable: overviewVariable }),
 
   hoveredRegion: null,
   setHoveredRegion: (hoveredRegion) => set({ hoveredRegion }),
