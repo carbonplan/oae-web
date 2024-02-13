@@ -6,6 +6,7 @@ import { SidebarDivider } from '@carbonplan/layouts'
 import useStore, { variables } from '../store'
 
 const RegionDetail = ({ sx }) => {
+  const currentVariable = useStore((state) => state.currentVariable)
   const setCurrentVariable = useStore((state) => state.setCurrentVariable)
   return (
     <>
@@ -13,6 +14,7 @@ const RegionDetail = ({ sx }) => {
       <Box sx={sx.heading}>Variables</Box>
       <Select
         onChange={(e) => setCurrentVariable(e.target.value)}
+        value={currentVariable}
         size='xs'
         sx={{
           width: '100%',
