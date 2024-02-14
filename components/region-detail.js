@@ -19,7 +19,7 @@ const RegionDetail = ({ sx }) => {
   const colormap = useThemedColormap(currentVariable?.colormap)
 
   const toLineData = useMemo(() => {
-    if (!regionData || !currentVariable) return []
+    if (!currentVariable || !regionData?.[currentVariable.key]) return []
     const averages = Object.values(regionData[currentVariable.key]).map(
       (data, index) => {
         const { sum, count } = data.reduce(

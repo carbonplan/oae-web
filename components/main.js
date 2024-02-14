@@ -6,7 +6,6 @@ import Header from './header'
 import MapWrapper from './map'
 import RegionFooter from './footer'
 import Filters from './filters'
-import Timeseries from './timeseries'
 import CWorthyLogo from './cworthy-logo'
 import OverviewChart from './overview-chart'
 
@@ -35,7 +34,6 @@ const Main = () => {
   const expanded = useStore((state) => state.expanded)
   const setExpanded = useStore((state) => state.setExpanded)
   const selectedRegion = useStore((state) => state.selectedRegion)
-  const timeHorizon = useStore((state) => state.timeHorizon)
 
   return (
     <>
@@ -92,17 +90,6 @@ const Main = () => {
             <Divider sx={{ mt: 4, mb: 5 }} />
             <Filters sx={sx} />
             <Divider sx={{ mt: 4, mb: 5 }} />
-            {/* <Timeseries
-              sx={sx}
-              startYear={0}
-              endYear={timeHorizon}
-              timeData={timeData}
-              colormap={colormap}
-              colorLimits={colorLimits}
-              hoveredRegion={hoveredRegion}
-              setSelectedRegion={setSelectedRegion}
-              setHoveredRegion={setHoveredRegion}
-            /> */}
             <OverviewChart sx={sx} />
           </Sidebar>
         </MapWrapper>

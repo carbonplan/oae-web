@@ -26,8 +26,6 @@ const Timeseries = ({
   handleHover,
 }) => {
   const { selectedLines, unselectedLines, hoveredLine } = timeData
-  console.log('selectedLines', selectedLines)
-  console.log('unselectedLines', unselectedLines)
 
   const renderHoveredLine = () => {
     if (!hoveredLine) {
