@@ -105,13 +105,14 @@ const RegionDetail = ({ sx }) => {
         />
       </Box>
       <AnimateHeight duration={500} height={showRegionPicker ? 'auto' : 0}>
-        <Box sx={{ pt: 4 }}>
-          Select a region from the map to view its time series
-        </Box>
         <Timeseries
           endYear={timeHorizon}
           xLimits={[0, 15]}
           yLimits={currentVariable.colorLimits}
+          yLabels={{
+            title: currentVariable.label ?? '',
+            units: currentVariable.unit ?? '',
+          }}
           timeData={{ selectedLines, unselectedLines, hoveredLine }}
           colormap={colormap}
           colorLimits={currentVariable.colorLimits}

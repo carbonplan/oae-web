@@ -73,6 +73,7 @@ const OverviewChart = ({ sx }) => {
         endYear={timeHorizon}
         xLimits={[startYear, 15]}
         yLimits={[0, 1]}
+        yLabels={{ title: 'OAE efficiency', units: '' }}
         timeData={{
           selectedLines,
           unselectedLines,

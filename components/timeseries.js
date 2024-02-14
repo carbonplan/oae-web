@@ -18,6 +18,7 @@ const Timeseries = ({
   endYear,
   xLimits,
   yLimits,
+  yLabels,
   timeData,
   colormap,
   colorLimits,
@@ -109,8 +110,8 @@ const Timeseries = ({
           <Grid vertical horizontal />
           <Ticks left bottom />
           <TickLabels left bottom />
-          <AxisLabel sx={{ fontSize: 0 }} left>
-            OAE efficiency
+          <AxisLabel units={yLabels.units} sx={{ fontSize: 0 }} left>
+            {yLabels.title}
           </AxisLabel>
           <AxisLabel units='years' sx={{ fontSize: 0 }} bottom>
             Time
