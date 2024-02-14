@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react'
-import useStore from '../store'
-import { useThemeUI } from 'theme-ui'
+import { Box, useThemeUI } from 'theme-ui'
 import { Map, Line, Raster } from '@carbonplan/maps'
-import Regions from './regions'
 import { Colorbar } from '@carbonplan/components'
 import { useThemedColormap } from '@carbonplan/colormaps'
+
+import useStore from '../store'
+import Regions from './regions'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
@@ -49,20 +50,15 @@ const MapWrapper = ({ children, setLoading }) => {
         <Regions />
       )}
       {children}
-      <Colorbar
-        colormap={colormap}
-        clim={currentVariable.colorLimits}
-        label={currentVariable.label}
-        units={currentVariable.unit}
-        horizontal
-        width={'100%'}
-        sx={{
-          width: '30%',
-          position: 'absolute',
-          bottom: 3,
-          right: 3,
-        }}
-      />
+      <Box sx={{ position: 'absolute', bottom: 3, right: 3 }}>
+        <Colorbar
+          colormap={colormap}
+          clim={currentVariable.colorLimits}
+          label={currentVariable.label}
+          units={currentVariable.unit}
+          horizontal
+        />
+      </Box>
     </Map>
   )
 }
