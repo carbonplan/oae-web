@@ -31,13 +31,14 @@ const MapWrapper = ({ children, setLoading }) => {
       />
       {selectedRegion !== null ? (
         <Raster
+          key={currentVariable.key}
           source={
             'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store2.zarr'
           }
           colormap={colormap}
           clim={currentVariable.colorLimits}
           mode={'texture'}
-          variable={'ALK'}
+          variable={currentVariable.key}
           selector={{
             polygon_id: selectedRegion,
             elapsed_time: elapsedTime,
