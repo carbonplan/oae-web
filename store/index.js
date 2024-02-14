@@ -69,6 +69,12 @@ const useStore = create((set) => ({
     OCT: false,
   },
   setInjectionSeason: (injectionSeason) => set({ injectionSeason }),
+
+  showRegionPicker: false,
+  setShowRegionPicker: (showRegionPicker) => set({ showRegionPicker }),
+
+  regionData: null,
+  setRegionData: (regionData) => set({ regionData }),
 }))
 
 export default useStore

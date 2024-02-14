@@ -1,13 +1,56 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Box, Divider } from 'theme-ui'
-import { Select } from '@carbonplan/components'
+import { Expander, Select } from '@carbonplan/components'
 import TimeSlider from './time-slider'
-import { SidebarDivider } from '@carbonplan/layouts'
 import useStore, { variables } from '../store'
+import AnimateHeight from 'react-animate-height'
+import Timeseries from './timeseries'
+import { useThemedColormap } from '@carbonplan/colormaps'
 
+const toMonthsIndex = (year, startYear) => (year - startYear) * 12
 const RegionDetail = ({ sx }) => {
   const currentVariable = useStore((state) => state.currentVariable)
   const setCurrentVariable = useStore((state) => state.setCurrentVariable)
+  const showRegionPicker = useStore((state) => state.showRegionPicker)
+  const setShowRegionPicker = useStore((state) => state.setShowRegionPicker)
+  const regionData = useStore((state) => state.regionData)
+  const timeHorizon = useStore((state) => state.timeHorizon)
+
+  const colormap = useThemedColormap(currentVariable?.colormap)
+
+  const toLineData = useMemo(() => {
+    if (!regionData || !currentVariable) return []
+    const averages = Object.values(regionData[currentVariable.key]).map(
+      (data, index) => {
+        const { sum, count } = data.reduce(
+          (acc, value) => {
+            if (value !== 0 && value !== 9.969209968386869e36) {
+              acc.sum += value
+              acc.count += 1
+            }
+            return acc
+          },
+          { sum: 0, count: 0 }
+        )
+        const avgData = count > 0 ? sum / count : 0
+        const toYear = index / 12
+        return [toYear, avgData]
+      }
+    )
+    return [averages]
+  }, [regionData, currentVariable])
+
+  const { selectedLines, unselectedLines } = useMemo(() => {
+    const selectedLines = []
+    const unselectedLines = []
+    toLineData.forEach((line, index) => {
+      const cutIndex = toMonthsIndex(timeHorizon, 0)
+      selectedLines.push({ id: index, data: line.slice(0, cutIndex + 1) })
+      unselectedLines.push({ id: index, data: line.slice(cutIndex + 1) })
+    })
+    return { selectedLines, unselectedLines }
+  }, [regionData, timeHorizon, toMonthsIndex])
+  const hoveredLine = null
 
   const handleSelection = (e) => {
     const selectedVariable = variables.find(
@@ -40,10 +83,43 @@ const RegionDetail = ({ sx }) => {
           </option>
         ))}
       </Select>
-      <SidebarDivider sx={{ mt: 4, mb: 3 }} />
-      <Box sx={{ mb: [-3, -3, -3, -2] }}>
+      <Box sx={{ mb: [-3, -3, -3, -2], mt: 4 }}>
         <TimeSlider />
       </Box>
+      <Divider sx={{ mt: 4, mb: 5 }} />
+      <Box
+        onClick={() => setShowRegionPicker(!showRegionPicker)}
+        sx={{
+          ...sx.heading,
+          cursor: 'pointer',
+          '&:hover #expander': {
+            stroke: 'primary',
+          },
+        }}
+      >
+        Time Series
+        <Expander
+          id='expander'
+          value={showRegionPicker}
+          sx={{ width: 20, ml: 2 }}
+        />
+      </Box>
+      <AnimateHeight duration={500} height={showRegionPicker ? 'auto' : 0}>
+        <Box sx={{ pt: 4 }}>
+          Select a region from the map to view its time series
+        </Box>
+        <Timeseries
+          endYear={timeHorizon}
+          xLimits={[0, 15]}
+          yLimits={currentVariable.colorLimits}
+          timeData={{ selectedLines, unselectedLines, hoveredLine }}
+          colormap={colormap}
+          colorLimits={currentVariable.colorLimits}
+          handleClick={() => {}}
+          handleHover={() => {}}
+          hoveredRegion={null}
+        />
+      </AnimateHeight>
     </>
   )
 }
