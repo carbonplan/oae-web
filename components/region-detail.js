@@ -42,22 +42,18 @@ const RegionDetail = ({ sx }) => {
     el !== 0 && el !== 9.969209968386869e36 && !isNaN(el)
 
   const getArrayData = (arr, lats, zoom) => {
-    let totalArea = 0
-    let weightedSum = 0
-
-    const validIndexes = arr.reduce((valid, el, i) => {
-      if (isValidElement(el)) {
-        const area = areaOfPixelProjected(lats[i], zoom)
-        valid.push(i)
-        totalArea += area
-        weightedSum += el * area
-      }
-      return valid
-    }, [])
-
-    const avg = validIndexes.length > 0 ? weightedSum / totalArea : 0
-
-    return { avg }
+    const areas = lats
+      .filter((l, i) => isValidElement(arr[i]))
+      .map((lat) => areaOfPixelProjected(lat, zoom))
+    const totalArea = areas.reduce((a, d) => a + d, 0)
+    return arr
+      .filter((el) => isValidElement(el))
+      .reduce(
+        (accum, el, i) => ({
+          avg: accum.avg + el * (areas[i] / totalArea),
+        }),
+        { avg: 0 }
+      )
   }
 
   const toLineData = useMemo(() => {
