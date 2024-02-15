@@ -82,7 +82,8 @@ const RegionDetail = ({ sx }) => {
       const selectedSlice = line.slice(0, cutIndex + 1)
       const unselectedSlice = line.slice(cutIndex + 1)
       const avgValueForLine =
-        selectedSlice.reduce((sum, [, value]) => sum + value, 0) / line.length
+        selectedSlice.reduce((acc, curr) => acc + curr[1], 0) /
+        selectedSlice.length
       const color = getColorForValue(
         avgValueForLine,
         colormap,
