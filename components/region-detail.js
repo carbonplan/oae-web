@@ -68,9 +68,10 @@ const RegionDetail = ({ sx }) => {
         return [toYear, avg]
       }
     )
-    // get min and max of averages
-    const min = Math.min(...averages.map((a) => a[1]))
-    const max = Math.max(...averages.map((a) => a[1]))
+    const [min, max] = averages.reduce(
+      ([min, max], [_, value]) => [Math.min(min, value), Math.max(max, value)],
+      [Infinity, -Infinity]
+    )
     setMinMax([min, max])
     return [averages]
   }, [regionData, currentVariable])
