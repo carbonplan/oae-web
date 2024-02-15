@@ -55,7 +55,13 @@ const useStore = create((set) => ({
   setSelectedRegion: (selectedRegion) =>
     selectedRegion !== null
       ? set({ selectedRegion, currentVariable: variables[0] })
-      : set({ selectedRegion, currentVariable: overviewVariable }),
+      : set({
+          selectedRegion,
+          currentVariable: overviewVariable,
+          showRegionPicker: false,
+          regionData: null,
+          hoveredRegion: null,
+        }),
 
   hoveredRegion: null,
   setHoveredRegion: (hoveredRegion) => set({ hoveredRegion }),

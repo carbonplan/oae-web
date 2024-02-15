@@ -10,17 +10,11 @@ import RegionDetail from './region-detail'
 
 const RegionFooter = ({ sx }) => {
   const hoveredRegion = useStore((state) => state.hoveredRegion)
-  const setHoveredRegion = useStore((state) => state.setHoveredRegion)
   const selectedRegion = useStore((state) => state.selectedRegion)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
-  const setShowRegionPicker = useStore((state) => state.setShowRegionPicker)
-  const setRegionData = useStore((state) => state.setRegionData)
 
   const handleClear = () => {
     setSelectedRegion(null)
-    setHoveredRegion(null)
-    setShowRegionPicker(false)
-    setRegionData(null)
   }
 
   return (
