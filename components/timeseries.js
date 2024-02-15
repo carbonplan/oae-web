@@ -20,11 +20,9 @@ const Timeseries = ({
   yLimits,
   yLabels,
   timeData,
-  colormap,
-  colorLimits,
-  hoveredRegion,
   handleClick,
   handleHover,
+  point,
 }) => {
   const { selectedLines, unselectedLines, hoveredLine } = timeData
 
@@ -32,37 +30,42 @@ const Timeseries = ({
     if (!hoveredLine) {
       return null
     }
-    const color = getColorForValue(hoveredLine.data.slice(-1)[0][1])
+    const { color } = hoveredLine
 
     return (
-      <>
-        <Line
-          key={hoveredRegion + '-hovered'}
-          onClick={() => handleClick(hoveredRegion)}
-          sx={{
-            stroke: color,
-            strokeWidth: 4,
-            pointerEvents: 'none',
-            '&:hover': {
-              cursor: 'pointer',
-            },
-          }}
-          data={hoveredLine.data}
-        />
-        <Scatter
-          sx={{ pointerEvents: 'none' }}
-          color={color}
-          size={10}
-          x={(d) => d.x}
-          y={(d) => d.y}
-          data={[
-            {
-              x: endYear,
-              y: hoveredLine.data.slice(-1)[0][1],
-            },
-          ]}
-        />
-      </>
+      <Line
+        key={hoveredLine.id + '-hovered'}
+        onClick={() => handleClick(hoveredLine.id)}
+        sx={{
+          stroke: color,
+          strokeWidth: 4,
+          pointerEvents: 'none',
+          '&:hover': {
+            cursor: 'pointer',
+          },
+        }}
+        data={hoveredLine.data}
+      />
+    )
+  }
+
+  const renderPoint = () => {
+    if (!point) return null
+    const { x, y, color } = point
+    return (
+      <Scatter
+        sx={{ pointerEvents: 'none' }}
+        color={color}
+        size={10}
+        x={(d) => d.x}
+        y={(d) => d.y}
+        data={[
+          {
+            x: x,
+            y: y,
+          },
+        ]}
+      />
     )
   }
 
@@ -70,37 +73,21 @@ const Timeseries = ({
     if (!hoveredLine) {
       return null
     }
-    const lastDataPoint = hoveredLine?.data.slice(-1)[0]
-    const y = lastDataPoint[1]
+    const { x, y, color } = point
     return (
-      <Point x={endYear} y={y} align={'center'} width={2}>
+      <Point x={x} y={y} align={'center'} width={2}>
         <Badge
           sx={{
             fontSize: 1,
             height: '20px',
             mt: 2,
-            bg: getColorForValue(y),
+            bg: color,
           }}
         >
           {y.toFixed(2)}
         </Badge>
       </Point>
     )
-  }
-
-  const getColorForValue = (value) => {
-    let scaledValue =
-      (value - colorLimits[0]) / (colorLimits[1] - colorLimits[0])
-    scaledValue = Math.max(0, Math.min(1, scaledValue))
-    const index = Math.floor(scaledValue * (colormap.length - 1))
-    if (!colormap[index]) {
-      return 'rgba(0,0,0,0)'
-    }
-    // convert rgb array to string
-    if (colormap[index]?.length === 3) {
-      return `rgb(${colormap[index].join(',')})`
-    }
-    return colormap[index]
   }
 
   return (
@@ -124,7 +111,7 @@ const Timeseries = ({
                 onMouseOver={() => handleHover(line.id)}
                 onMouseLeave={() => handleHover(null)}
                 sx={{
-                  stroke: getColorForValue(line.data?.slice(-1)?.[0]?.[1]),
+                  stroke: line.color,
                   strokeWidth: 2,
                   pointerEvents: 'visiblePainted',
                   '&:hover': {
@@ -141,7 +128,7 @@ const Timeseries = ({
                 onMouseOver={() => handleHover(line.id)}
                 onMouseLeave={() => handleHover(null)}
                 sx={{
-                  stroke: 'muted',
+                  stroke: line.color,
                   strokeWidth: 2,
                   pointerEvents: 'visiblePainted',
                   '&:hover': {
@@ -153,6 +140,7 @@ const Timeseries = ({
             ))}
             <Rect x={[endYear, 15]} y={yLimits} color='muted' opacity={0.2} />
             {renderHoveredLine()}
+            {renderPoint()}
           </Plot>
           {renderDataBadge()}
         </Chart>

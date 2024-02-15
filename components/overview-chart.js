@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { openZarr, getChunk, getTimeSeriesData, loadZarr } from '../utils/zarr'
-import useStore, { overviewVariable } from '../store'
 import { useThemedColormap } from '@carbonplan/colormaps'
-import Timeseries from './timeseries'
 import { Box } from 'theme-ui'
+
+import useStore, { overviewVariable } from '../store'
+import Timeseries from './timeseries'
+import { openZarr, getChunk, getTimeSeriesData, loadZarr } from '../utils/zarr'
+import { getColorForValue } from '../utils/color'
 
 const zarrUrl =
   'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr'
@@ -45,8 +47,21 @@ const OverviewChart = ({ sx }) => {
     timeData.forEach((line, index) => {
       if (regionsInView?.has(index)) {
         const cutIndex = toMonthsIndex(endYear, startYear)
-        selectedLines.push({ id: index, data: line.slice(0, cutIndex + 1) })
-        unselectedLines.push({ id: index, data: line.slice(cutIndex + 1) })
+        const color = getColorForValue(
+          line[cutIndex - 1][1],
+          colormap,
+          colorLimits
+        )
+        selectedLines.push({
+          id: index,
+          color,
+          data: line.slice(0, cutIndex + 1),
+        })
+        unselectedLines.push({
+          id: index,
+          color: 'muted',
+          data: line.slice(cutIndex + 1),
+        })
       }
     })
     return { selectedLines, unselectedLines }
@@ -58,6 +73,25 @@ const OverviewChart = ({ sx }) => {
     }
     return selectedLines.find((line) => line.id === hoveredRegion)
   }, [hoveredRegion, selectedLines])
+
+  const color = useMemo(() => {
+    if (hoveredLine === null) {
+      return 'rgba(0,0,0,0)'
+    }
+    return getColorForValue(
+      hoveredLine.data.slice(-1)[0][1],
+      colormap,
+      colorLimits
+    )
+  }, [hoveredLine])
+
+  const point = useMemo(() => {
+    if (hoveredLine === null) {
+      return null
+    }
+    const lastDataPoint = hoveredLine.data.slice(-1)[0]
+    return { x: endYear, y: lastDataPoint[1], color }
+  }, [hoveredLine, endYear, color])
 
   const handleClick = (region) => {
     setSelectedRegion(region)
@@ -79,11 +113,9 @@ const OverviewChart = ({ sx }) => {
           unselectedLines,
           hoveredLine,
         }}
-        colormap={colormap}
-        colorLimits={colorLimits}
         handleClick={handleClick}
         handleHover={handleHover}
-        hoveredRegion={hoveredRegion}
+        point={point}
       />
     </>
   )

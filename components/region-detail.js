@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Box, Divider } from 'theme-ui'
 import { Expander, Select } from '@carbonplan/components'
 import AnimateHeight from 'react-animate-height'
@@ -7,6 +7,7 @@ import { useRegion } from '@carbonplan/maps'
 
 import TimeSlider from './time-slider'
 import Timeseries from './timeseries'
+import { getColorForValue } from '../utils/color'
 import useStore, { variables } from '../store'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12
@@ -23,7 +24,7 @@ const RegionDetail = ({ sx }) => {
   const { region } = useRegion()
   const zoom = region?.properties?.zoom || 0
 
-  const [minMax, setMinMax] = React.useState([0, 0])
+  const [minMax, setMinMax] = useState([0, 0])
 
   const degToRad = (degrees) => {
     return degrees * (Math.PI / 180)
@@ -36,8 +37,8 @@ const RegionDetail = ({ sx }) => {
     )
   }
 
-  const isValidElement = (element) =>
-    element !== 0 && element !== 9.969209968386869e36 && !isNaN(element)
+  const isValidElement = (el) =>
+    el !== 0 && el !== 9.969209968386869e36 && !isNaN(el)
 
   const getArrayData = (arr, lats, zoom) => {
     let totalArea = 0
@@ -81,8 +82,21 @@ const RegionDetail = ({ sx }) => {
     const unselectedLines = []
     toLineData.forEach((line, index) => {
       const cutIndex = toMonthsIndex(timeHorizon, 0)
-      selectedLines.push({ id: index, data: line.slice(0, cutIndex + 1) })
-      unselectedLines.push({ id: index, data: line.slice(cutIndex + 1) })
+      const color = getColorForValue(
+        line[cutIndex - 1][1],
+        colormap,
+        currentVariable.colorLimits
+      )
+      selectedLines.push({
+        id: index,
+        color,
+        data: line.slice(0, cutIndex + 1),
+      })
+      unselectedLines.push({
+        id: index,
+        color: 'muted',
+        data: line.slice(cutIndex + 1),
+      })
     })
     return { selectedLines, unselectedLines }
   }, [regionData, timeHorizon, toMonthsIndex])
@@ -150,11 +164,8 @@ const RegionDetail = ({ sx }) => {
             units: currentVariable.unit ?? '',
           }}
           timeData={{ selectedLines, unselectedLines, hoveredLine }}
-          colormap={colormap}
-          colorLimits={currentVariable.colorLimits}
           handleClick={() => {}}
           handleHover={() => {}}
-          hoveredRegion={null}
         />
       </AnimateHeight>
     </>
