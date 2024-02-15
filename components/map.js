@@ -26,7 +26,7 @@ const MapWrapper = ({ children, setLoading }) => {
   }, [injectionSeason])
 
   const handleRegionData = (data) => {
-    data.value !== null && setRegionData(data.value)
+    setRegionData(data.value)
   }
 
   return (
@@ -47,6 +47,7 @@ const MapWrapper = ({ children, setLoading }) => {
             clim={currentVariable.colorLimits}
             mode={'texture'}
             variable={currentVariable.key}
+            fillValue={9.969209968386869e36}
             regionOptions={{
               setData: handleRegionData,
               selector: {
