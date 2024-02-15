@@ -90,7 +90,12 @@ const OverviewChart = ({ sx }) => {
       return null
     }
     const lastDataPoint = hoveredLine.data.slice(-1)[0]
-    return { x: endYear, y: lastDataPoint[1], color }
+    return {
+      x: endYear,
+      y: lastDataPoint[1],
+      color,
+      text: lastDataPoint[1].toFixed(2),
+    }
   }, [hoveredLine, endYear, color])
 
   const handleClick = (region) => {

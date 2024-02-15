@@ -95,7 +95,7 @@ const TimeSlider = ({}) => {
   const handleMonthChange = useCallback(
     (month) => {
       const years = Math.floor(elapsedTime / 12)
-      setElapsedTime(years + month)
+      setElapsedTime(years * 12 + month)
     },
     [elapsedTime]
   )

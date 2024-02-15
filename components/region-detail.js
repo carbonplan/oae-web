@@ -19,6 +19,7 @@ const RegionDetail = ({ sx }) => {
   const setShowRegionPicker = useStore((state) => state.setShowRegionPicker)
   const regionData = useStore((state) => state.regionData)
   const timeHorizon = useStore((state) => state.timeHorizon)
+  const elapsedYears = useStore((state) => state.elapsedTime / 12)
 
   const colormap = useThemedColormap(currentVariable?.colormap)
   const { region } = useRegion()
@@ -102,6 +103,13 @@ const RegionDetail = ({ sx }) => {
   }, [regionData, timeHorizon, toMonthsIndex])
   const hoveredLine = null
 
+  const point = useMemo(() => {
+    const y = selectedLines[0]?.data?.[toMonthsIndex(elapsedYears, 0)]?.[1]
+    if (!y) return null
+    const color = getColorForValue(y, colormap, currentVariable.colorLimits)
+    return { x: elapsedYears, y, color, text: y.toFixed(0) }
+  }, [elapsedYears, selectedLines])
+
   const handleSelection = (e) => {
     const selectedVariable = variables.find(
       (variable) => variable.key === e.target.value
@@ -166,6 +174,7 @@ const RegionDetail = ({ sx }) => {
           timeData={{ selectedLines, unselectedLines, hoveredLine }}
           handleClick={() => {}}
           handleHover={() => {}}
+          point={point}
         />
       </AnimateHeight>
     </>

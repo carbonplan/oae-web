@@ -70,10 +70,8 @@ const Timeseries = ({
   }
 
   const renderDataBadge = () => {
-    if (!hoveredLine) {
-      return null
-    }
-    const { x, y, color } = point
+    if (!point || !point.text) return null
+    const { x, y, color, text } = point
     return (
       <Point x={x} y={y} align={'center'} width={2}>
         <Badge
@@ -84,7 +82,7 @@ const Timeseries = ({
             bg: color,
           }}
         >
-          {y.toFixed(2)}
+          {text}
         </Badge>
       </Point>
     )
