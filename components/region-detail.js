@@ -79,20 +79,24 @@ const RegionDetail = ({ sx }) => {
     const unselectedLines = []
     toLineData.forEach((line, index) => {
       const cutIndex = toMonthsIndex(timeHorizon, 0)
+      const selectedSlice = line.slice(0, cutIndex + 1)
+      const unselectedSlice = line.slice(cutIndex + 1)
+      const avgValueForLine =
+        selectedSlice.reduce((sum, [, value]) => sum + value, 0) / line.length
       const color = getColorForValue(
-        line[cutIndex - 1][1],
+        avgValueForLine,
         colormap,
         currentVariable.colorLimits
       )
       selectedLines.push({
         id: index,
         color,
-        data: line.slice(0, cutIndex + 1),
+        data: selectedSlice,
       })
       unselectedLines.push({
         id: index,
         color: 'muted',
-        data: line.slice(cutIndex + 1),
+        data: unselectedSlice,
       })
     })
     return { selectedLines, unselectedLines }
