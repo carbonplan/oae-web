@@ -1,13 +1,16 @@
 import React, { useMemo } from 'react'
 import { Box, Divider } from 'theme-ui'
 import { Expander, Select } from '@carbonplan/components'
-import TimeSlider from './time-slider'
-import useStore, { variables } from '../store'
 import AnimateHeight from 'react-animate-height'
-import Timeseries from './timeseries'
 import { useThemedColormap } from '@carbonplan/colormaps'
+import { useRegion } from '@carbonplan/maps'
+
+import TimeSlider from './time-slider'
+import Timeseries from './timeseries'
+import useStore, { variables } from '../store'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12
+
 const RegionDetail = ({ sx }) => {
   const currentVariable = useStore((state) => state.currentVariable)
   const setCurrentVariable = useStore((state) => state.setCurrentVariable)
@@ -17,26 +20,58 @@ const RegionDetail = ({ sx }) => {
   const timeHorizon = useStore((state) => state.timeHorizon)
 
   const colormap = useThemedColormap(currentVariable?.colormap)
+  const { region } = useRegion()
+  const zoom = region?.properties?.zoom || 0
+
+  const [minMax, setMinMax] = React.useState([0, 0])
+
+  const degToRad = (degrees) => {
+    return degrees * (Math.PI / 180)
+  }
+  const areaOfPixelProjected = (lat, zoom) => {
+    const c = 40075016.686 / 1000
+    return Math.pow(
+      (c * Math.cos(degToRad(lat))) / Math.pow(2, Math.floor(zoom) + 7),
+      2
+    )
+  }
+
+  const isValidElement = (element) =>
+    element !== 0 && element !== 9.969209968386869e36 && !isNaN(element)
+
+  const getArrayData = (arr, lats, zoom) => {
+    let totalArea = 0
+    let weightedSum = 0
+
+    const validIndexes = arr.reduce((valid, el, i) => {
+      if (isValidElement(el)) {
+        const area = areaOfPixelProjected(lats[i], zoom)
+        valid.push(i)
+        totalArea += area
+        weightedSum += el * area
+      }
+      return valid
+    }, [])
+
+    const avg = validIndexes.length > 0 ? weightedSum / totalArea : 0
+
+    return { avg }
+  }
 
   const toLineData = useMemo(() => {
     if (!currentVariable || !regionData?.[currentVariable.key]) return []
+
     const averages = Object.values(regionData[currentVariable.key]).map(
       (data, index) => {
-        const { sum, count } = data.reduce(
-          (acc, value) => {
-            if (value !== 0 && value !== 9.969209968386869e36) {
-              acc.sum += value
-              acc.count += 1
-            }
-            return acc
-          },
-          { sum: 0, count: 0 }
-        )
-        const avgData = count > 0 ? sum / count : 0
+        const { avg } = getArrayData(data, regionData.coordinates.lat, zoom)
         const toYear = index / 12
-        return [toYear, avgData]
+        return [toYear, avg]
       }
     )
+    // get min and max of averages
+    const min = Math.min(...averages.map((a) => a[1]))
+    const max = Math.max(...averages.map((a) => a[1]))
+    setMinMax([min, max])
     return [averages]
   }, [regionData, currentVariable])
 
@@ -108,7 +143,7 @@ const RegionDetail = ({ sx }) => {
         <Timeseries
           endYear={timeHorizon}
           xLimits={[0, 15]}
-          yLimits={currentVariable.colorLimits}
+          yLimits={minMax}
           yLabels={{
             title: currentVariable.label ?? '',
             units: currentVariable.unit ?? '',
