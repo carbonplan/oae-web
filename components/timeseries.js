@@ -91,7 +91,7 @@ const Timeseries = ({
   return (
     <Box sx={{ zIndex: 0, position: 'relative' }}>
       <Box sx={{ width: '100%', height: '300px', pointerEvents: 'none' }}>
-        <Chart x={xLimits} y={yLimits} padding={{ left: 60, top: 50 }}>
+        <Chart x={xLimits} y={yLimits} padding={{ top: 30 }}>
           <Grid vertical horizontal />
           <Ticks left bottom />
           <TickLabels left bottom />

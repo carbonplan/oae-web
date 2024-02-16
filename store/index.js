@@ -22,7 +22,7 @@ export const variables = [
     key: 'ALK_ALT_CO2',
     colorLimits: [2000, 2800],
     colormap: 'warm',
-    label: 'Alkalinity counterfactual',
+    label: 'Alk. counterfactual',
     unit: 'mEq/m³',
     description: 'tk',
   },
