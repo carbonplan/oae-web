@@ -105,7 +105,8 @@ const Timeseries = ({
             {selectedLines.map((line, i) => (
               <Line
                 key={i + '-selected'}
-                onClick={() => handleClick(line.id)}
+                id={line.id}
+                onClick={handleClick}
                 onMouseOver={() => handleHover(line.id)}
                 onMouseLeave={() => handleHover(null)}
                 sx={{

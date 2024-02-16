@@ -98,9 +98,11 @@ const OverviewChart = ({ sx }) => {
     }
   }, [hoveredLine, endYear, color])
 
-  const handleClick = (region) => {
-    setSelectedRegion(region)
+  const handleClick = (e) => {
+    const id = parseInt(e.target.id)
+    setSelectedRegion(id)
   }
+
   const handleHover = (region) => {
     setHoveredRegion(region)
   }

@@ -20,6 +20,7 @@ const RegionDetail = ({ sx }) => {
   const regionData = useStore((state) => state.regionData)
   const timeHorizon = useStore((state) => state.timeHorizon)
   const elapsedYears = useStore((state) => state.elapsedTime / 12)
+  const setElapsedTime = useStore((state) => state.setElapsedTime)
 
   const colormap = useThemedColormap(currentVariable?.colormap)
   const { region } = useRegion()
@@ -118,6 +119,14 @@ const RegionDetail = ({ sx }) => {
     setCurrentVariable(selectedVariable)
   }
 
+  const handleTimeseriesClick = (e) => {
+    const { left, width } =
+      e.currentTarget.ownerSVGElement.getBoundingClientRect()
+    const clickX = e.clientX - left
+    const months = Math.round((clickX / width) * 180)
+    setElapsedTime(months)
+  }
+
   return (
     <>
       <Divider sx={{ mt: 4, mb: 5 }} />
@@ -173,7 +182,7 @@ const RegionDetail = ({ sx }) => {
             units: currentVariable.unit ?? '',
           }}
           timeData={{ selectedLines, unselectedLines, hoveredLine }}
-          handleClick={() => {}}
+          handleClick={handleTimeseriesClick}
           handleHover={() => {}}
           point={point}
         />

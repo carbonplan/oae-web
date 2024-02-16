@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Slider } from '@carbonplan/components'
 import { Box, Flex } from 'theme-ui'
 import { useCallback, useState } from 'react'
@@ -30,6 +30,10 @@ const UnitSlider = ({
 }) => {
   const [sliderValue, setSliderValue] = useState(value)
   const [sliding, setSliding] = useState(false)
+
+  useEffect(() => {
+    setSliderValue(value)
+  }, [value])
 
   const handleChange = useCallback(
     (e) => {
