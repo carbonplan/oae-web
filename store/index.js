@@ -61,6 +61,7 @@ const useStore = create((set) => ({
           showRegionPicker: false,
           regionData: null,
           hoveredRegion: null,
+          elapsedTime: 0,
         }),
 
   hoveredRegion: null,
