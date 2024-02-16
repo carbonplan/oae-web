@@ -24,6 +24,7 @@ const RegionFooter = ({ sx }) => {
         zIndex: 2,
         bg: 'background',
         '&:hover': { bg: 'background' },
+        cursor: 'auto',
       }}
     >
       <AnimateHeight
@@ -75,7 +76,6 @@ const RegionFooter = ({ sx }) => {
                   sx={{
                     height: 12,
                     color: 'secondary',
-                    cursor: 'pointer',
                   }}
                 />
               </Box>
