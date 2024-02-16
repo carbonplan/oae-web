@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Box } from 'theme-ui'
 import {
   AxisLabel,
@@ -23,8 +23,37 @@ const Timeseries = ({
   handleClick,
   handleHover,
   point,
+  xSelector = false,
+  handleXSelectorClick = () => {},
 }) => {
   const { selectedLines, unselectedLines, hoveredLine } = timeData
+  const [mousePosition, setMousePosition] = useState(null)
+  const [isHovering, setIsHovering] = useState(false)
+
+  const handleXSelectorMouseMove = (e) => {
+    const { left, width } = e.currentTarget.getBoundingClientRect()
+    const clickX = e.clientX - left
+    const years = ((clickX / width) * 180) / 12
+    setMousePosition(years)
+  }
+
+  const handleXSelectorMouseEnter = () => {
+    setIsHovering(true)
+  }
+
+  const handleXSelectorMouseLeave = () => {
+    setIsHovering(false)
+    setMousePosition(null) // Clear mouse position when not hovering
+  }
+
+  const xSelectorHandlers = xSelector
+    ? {
+        onMouseMove: handleXSelectorMouseMove,
+        onMouseEnter: handleXSelectorMouseEnter,
+        onMouseLeave: handleXSelectorMouseLeave,
+        onClick: handleXSelectorClick,
+      }
+    : {}
 
   const renderHoveredLine = () => {
     if (!hoveredLine) {
@@ -101,7 +130,16 @@ const Timeseries = ({
           <AxisLabel units='years' sx={{ fontSize: 0 }} bottom>
             Time
           </AxisLabel>
-          <Plot>
+          <Plot
+            sx={{
+              pointerEvents: 'auto',
+              cursor:
+                xSelector && mousePosition && mousePosition < endYear
+                  ? 'pointer'
+                  : 'auto',
+            }}
+            {...xSelectorHandlers}
+          >
             {selectedLines.map((line, i) => (
               <Line
                 key={i + '-selected'}
@@ -123,21 +161,31 @@ const Timeseries = ({
             {unselectedLines.map((line, i) => (
               <Line
                 key={i + '-unselected'}
-                onClick={() => handleClick(line.id)}
-                onMouseOver={() => handleHover(line.id)}
-                onMouseLeave={() => handleHover(null)}
                 sx={{
                   stroke: line.color,
                   strokeWidth: 2,
-                  pointerEvents: 'visiblePainted',
-                  '&:hover': {
-                    cursor: 'pointer',
-                  },
                 }}
                 data={line.data}
               />
             ))}
-            <Rect x={[endYear, 15]} y={yLimits} color='muted' opacity={0.2} />
+            <Rect
+              x={[endYear, 15]}
+              y={yLimits}
+              color='muted'
+              opacity={0.2}
+              onClick={(e) => e.stopPropagation()}
+            />
+            {xSelector &&
+              isHovering &&
+              mousePosition &&
+              mousePosition < endYear && (
+                <Rect
+                  x={[mousePosition, mousePosition + 0.05]}
+                  y={yLimits}
+                  color='secondary'
+                  opacity={1}
+                />
+              )}
             {renderHoveredLine()}
             {renderPoint()}
           </Plot>

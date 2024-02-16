@@ -120,8 +120,7 @@ const RegionDetail = ({ sx }) => {
   }
 
   const handleTimeseriesClick = (e) => {
-    const { left, width } =
-      e.currentTarget.ownerSVGElement.getBoundingClientRect()
+    const { left, width } = e.currentTarget.getBoundingClientRect()
     const clickX = e.clientX - left
     const months = Math.round((clickX / width) * 180)
     setElapsedTime(months)
@@ -185,6 +184,8 @@ const RegionDetail = ({ sx }) => {
           handleClick={handleTimeseriesClick}
           handleHover={() => {}}
           point={point}
+          xSelector={true}
+          handleXSelectorClick={handleTimeseriesClick}
         />
       </AnimateHeight>
     </>
