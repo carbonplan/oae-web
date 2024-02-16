@@ -60,7 +60,7 @@ const OverviewChart = ({ sx }) => {
         unselectedLines.push({
           id: index,
           color: 'muted',
-          data: line.slice(cutIndex + 1),
+          data: line.slice(cutIndex),
         })
       }
     })

@@ -80,7 +80,7 @@ const RegionDetail = ({ sx }) => {
     toLineData.forEach((line, index) => {
       const cutIndex = toMonthsIndex(timeHorizon, 0)
       const selectedSlice = line.slice(0, cutIndex + 1)
-      const unselectedSlice = line.slice(cutIndex + 1)
+      const unselectedSlice = line.slice(cutIndex)
       const avgValueForLine =
         selectedSlice.reduce((acc, curr) => acc + curr[1], 0) /
         selectedSlice.length
