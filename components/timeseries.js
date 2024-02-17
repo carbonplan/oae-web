@@ -13,6 +13,7 @@ import {
   Ticks,
 } from '@carbonplan/charts'
 import { Badge } from '@carbonplan/components'
+import { useSpring, animated, easings } from 'react-spring'
 
 const Timeseries = ({
   endYear,
@@ -30,6 +31,16 @@ const Timeseries = ({
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
 
+  const animatedYLimits = useSpring({
+    yLimits,
+    from: { yLimits: [0, 1] },
+    config: {
+      duration: 300,
+      easing: easings.easeOut,
+    },
+  })
+  const AnimatedChart = animated(Chart)
+
   const handleXSelectorMouseMove = (e) => {
     const { left, width } = e.currentTarget.getBoundingClientRect()
     const clickX = e.clientX - left
@@ -43,7 +54,7 @@ const Timeseries = ({
 
   const handleXSelectorMouseLeave = () => {
     setIsHovering(false)
-    setMousePosition(null) // Clear mouse position when not hovering
+    setMousePosition(null)
   }
 
   const xSelectorHandlers = xSelector
@@ -120,7 +131,11 @@ const Timeseries = ({
   return (
     <Box sx={{ zIndex: 0, position: 'relative' }}>
       <Box sx={{ width: '100%', height: '300px', pointerEvents: 'none' }}>
-        <Chart x={xLimits} y={yLimits} padding={{ top: 30 }}>
+        <AnimatedChart
+          x={xLimits}
+          y={animatedYLimits.yLimits}
+          padding={{ top: 30 }}
+        >
           <Grid vertical horizontal />
           <Ticks left bottom />
           <TickLabels left bottom />
@@ -170,7 +185,7 @@ const Timeseries = ({
             ))}
             <Rect
               x={[endYear, 15]}
-              y={yLimits}
+              y={[0, 1000000]}
               color='muted'
               opacity={0.2}
               onClick={(e) => e.stopPropagation()}
@@ -190,7 +205,7 @@ const Timeseries = ({
             {renderPoint()}
           </Plot>
           {renderDataBadge()}
-        </Chart>
+        </AnimatedChart>
       </Box>
     </Box>
   )
