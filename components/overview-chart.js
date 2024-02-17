@@ -75,7 +75,7 @@ const OverviewChart = ({ sx }) => {
   }, [hoveredRegion, selectedLines])
 
   const color = useMemo(() => {
-    if (hoveredLine === null) {
+    if (!hoveredLine) {
       return 'rgba(0,0,0,0)'
     }
     return getColorForValue(
@@ -86,7 +86,7 @@ const OverviewChart = ({ sx }) => {
   }, [hoveredLine])
 
   const point = useMemo(() => {
-    if (hoveredLine === null) {
+    if (!hoveredLine) {
       return null
     }
     const lastDataPoint = hoveredLine.data.slice(-1)[0]
