@@ -64,7 +64,7 @@ const MapWrapper = ({ children, setLoading }) => {
           {showRegionPicker && (
             <RegionPicker
               color={theme.colors.primary}
-              backgroundColor={theme.colors.background}
+              backgroundColor={'#00000000'}
               fontFamily={theme.fonts.mono}
               fontSize={'14px'}
               maxRadius={2000}
