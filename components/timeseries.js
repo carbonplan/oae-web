@@ -3,12 +3,12 @@ import { Box } from 'theme-ui'
 import {
   AxisLabel,
   Chart,
+  Circle,
   Grid,
   Line,
   Plot,
   Point,
   Rect,
-  Scatter,
   TickLabels,
   Ticks,
 } from '@carbonplan/charts'
@@ -131,21 +131,7 @@ const Timeseries = ({
   const renderPoint = () => {
     if (!point) return null
     const { x, y, color } = point
-    return (
-      <Scatter
-        sx={{ pointerEvents: 'none' }}
-        color={color}
-        size={10}
-        x={(d) => d.x}
-        y={(d) => d.y}
-        data={[
-          {
-            x: x,
-            y: y,
-          },
-        ]}
-      />
-    )
+    return <Circle x={x} y={y} size={10} color={color} />
   }
 
   const renderDataBadge = () => {
