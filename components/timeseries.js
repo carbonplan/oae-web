@@ -227,8 +227,8 @@ const Timeseries = ({
           {renderHoveredLine()}
           {renderPoint()}
         </Plot>
-        {renderDataBadge()}
         {renderXScrubLabel()}
+        {renderDataBadge()}
       </Chart>
     </Box>
   )
