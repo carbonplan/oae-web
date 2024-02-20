@@ -168,7 +168,7 @@ const RegionDetail = ({ sx }) => {
         <Expander
           id='expander'
           value={showRegionPicker}
-          sx={{ width: 20, ml: 2 }}
+          sx={{ width: 18, ml: '2px' }}
         />
       </Box>
       <AnimateHeight duration={500} height={showRegionPicker ? 'auto' : 0}>
