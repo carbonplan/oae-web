@@ -129,7 +129,7 @@ const Timeseries = ({
   }
 
   const renderXScrubLabel = () => {
-    if (!isHovering || !mousePosition) return null
+    if (!isHovering || !mousePosition || !selectedLines.length) return null
     return (
       <Point x={mousePosition} y={yLimits[0]} align={'center'} width={2}>
         <Badge
