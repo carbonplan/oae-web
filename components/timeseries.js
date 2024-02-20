@@ -66,6 +66,45 @@ const Timeseries = ({
       }
     : {}
 
+  const renderXSelector = () => {
+    if (xSelector && isHovering && mousePosition && mousePosition < endYear) {
+      return (
+        <Rect
+          x={[mousePosition - 0.02, mousePosition + 0.02]}
+          y={yLimits}
+          color='secondary'
+          opacity={1}
+        />
+      )
+    }
+  }
+
+  const renderXSelectorLabel = () => {
+    if (
+      !isHovering ||
+      !mousePosition ||
+      mousePosition > endYear ||
+      !selectedLines.length
+    )
+      return null
+    return (
+      <Point x={mousePosition} y={0} align={'center'} width={2}>
+        <Badge
+          sx={{
+            fontSize: 0,
+            height: '20px',
+            color: 'secondary',
+            bg: 'muted',
+            width: '60px',
+            mt: 2,
+          }}
+        >
+          {xYearsMonth(mousePosition)}
+        </Badge>
+      </Point>
+    )
+  }
+
   const renderHoveredLine = () => {
     if (!hoveredLine) {
       return null
@@ -123,26 +162,6 @@ const Timeseries = ({
           }}
         >
           {text}
-        </Badge>
-      </Point>
-    )
-  }
-
-  const renderXScrubLabel = () => {
-    if (!isHovering || !mousePosition || !selectedLines.length) return null
-    return (
-      <Point x={mousePosition} y={yLimits[0]} align={'center'} width={2}>
-        <Badge
-          sx={{
-            fontSize: 0,
-            height: '20px',
-            color: 'secondary',
-            bg: 'muted',
-            width: '60px',
-            mt: 2,
-          }}
-        >
-          {xYearsMonth(mousePosition)}
         </Badge>
       </Point>
     )
@@ -224,10 +243,11 @@ const Timeseries = ({
               />
             </>
           )}
+          {renderXSelector()}
           {renderHoveredLine()}
           {renderPoint()}
         </Plot>
-        {renderXScrubLabel()}
+        {renderXSelectorLabel()}
         {renderDataBadge()}
       </Chart>
     </Box>
