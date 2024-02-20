@@ -133,7 +133,15 @@ const Timeseries = ({
   const renderPoint = () => {
     if (!point) return null
     const { x, y, color } = point
-    return <Circle x={x} y={y} size={10} color={color} />
+    return (
+      <Circle
+        x={x}
+        y={y}
+        size={10}
+        color={color}
+        sx={{ pointerEvents: 'none' }}
+      />
+    )
   }
 
   const renderDataBadge = () => {
