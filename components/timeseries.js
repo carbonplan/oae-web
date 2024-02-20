@@ -85,8 +85,10 @@ const Timeseries = ({
       !mousePosition ||
       mousePosition > endYear ||
       !selectedLines.length
-    )
+    ) {
       return null
+    }
+
     return (
       <Point x={mousePosition} y={0} align={'center'} width={2}>
         <Badge
