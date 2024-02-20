@@ -122,7 +122,7 @@ const RegionDetail = ({ sx }) => {
   const handleTimeseriesClick = (e) => {
     const { left, width } = e.currentTarget.getBoundingClientRect()
     const clickX = e.clientX - left
-    const months = Math.round((clickX / width) * 180)
+    const months = Math.round((clickX / width) * 179)
     setElapsedTime(months)
   }
 

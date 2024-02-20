@@ -13,7 +13,6 @@ import {
   Ticks,
 } from '@carbonplan/charts'
 import { Badge } from '@carbonplan/components'
-import { useSpring, animated, easings } from 'react-spring'
 
 const Timeseries = ({
   endYear,
@@ -31,20 +30,21 @@ const Timeseries = ({
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
 
-  const animatedYLimits = useSpring({
-    yLimits,
-    from: { yLimits: [0, 1] },
-    config: {
-      duration: 300,
-      easing: easings.easeOut,
-    },
-  })
-  const AnimatedChart = animated(Chart)
+  const xYearsMonth = (x) => {
+    const years = Math.floor(x)
+    const months = Math.round((x - years) * 12)
+    if (years > 0) {
+      return `${years}y ${months}m`
+    } else {
+      return `${months}m`
+    }
+  }
 
   const handleXSelectorMouseMove = (e) => {
     const { left, width } = e.currentTarget.getBoundingClientRect()
-    const clickX = e.clientX - left
-    const years = ((clickX / width) * 180) / 12
+    const clickX = Math.max(e.clientX - left, 0)
+    const months = Math.round((clickX / width) * 179)
+    const years = months / 12
     setMousePosition(years)
   }
 
@@ -128,85 +128,108 @@ const Timeseries = ({
     )
   }
 
-  return (
-    <Box sx={{ zIndex: 0, position: 'relative' }}>
-      <Box sx={{ width: '100%', height: '300px', pointerEvents: 'none' }}>
-        <AnimatedChart
-          x={xLimits}
-          y={animatedYLimits.yLimits}
-          padding={{ top: 30 }}
+  const renderXScrubLabel = () => {
+    if (!isHovering || !mousePosition) return null
+    return (
+      <Point x={mousePosition} y={yLimits[0]} align={'center'} width={2}>
+        <Badge
+          sx={{
+            fontSize: 0,
+            height: '20px',
+            color: 'secondary',
+            bg: 'muted',
+            width: '60px',
+            mt: 2,
+          }}
         >
-          <Grid vertical horizontal />
-          <Ticks left bottom />
-          <TickLabels left bottom />
-          <AxisLabel units={yLabels.units} sx={{ fontSize: 0 }} left>
-            {yLabels.title}
-          </AxisLabel>
-          <AxisLabel units='years' sx={{ fontSize: 0 }} bottom>
-            Time
-          </AxisLabel>
-          <Plot
-            sx={{
-              pointerEvents: 'auto',
-              cursor:
-                xSelector && mousePosition && mousePosition < endYear
-                  ? 'pointer'
-                  : 'auto',
-            }}
-            {...xSelectorHandlers}
-          >
-            {selectedLines.map((line, i) => (
-              <Line
-                key={i + '-selected'}
-                id={line.id}
-                onClick={handleClick}
-                onMouseOver={() => handleHover(line.id)}
-                onMouseLeave={() => handleHover(null)}
-                sx={{
-                  stroke: line.color,
-                  strokeWidth: 2,
-                  pointerEvents: 'visiblePainted',
-                  '&:hover': {
-                    cursor: 'pointer',
-                  },
-                }}
-                data={line.data}
-              />
-            ))}
-            {unselectedLines.map((line, i) => (
-              <Line
-                key={i + '-unselected'}
-                sx={{
-                  stroke: line.color,
-                  strokeWidth: 2,
-                }}
-                data={line.data}
-              />
-            ))}
-            <Rect
-              x={[endYear, 15]}
-              y={[0, 1000000]}
-              color='muted'
-              opacity={0.2}
-              onClick={(e) => e.stopPropagation()}
+          {xYearsMonth(mousePosition)}
+        </Badge>
+      </Point>
+    )
+  }
+
+  return (
+    <Box
+      sx={{
+        zIndex: 0,
+        position: 'relative',
+        width: '100%',
+        height: '300px',
+        pointerEvents: 'none',
+      }}
+    >
+      <Chart x={xLimits} y={yLimits} padding={{ top: 30 }}>
+        <Grid vertical horizontal />
+        <Ticks left bottom />
+        <TickLabels left bottom />
+        <AxisLabel units={yLabels.units} sx={{ fontSize: 0 }} left>
+          {yLabels.title}
+        </AxisLabel>
+        <AxisLabel units='years' sx={{ fontSize: 0 }} bottom>
+          Time
+        </AxisLabel>
+        <Plot
+          sx={{
+            pointerEvents: 'auto',
+            cursor:
+              xSelector && mousePosition && mousePosition < endYear
+                ? 'pointer'
+                : 'auto',
+          }}
+          {...xSelectorHandlers}
+        >
+          {selectedLines.map(({ data, id, color }) => (
+            <Line
+              key={id + '-selected'}
+              id={id + '-selected'}
+              onClick={handleClick}
+              onMouseOver={() => handleHover(id)}
+              onMouseLeave={() => handleHover(null)}
+              sx={{
+                stroke: color,
+                strokeWidth: 2,
+                pointerEvents: 'visiblePainted',
+                '&:hover': {
+                  cursor: 'pointer',
+                },
+              }}
+              data={data}
             />
-            {xSelector &&
-              isHovering &&
-              mousePosition &&
-              mousePosition < endYear && (
-                <Rect
-                  x={[mousePosition, mousePosition + 0.05]}
-                  y={yLimits}
-                  color='secondary'
-                  opacity={1}
-                />
-              )}
-            {renderHoveredLine()}
-            {renderPoint()}
-          </Plot>
-          {renderDataBadge()}
-        </AnimatedChart>
-      </Box>
+          ))}
+          {unselectedLines.map(({ data, id, color }) => (
+            <Line
+              key={id + '-unselected'}
+              id={id + '-unselected'}
+              sx={{
+                stroke: color,
+                strokeWidth: 2,
+              }}
+              data={data}
+            />
+          ))}
+          <Rect
+            x={[endYear, 15]}
+            y={[0, 1000000]}
+            color='muted'
+            opacity={0.2}
+            onClick={(e) => e.stopPropagation()}
+          />
+          {xSelector && isHovering && mousePosition && mousePosition < endYear && (
+            <>
+              <Rect
+                x={[mousePosition - 0.02, mousePosition + 0.02]}
+                y={yLimits}
+                color='secondary'
+                opacity={1}
+              />
+            </>
+          )}
+          {renderHoveredLine()}
+          {renderPoint()}
+        </Plot>
+        {renderDataBadge()}
+        {renderXScrubLabel()}
+      </Chart>
     </Box>
   )
 }
