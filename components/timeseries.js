@@ -90,19 +90,24 @@ const Timeseries = ({
       return null
     }
     return (
-      <Point x={mousePosition} y={0} align={'center'} width={2}>
-        <Badge
-          sx={{
-            fontSize: 0,
-            height: '20px',
-            color: 'secondary',
-            bg: 'muted',
-            width: '60px',
-            mt: 2,
-          }}
-        >
-          {xYearsMonth(mousePosition)}
-        </Badge>
+      <Point
+        x={mousePosition}
+        y={yLimits[1]}
+        align={mousePosition < 12 ? 'left' : 'right'}
+        verticalAlign='bottom'
+        height={20}
+      >
+        <Box sx={{ mb: -2, [mousePosition < 12 ? 'ml' : 'mr']: -2 }}>
+          <Badge
+            sx={{
+              fontSize: 0,
+              height: '20px',
+              background: 'secondary',
+            }}
+          >
+            {xYearsMonth(mousePosition)}
+          </Badge>
+        </Box>
       </Point>
     )
   }
