@@ -84,7 +84,7 @@ const Timeseries = ({
     if (
       !isHovering ||
       mousePosition == null ||
-      mousePosition > endYear ||
+      mousePosition >= endYear ||
       !selectedLines.length
     ) {
       return null
