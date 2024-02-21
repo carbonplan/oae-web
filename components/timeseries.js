@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box } from 'theme-ui'
+import { Box, useThemeUI } from 'theme-ui'
 import {
   AxisLabel,
   Chart,
@@ -26,6 +26,7 @@ const Timeseries = ({
   xSelector = false,
   handleXSelectorClick = () => {},
 }) => {
+  const { theme } = useThemeUI()
   const { selectedLines, unselectedLines, hoveredLine } = timeData
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
@@ -63,12 +64,20 @@ const Timeseries = ({
     : {}
 
   const renderXSelector = () => {
-    if (xSelector && isHovering && mousePosition && mousePosition < endYear) {
+    if (
+      xSelector &&
+      isHovering &&
+      mousePosition != null &&
+      mousePosition < endYear
+    ) {
       return (
         <Rect
-          x={[mousePosition - 0.02, mousePosition + 0.02]}
+          x={[mousePosition - 0.0001, mousePosition + 0.0001]}
           y={yLimits}
-          color='secondary'
+          color='none'
+          vectorEffect='non-scaling-stroke'
+          stroke={theme.colors.secondary}
+          strokeWidth={1}
           opacity={1}
         />
       )
@@ -78,26 +87,31 @@ const Timeseries = ({
   const renderXSelectorLabel = () => {
     if (
       !isHovering ||
-      !mousePosition ||
-      mousePosition > endYear ||
+      mousePosition == null ||
+      mousePosition >= endYear ||
       !selectedLines.length
     ) {
       return null
     }
     return (
-      <Point x={mousePosition} y={0} align={'center'} width={2}>
-        <Badge
-          sx={{
-            fontSize: 0,
-            height: '20px',
-            color: 'secondary',
-            bg: 'muted',
-            width: '60px',
-            mt: 2,
-          }}
-        >
-          {xYearsMonth(mousePosition)}
-        </Badge>
+      <Point
+        x={mousePosition}
+        y={yLimits[1]}
+        align={mousePosition < 12 ? 'left' : 'right'}
+        verticalAlign='bottom'
+        height={20}
+      >
+        <Box sx={{ mb: -2, [mousePosition < 12 ? 'ml' : 'mr']: -2 }}>
+          <Badge
+            sx={{
+              fontSize: 0,
+              height: '20px',
+              background: 'secondary',
+            }}
+          >
+            {xYearsMonth(mousePosition)}
+          </Badge>
+        </Box>
       </Point>
     )
   }
@@ -225,9 +239,9 @@ const Timeseries = ({
             opacity={0.2}
             onClick={(e) => e.stopPropagation()}
           />
-          {renderXSelector()}
           {renderHoveredLine()}
           {renderPoint()}
+          {renderXSelector()}
         </Plot>
         {renderXSelectorLabel()}
         {renderDataBadge()}
