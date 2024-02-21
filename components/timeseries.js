@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box } from 'theme-ui'
+import { Box, useThemeUI } from 'theme-ui'
 import {
   AxisLabel,
   Chart,
@@ -26,6 +26,7 @@ const Timeseries = ({
   xSelector = false,
   handleXSelectorClick = () => {},
 }) => {
+  const { theme } = useThemeUI()
   const { selectedLines, unselectedLines, hoveredLine } = timeData
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
@@ -73,7 +74,9 @@ const Timeseries = ({
         <Rect
           x={[mousePosition - 0.02, mousePosition + 0.02]}
           y={yLimits}
-          color='secondary'
+          color='none'
+          stroke={theme.colors.secondary}
+          strokeWidth={0.3}
           opacity={1}
         />
       )
