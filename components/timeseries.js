@@ -235,9 +235,9 @@ const Timeseries = ({
             opacity={0.2}
             onClick={(e) => e.stopPropagation()}
           />
-          {renderXSelector()}
           {renderHoveredLine()}
           {renderPoint()}
+          {renderXSelector()}
         </Plot>
         {renderXSelectorLabel()}
         {renderDataBadge()}
