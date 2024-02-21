@@ -1,20 +1,135 @@
-import React from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { Box, Divider } from 'theme-ui'
-import { Select } from '@carbonplan/components'
+import { Expander, Select } from '@carbonplan/components'
+import AnimateHeight from 'react-animate-height'
+import { useThemedColormap } from '@carbonplan/colormaps'
+import { useRegion } from '@carbonplan/maps'
+
 import TimeSlider from './time-slider'
-import { SidebarDivider } from '@carbonplan/layouts'
+import Timeseries from './timeseries'
+import { getColorForValue } from '../utils/color'
 import useStore, { variables } from '../store'
+
+const toMonthsIndex = (year, startYear) => (year - startYear) * 12
+const degToRad = (degrees) => {
+  return degrees * (Math.PI / 180)
+}
+const areaOfPixelProjected = (lat, zoom) => {
+  const c = 40075016.686 / 1000
+  return Math.pow(
+    (c * Math.cos(degToRad(lat))) / Math.pow(2, Math.floor(zoom) + 7),
+    2
+  )
+}
+const isValidElement = (el) =>
+  el !== 0 && el !== 9.969209968386869e36 && !isNaN(el)
+
+const getArrayData = (arr, lats, zoom) => {
+  const areas = lats
+    .filter((l, i) => isValidElement(arr[i]))
+    .map((lat) => areaOfPixelProjected(lat, zoom))
+  const totalArea = areas.reduce((a, d) => a + d, 0)
+  return arr
+    .filter((el) => isValidElement(el))
+    .reduce(
+      (accum, el, i) => ({
+        avg: accum.avg + el * (areas[i] / totalArea),
+      }),
+      { avg: 0 }
+    )
+}
+
+const hoveredLine = null
 
 const RegionDetail = ({ sx }) => {
   const currentVariable = useStore((state) => state.currentVariable)
   const setCurrentVariable = useStore((state) => state.setCurrentVariable)
+  const showRegionPicker = useStore((state) => state.showRegionPicker)
+  const setShowRegionPicker = useStore((state) => state.setShowRegionPicker)
+  const regionData = useStore((state) => state.regionData)
+  const timeHorizon = useStore((state) => state.timeHorizon)
+  const elapsedYears = useStore((state) => state.elapsedTime / 12)
+  const setElapsedTime = useStore((state) => state.setElapsedTime)
 
-  const handleSelection = (e) => {
-    const selectedVariable = variables.find(
-      (variable) => variable.key === e.target.value
+  const colormap = useThemedColormap(currentVariable?.colormap)
+  const { region } = useRegion()
+  const zoom = region?.properties?.zoom || 0
+
+  const [minMax, setMinMax] = useState([0, 0])
+
+  const toLineData = useMemo(() => {
+    if (!currentVariable || !regionData?.[currentVariable.key]) return []
+
+    const averages = Object.values(regionData[currentVariable.key]).map(
+      (data, index) => {
+        const { avg } = getArrayData(data, regionData.coordinates.lat, zoom)
+        const toYear = index / 12
+        return [toYear, avg]
+      }
     )
-    setCurrentVariable(selectedVariable)
-  }
+    const [min, max] = averages.reduce(
+      ([min, max], [_, value]) => [Math.min(min, value), Math.max(max, value)],
+      [Infinity, -Infinity]
+    )
+    setMinMax([min, max])
+    return [averages]
+  }, [regionData, currentVariable])
+
+  const { selectedLines, unselectedLines } = useMemo(() => {
+    const selectedLines = []
+    const unselectedLines = []
+    toLineData.forEach((line, index) => {
+      const cutIndex = toMonthsIndex(timeHorizon, 0)
+      const selectedSlice = line.slice(0, cutIndex + 1)
+      const unselectedSlice = line.slice(cutIndex)
+      const avgValueForLine =
+        selectedSlice.reduce((acc, curr) => acc + curr[1], 0) /
+        selectedSlice.length
+      const color = getColorForValue(
+        avgValueForLine,
+        colormap,
+        currentVariable.colorLimits
+      )
+      selectedLines.push({
+        id: index,
+        color,
+        data: selectedSlice,
+      })
+      unselectedLines.push({
+        id: index,
+        color: 'muted',
+        data: unselectedSlice,
+      })
+    })
+    return { selectedLines, unselectedLines }
+  }, [toLineData, timeHorizon, toMonthsIndex])
+
+  const point = useMemo(() => {
+    const y = selectedLines[0]?.data?.[toMonthsIndex(elapsedYears, 0)]?.[1]
+    if (!y) return null
+    const color = getColorForValue(y, colormap, currentVariable.colorLimits)
+    return { x: elapsedYears, y, color, text: y.toFixed(1) }
+  }, [elapsedYears, selectedLines])
+
+  const handleSelection = useCallback(
+    (e) => {
+      const selectedVariable = variables.find(
+        (variable) => variable.key === e.target.value
+      )
+      setCurrentVariable(selectedVariable)
+    },
+    [setCurrentVariable]
+  )
+
+  const handleTimeseriesClick = useCallback(
+    (e) => {
+      const { left, width } = e.currentTarget.getBoundingClientRect()
+      const clickX = e.clientX - left
+      const months = Math.round((clickX / width) * 179)
+      setElapsedTime(months)
+    },
+    [setElapsedTime]
+  )
 
   return (
     <>
@@ -40,10 +155,44 @@ const RegionDetail = ({ sx }) => {
           </option>
         ))}
       </Select>
-      <SidebarDivider sx={{ mt: 4, mb: 3 }} />
-      <Box sx={{ mb: [-3, -3, -3, -2] }}>
+      <Box sx={{ mb: [-3, -3, -3, -2], mt: 4 }}>
         <TimeSlider />
       </Box>
+      <Divider sx={{ mt: 4, mb: 5 }} />
+      <Box
+        onClick={() => setShowRegionPicker(!showRegionPicker)}
+        sx={{
+          ...sx.heading,
+          cursor: 'pointer',
+          '&:hover #expander': {
+            stroke: 'primary',
+          },
+        }}
+      >
+        Time Series
+        <Expander
+          id='expander'
+          value={showRegionPicker}
+          sx={{ width: 18, ml: '2px' }}
+        />
+      </Box>
+      <AnimateHeight duration={500} height={showRegionPicker ? 'auto' : 0}>
+        <Timeseries
+          endYear={timeHorizon}
+          xLimits={[0, 15]}
+          yLimits={minMax}
+          yLabels={{
+            title: currentVariable.label ?? '',
+            units: currentVariable.unit ?? '',
+          }}
+          timeData={{ selectedLines, unselectedLines, hoveredLine }}
+          handleClick={handleTimeseriesClick}
+          handleHover={() => {}}
+          point={point}
+          xSelector={true}
+          handleXSelectorClick={handleTimeseriesClick}
+        />
+      </AnimateHeight>
     </>
   )
 }

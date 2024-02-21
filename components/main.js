@@ -1,14 +1,13 @@
 import React from 'react'
 import useStore from '../store'
 import { Sidebar } from '@carbonplan/layouts'
-import { useThemedColormap } from '@carbonplan/colormaps'
 import { Box, Divider } from 'theme-ui'
 import Header from './header'
 import MapWrapper from './map'
 import RegionFooter from './footer'
 import Filters from './filters'
-import TimeseriesOverview from './timeseries-overview'
 import CWorthyLogo from './cworthy-logo'
+import OverviewChart from './overview-chart'
 
 const sx = {
   heading: {
@@ -91,7 +90,7 @@ const Main = () => {
             <Divider sx={{ mt: 4, mb: 5 }} />
             <Filters sx={sx} />
             <Divider sx={{ mt: 4, mb: 5 }} />
-            <TimeseriesOverview sx={sx} />
+            <OverviewChart sx={sx} />
           </Sidebar>
         </MapWrapper>
       </Box>

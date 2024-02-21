@@ -10,13 +10,11 @@ import RegionDetail from './region-detail'
 
 const RegionFooter = ({ sx }) => {
   const hoveredRegion = useStore((state) => state.hoveredRegion)
-  const setHoveredRegion = useStore((state) => state.setHoveredRegion)
   const selectedRegion = useStore((state) => state.selectedRegion)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
 
   const handleClear = () => {
     setSelectedRegion(null)
-    setHoveredRegion(null)
   }
 
   return (
@@ -26,6 +24,7 @@ const RegionFooter = ({ sx }) => {
         zIndex: 2,
         bg: 'background',
         '&:hover': { bg: 'background' },
+        cursor: 'auto',
       }}
     >
       <AnimateHeight
@@ -77,7 +76,6 @@ const RegionFooter = ({ sx }) => {
                   sx={{
                     height: 12,
                     color: 'secondary',
-                    cursor: 'pointer',
                   }}
                 />
               </Box>

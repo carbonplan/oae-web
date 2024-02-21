@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react'
 import { Slider } from '@carbonplan/components'
 import { Box, Flex } from 'theme-ui'
 import { useCallback, useState } from 'react'
@@ -29,6 +30,10 @@ const UnitSlider = ({
 }) => {
   const [sliderValue, setSliderValue] = useState(value)
   const [sliding, setSliding] = useState(false)
+
+  useEffect(() => {
+    setSliderValue(value)
+  }, [value])
 
   const handleChange = useCallback(
     (e) => {
@@ -85,17 +90,18 @@ const UnitSlider = ({
   )
 }
 
-const TimeSlider = ({}) => {
+const TimeSlider = () => {
   const elapsedTime = useStore((state) => state.elapsedTime)
   const setElapsedTime = useStore((state) => state.setElapsedTime)
   const injectionSeason = useStore((state) =>
     Object.keys(state.injectionSeason).find((k) => state.injectionSeason[k])
   )
+  const timeHorizon = useStore((state) => state.timeHorizon)
 
   const handleMonthChange = useCallback(
     (month) => {
       const years = Math.floor(elapsedTime / 12)
-      setElapsedTime(years + month)
+      setElapsedTime(years * 12 + month)
     },
     [elapsedTime]
   )
@@ -126,7 +132,7 @@ const TimeSlider = ({}) => {
       />
       <UnitSlider
         value={Math.floor(elapsedTime / 12)}
-        range={[0, 14]}
+        range={[0, timeHorizon - 1]}
         onChange={handleYearChange}
         formatLabel={(d) => `Year ${d + 1}`}
         debounce

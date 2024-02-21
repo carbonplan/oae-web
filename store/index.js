@@ -22,7 +22,7 @@ export const variables = [
     key: 'ALK_ALT_CO2',
     colorLimits: [2000, 2800],
     colormap: 'warm',
-    label: 'Alkalinity counterfactual',
+    label: 'Alk. counterfactual',
     unit: 'mEq/m³',
     description: 'tk',
   },
@@ -55,7 +55,14 @@ const useStore = create((set) => ({
   setSelectedRegion: (selectedRegion) =>
     selectedRegion !== null
       ? set({ selectedRegion, currentVariable: variables[0] })
-      : set({ selectedRegion, currentVariable: overviewVariable }),
+      : set({
+          selectedRegion,
+          currentVariable: overviewVariable,
+          showRegionPicker: false,
+          regionData: null,
+          hoveredRegion: null,
+          elapsedTime: 0,
+        }),
 
   hoveredRegion: null,
   setHoveredRegion: (hoveredRegion) => set({ hoveredRegion }),
@@ -77,6 +84,12 @@ const useStore = create((set) => ({
     OCT: false,
   },
   setInjectionSeason: (injectionSeason) => set({ injectionSeason }),
+
+  showRegionPicker: false,
+  setShowRegionPicker: (showRegionPicker) => set({ showRegionPicker }),
+
+  regionData: null,
+  setRegionData: (regionData) => set({ regionData }),
 }))
 
 export default useStore
