@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { Box, Divider } from 'theme-ui'
 import { Expander, Select } from '@carbonplan/components'
 import AnimateHeight from 'react-animate-height'
@@ -11,6 +11,35 @@ import { getColorForValue } from '../utils/color'
 import useStore, { variables } from '../store'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12
+const degToRad = (degrees) => {
+  return degrees * (Math.PI / 180)
+}
+const areaOfPixelProjected = (lat, zoom) => {
+  const c = 40075016.686 / 1000
+  return Math.pow(
+    (c * Math.cos(degToRad(lat))) / Math.pow(2, Math.floor(zoom) + 7),
+    2
+  )
+}
+const isValidElement = (el) =>
+  el !== 0 && el !== 9.969209968386869e36 && !isNaN(el)
+
+const getArrayData = (arr, lats, zoom) => {
+  const areas = lats
+    .filter((l, i) => isValidElement(arr[i]))
+    .map((lat) => areaOfPixelProjected(lat, zoom))
+  const totalArea = areas.reduce((a, d) => a + d, 0)
+  return arr
+    .filter((el) => isValidElement(el))
+    .reduce(
+      (accum, el, i) => ({
+        avg: accum.avg + el * (areas[i] / totalArea),
+      }),
+      { avg: 0 }
+    )
+}
+
+const hoveredLine = null
 
 const RegionDetail = ({ sx }) => {
   const currentVariable = useStore((state) => state.currentVariable)
@@ -27,35 +56,6 @@ const RegionDetail = ({ sx }) => {
   const zoom = region?.properties?.zoom || 0
 
   const [minMax, setMinMax] = useState([0, 0])
-
-  const degToRad = (degrees) => {
-    return degrees * (Math.PI / 180)
-  }
-  const areaOfPixelProjected = (lat, zoom) => {
-    const c = 40075016.686 / 1000
-    return Math.pow(
-      (c * Math.cos(degToRad(lat))) / Math.pow(2, Math.floor(zoom) + 7),
-      2
-    )
-  }
-
-  const isValidElement = (el) =>
-    el !== 0 && el !== 9.969209968386869e36 && !isNaN(el)
-
-  const getArrayData = (arr, lats, zoom) => {
-    const areas = lats
-      .filter((l, i) => isValidElement(arr[i]))
-      .map((lat) => areaOfPixelProjected(lat, zoom))
-    const totalArea = areas.reduce((a, d) => a + d, 0)
-    return arr
-      .filter((el) => isValidElement(el))
-      .reduce(
-        (accum, el, i) => ({
-          avg: accum.avg + el * (areas[i] / totalArea),
-        }),
-        { avg: 0 }
-      )
-  }
 
   const toLineData = useMemo(() => {
     if (!currentVariable || !regionData?.[currentVariable.key]) return []
@@ -102,8 +102,7 @@ const RegionDetail = ({ sx }) => {
       })
     })
     return { selectedLines, unselectedLines }
-  }, [regionData, timeHorizon, toMonthsIndex])
-  const hoveredLine = null
+  }, [toLineData, timeHorizon, toMonthsIndex])
 
   const point = useMemo(() => {
     const y = selectedLines[0]?.data?.[toMonthsIndex(elapsedYears, 0)]?.[1]
@@ -112,19 +111,25 @@ const RegionDetail = ({ sx }) => {
     return { x: elapsedYears, y, color, text: y.toFixed(1) }
   }, [elapsedYears, selectedLines])
 
-  const handleSelection = (e) => {
-    const selectedVariable = variables.find(
-      (variable) => variable.key === e.target.value
-    )
-    setCurrentVariable(selectedVariable)
-  }
+  const handleSelection = useCallback(
+    (e) => {
+      const selectedVariable = variables.find(
+        (variable) => variable.key === e.target.value
+      )
+      setCurrentVariable(selectedVariable)
+    },
+    [setCurrentVariable]
+  )
 
-  const handleTimeseriesClick = (e) => {
-    const { left, width } = e.currentTarget.getBoundingClientRect()
-    const clickX = e.clientX - left
-    const months = Math.round((clickX / width) * 179)
-    setElapsedTime(months)
-  }
+  const handleTimeseriesClick = useCallback(
+    (e) => {
+      const { left, width } = e.currentTarget.getBoundingClientRect()
+      const clickX = e.clientX - left
+      const months = Math.round((clickX / width) * 179)
+      setElapsedTime(months)
+    },
+    [setElapsedTime]
+  )
 
   return (
     <>

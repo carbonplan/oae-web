@@ -26,6 +26,7 @@ const MapWrapper = ({ children, setLoading }) => {
   }, [injectionSeason])
 
   const handleRegionData = (data) => {
+    if (data.value === null) return
     setRegionData(data.value)
   }
 
@@ -64,7 +65,7 @@ const MapWrapper = ({ children, setLoading }) => {
           {showRegionPicker && (
             <RegionPicker
               color={theme.colors.primary}
-              backgroundColor={'#00000000'}
+              backgroundColor={'#00000099'}
               fontFamily={theme.fonts.mono}
               fontSize={'14px'}
               maxRadius={2000}

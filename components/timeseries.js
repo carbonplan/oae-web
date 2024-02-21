@@ -33,11 +33,7 @@ const Timeseries = ({
   const xYearsMonth = (x) => {
     const years = Math.floor(x)
     const months = Math.round((x - years) * 12)
-    if (years > 0) {
-      return `${years}y ${months}m`
-    } else {
-      return `${months}m`
-    }
+    return years > 0 ? `${years}y ${months}m` : `${months}m`
   }
 
   const handleXSelectorMouseMove = (e) => {
@@ -88,7 +84,6 @@ const Timeseries = ({
     ) {
       return null
     }
-
     return (
       <Point x={mousePosition} y={0} align={'center'} width={2}>
         <Badge
@@ -112,7 +107,6 @@ const Timeseries = ({
       return null
     }
     const { color } = hoveredLine
-
     return (
       <Line
         key={hoveredLine.id + '-hovered'}
@@ -207,6 +201,7 @@ const Timeseries = ({
                 '&:hover': {
                   cursor: 'pointer',
                 },
+                transition: 'all 0.2s',
               }}
               data={data}
             />
@@ -218,6 +213,7 @@ const Timeseries = ({
               sx={{
                 stroke: color,
                 strokeWidth: 2,
+                transition: 'all 0.2s',
               }}
               data={data}
             />
@@ -229,16 +225,6 @@ const Timeseries = ({
             opacity={0.2}
             onClick={(e) => e.stopPropagation()}
           />
-          {xSelector && isHovering && mousePosition && mousePosition < endYear && (
-            <>
-              <Rect
-                x={[mousePosition - 0.02, mousePosition + 0.02]}
-                y={yLimits}
-                color='secondary'
-                opacity={1}
-              />
-            </>
-          )}
           {renderXSelector()}
           {renderHoveredLine()}
           {renderPoint()}
