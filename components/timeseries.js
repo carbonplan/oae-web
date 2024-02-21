@@ -63,7 +63,12 @@ const Timeseries = ({
     : {}
 
   const renderXSelector = () => {
-    if (xSelector && isHovering && mousePosition && mousePosition < endYear) {
+    if (
+      xSelector &&
+      isHovering &&
+      mousePosition != null &&
+      mousePosition < endYear
+    ) {
       return (
         <Rect
           x={[mousePosition - 0.02, mousePosition + 0.02]}
@@ -78,7 +83,7 @@ const Timeseries = ({
   const renderXSelectorLabel = () => {
     if (
       !isHovering ||
-      !mousePosition ||
+      mousePosition == null ||
       mousePosition > endYear ||
       !selectedLines.length
     ) {
