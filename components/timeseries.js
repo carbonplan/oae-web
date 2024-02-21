@@ -72,11 +72,12 @@ const Timeseries = ({
     ) {
       return (
         <Rect
-          x={[mousePosition - 0.02, mousePosition + 0.02]}
+          x={[mousePosition - 0.0001, mousePosition + 0.0001]}
           y={yLimits}
           color='none'
+          vectorEffect='non-scaling-stroke'
           stroke={theme.colors.secondary}
-          strokeWidth={0.3}
+          strokeWidth={1}
           opacity={1}
         />
       )
