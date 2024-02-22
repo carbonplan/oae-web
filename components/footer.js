@@ -60,7 +60,6 @@ const RegionFooter = ({ sx }) => {
           }}
         >
           <Box
-            as={'span'}
             sx={{
               textTransform: 'uppercase',
               fontSize: 3,
@@ -78,11 +77,10 @@ const RegionFooter = ({ sx }) => {
               )}
             </Box>
           </Box>
-          <Box as={'span'} sx={{ fontSize: 0, color: 'primary' }}>
+          <Box sx={{ fontSize: 0, color: 'primary' }}>
             {selectedRegion !== null ? (
               <Box
                 onClick={handleClear}
-                as={'span'}
                 sx={{
                   textTransform: 'uppercase',
                   fontSize: 3,
@@ -102,8 +100,14 @@ const RegionFooter = ({ sx }) => {
                 />
               </Box>
             ) : (
-              <Box as={'span'} sx={{ color: 'primary' }}>
-                Select a model run from the map or graph
+              <Box
+                sx={{
+                  color: 'primary',
+                  overflowX: 'visible',
+                  wordWrap: 'normal',
+                }}
+              >
+                Select a model run on the map{index > 1 ? '/graph' : ''}
               </Box>
             )}
           </Box>
