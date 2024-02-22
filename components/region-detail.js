@@ -9,6 +9,7 @@ import TimeSlider from './time-slider'
 import Timeseries from './timeseries'
 import { getColorForValue } from '../utils/color'
 import useStore, { variables } from '../store'
+import { useBreakpointIndex } from '@theme-ui/match-media'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12
 const degToRad = (degrees) => {
@@ -54,6 +55,7 @@ const RegionDetail = ({ sx }) => {
   const colormap = useThemedColormap(currentVariable?.colormap)
   const { region } = useRegion()
   const zoom = region?.properties?.zoom || 0
+  const index = useBreakpointIndex()
 
   const [minMax, setMinMax] = useState([0, 0])
 
@@ -158,41 +160,46 @@ const RegionDetail = ({ sx }) => {
       <Box sx={{ mb: [-3, -3, -3, -2], mt: 4 }}>
         <TimeSlider />
       </Box>
-      <Divider sx={{ mt: 4, mb: 5 }} />
-      <Box
-        onClick={() => setShowRegionPicker(!showRegionPicker)}
-        sx={{
-          ...sx.heading,
-          cursor: 'pointer',
-          '&:hover #expander': {
-            stroke: 'primary',
-          },
-        }}
-      >
-        Time Series
-        <Expander
-          id='expander'
-          value={showRegionPicker}
-          sx={{ width: 18, ml: '2px' }}
-        />
-      </Box>
-      <AnimateHeight duration={500} height={showRegionPicker ? 'auto' : 0}>
-        <Timeseries
-          endYear={timeHorizon}
-          xLimits={[0, 15]}
-          yLimits={minMax}
-          yLabels={{
-            title: currentVariable.label ?? '',
-            units: currentVariable.unit ?? '',
-          }}
-          timeData={{ selectedLines, unselectedLines, hoveredLine }}
-          handleClick={handleTimeseriesClick}
-          handleHover={() => {}}
-          point={point}
-          xSelector={true}
-          handleXSelectorClick={handleTimeseriesClick}
-        />
-      </AnimateHeight>
+      {index >= 2 && (
+        <>
+          <Divider sx={{ mt: 4, mb: 5 }} />
+          <Box
+            onClick={() => setShowRegionPicker(!showRegionPicker)}
+            sx={{
+              ...sx.heading,
+              cursor: 'pointer',
+              '&:hover #expander': {
+                stroke: 'primary',
+              },
+            }}
+          >
+            Time Series
+            <Expander
+              id='expander'
+              value={showRegionPicker}
+              sx={{ width: 18, ml: '2px' }}
+            />
+          </Box>
+
+          <AnimateHeight duration={500} height={showRegionPicker ? 'auto' : 0}>
+            <Timeseries
+              endYear={timeHorizon}
+              xLimits={[0, 15]}
+              yLimits={minMax}
+              yLabels={{
+                title: currentVariable.label ?? '',
+                units: currentVariable.unit ?? '',
+              }}
+              timeData={{ selectedLines, unselectedLines, hoveredLine }}
+              handleClick={handleTimeseriesClick}
+              handleHover={() => {}}
+              point={point}
+              xSelector={true}
+              handleXSelectorClick={handleTimeseriesClick}
+            />
+          </AnimateHeight>
+        </>
+      )}
     </>
   )
 }

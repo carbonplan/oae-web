@@ -42,7 +42,7 @@ const Header = ({ expanded, setExpanded }) => {
                   display: ['inherit', 'inherit', 'none', 'none'],
                 }}
                 value={expanded}
-                onClick={() => setExpanded((prev) => !prev)}
+                onClick={() => setExpanded(!expanded)}
               />,
             ]}
           />
