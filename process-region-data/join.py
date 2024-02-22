@@ -13,10 +13,7 @@ fs = s3fs.S3FileSystem(anon=True)
 store = s3fs.S3Map(root=zarr_store_path, s3=fs)
 ds = xr.open_zarr(store, consolidated=True)
 
-existing_polygon_ids = ds['polygon_id'].values
-gdf_filtered = gdf[gdf['polygon_id'].isin(existing_polygon_ids)].copy()
-
-gdf_filtered.set_index('polygon_id', inplace=True)
+gdf.set_index('polygon_id', inplace=True)
 
 def flatten_efficiency_data_and_apply(polygon_id, ds, gdf):
     for injection_date in range(1, 5):  # Injection dates labeled 1 to 4
@@ -30,14 +27,13 @@ def flatten_efficiency_data_and_apply(polygon_id, ds, gdf):
         except KeyError:
             print(f"Data for polygon_id {polygon_id} and injection_date {injection_date} does not exist.")
 
-
-for polygon_id in existing_polygon_ids:
-    flatten_efficiency_data_and_apply(polygon_id, ds, gdf_filtered)
+for polygon_id in gdf.index:
+    flatten_efficiency_data_and_apply(polygon_id, ds, gdf)
 
 output_path = 'regions_joined.geojson'
-gdf_filtered.to_file(output_path, driver='GeoJSON')
+gdf.to_file(output_path, driver='GeoJSON')
 
 print(f"GeoJSON file saved to {output_path}.")
 
-# convert to vector tiles
+# Convert to vector tiles
 # tippecanoe -zg -e tiles/ --no-tile-compression regions_joined.geojson
