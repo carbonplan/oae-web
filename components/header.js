@@ -7,11 +7,8 @@ import {
   Header as HeaderComponent,
   Settings,
 } from '@carbonplan/components'
-import useStore from '../store'
 
-const Header = () => {
-  const expanded = useStore((state) => state.expanded)
-  const setExpanded = useStore((state) => state.setExpanded)
+const Header = ({ expanded, setExpanded }) => {
   return (
     <>
       <Meta card={''} description={'OAE Web'} title={'OAE'} />
@@ -45,7 +42,7 @@ const Header = () => {
                   display: ['inherit', 'inherit', 'none', 'none'],
                 }}
                 value={expanded}
-                onClick={() => setExpanded((prev) => !prev)}
+                onClick={() => setExpanded(!expanded)}
               />,
             ]}
           />
