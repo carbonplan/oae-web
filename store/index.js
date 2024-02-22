@@ -54,7 +54,13 @@ const useStore = create((set) => ({
   selectedRegion: null,
   setSelectedRegion: (selectedRegion) =>
     selectedRegion !== null
-      ? set({ selectedRegion, currentVariable: variables[0] })
+      ? set(() => {
+          if (selectedRegion !== 0) {
+            alert('only region 0 (near greenland!) is available at this time')
+            return { selectedRegion: null }
+          }
+          return { selectedRegion, currentVariable: variables[0] }
+        })
       : set({
           selectedRegion,
           currentVariable: overviewVariable,
