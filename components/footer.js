@@ -56,6 +56,7 @@ const RegionFooter = ({ sx }) => {
           sx={{
             alignItems: 'center',
             justifyContent: 'space-between',
+            height: 25,
           }}
         >
           <Box
@@ -65,7 +66,7 @@ const RegionFooter = ({ sx }) => {
               color: 'secondary',
             }}
           >
-            <Box as={'span'}>Region</Box>
+            Region
             <Box as={'span'} sx={{ ml: 2, color: 'primary' }}>
               {selectedRegion !== null || hoveredRegion !== null ? (
                 <Badge>
