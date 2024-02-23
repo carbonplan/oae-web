@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import useStore from '../store'
 import { Sidebar } from '@carbonplan/layouts'
 import { Box, Divider } from 'theme-ui'
@@ -40,14 +40,18 @@ const Main = () => {
   const index = useBreakpointIndex({ defaultIndex: 2 })
 
   // toggle sidebar based on breakpoint
+  const prevIndexRef = useRef(index)
   useEffect(() => {
-    if (index < 2) {
+    // ref prevents toggling between mobile sizes
+    const prevIndex = prevIndexRef.current
+    prevIndexRef.current = index
+    if (prevIndex < 2 && index >= 2) {
+      setExpanded(true)
+    } else if (prevIndex >= 2 && index < 2) {
       setExpanded(false)
       setShowRegionPicker(false)
-    } else {
-      setExpanded(true)
     }
-  }, [index, setExpanded])
+  }, [index])
 
   return (
     <>
