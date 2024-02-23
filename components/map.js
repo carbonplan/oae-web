@@ -76,7 +76,14 @@ const MapWrapper = ({ children, setLoading }) => {
         <Regions />
       )}
       {children}
-      <Box sx={{ position: 'absolute', top: '72px', right: 3 }}>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: ['72px', '72px', 'unset', 'unset'],
+          bottom: ['unset', 'unset', 3, 3],
+          right: 3,
+        }}
+      >
         <Colorbar
           colormap={colormap}
           clim={currentVariable.colorLimits}
