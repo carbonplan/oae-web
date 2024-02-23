@@ -64,10 +64,11 @@ const RegionFooter = ({ sx }) => {
               textTransform: 'uppercase',
               fontSize: 3,
               color: 'secondary',
+              height: 25,
             }}
           >
             Region
-            <Box as={'span'} sx={{ ml: 2, color: 'primary' }}>
+            <Box as={'span'} sx={{ ml: 2, color: 'primary', height: 25 }}>
               {selectedRegion !== null || hoveredRegion !== null ? (
                 <Badge>
                   {selectedRegion !== null ? selectedRegion : hoveredRegion}
@@ -82,6 +83,7 @@ const RegionFooter = ({ sx }) => {
               <Box
                 onClick={handleClear}
                 sx={{
+                  height: 25,
                   textTransform: 'uppercase',
                   fontSize: 3,
                   cursor: 'pointer',
@@ -99,6 +101,7 @@ const RegionFooter = ({ sx }) => {
                   color: 'primary',
                   overflowX: 'visible',
                   wordWrap: 'normal',
+                  height: '100%',
                 }}
               >
                 Select a model run on the map{index > 1 ? '/graph' : ''}
