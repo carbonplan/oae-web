@@ -95,6 +95,8 @@ const RegionFooter = ({ sx }) => {
                   id={'clear'}
                   sx={{
                     height: 12,
+                    width: 12,
+                    ml: 2,
                     color: 'secondary',
                   }}
                 />
