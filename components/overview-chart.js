@@ -110,6 +110,9 @@ const OverviewChart = ({ sx }) => {
   return (
     <>
       <Box sx={sx.heading}>efficiency</Box>
+      <Box sx={{ fontSize: 0, color: 'secondary', pt: 3 }}>
+        Graph filtered to regions in current map view
+      </Box>
       <Timeseries
         endYear={timeHorizon}
         xLimits={[startYear, 15]}

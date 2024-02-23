@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { Map, Line, Raster, RegionPicker } from '@carbonplan/maps'
+import { Map, Line, Raster, RegionPicker, Fill } from '@carbonplan/maps'
 import { Box, useThemeUI } from 'theme-ui'
 import { Colorbar } from '@carbonplan/components'
 import { useThemedColormap } from '@carbonplan/colormaps'
@@ -32,11 +32,6 @@ const MapWrapper = ({ children, setLoading }) => {
 
   return (
     <Map zoom={0} center={[0, 0]} debug={false} setLoading={setLoading}>
-      <Line
-        color={theme.rawColors.secondary}
-        source={bucket + 'basemaps/land'}
-        variable={'land'}
-      />
       {selectedRegion !== null ? (
         <>
           <Raster
@@ -79,9 +74,9 @@ const MapWrapper = ({ children, setLoading }) => {
       <Box
         sx={{
           position: 'absolute',
-          top: ['72px', '72px', 'unset', 'unset'],
-          bottom: ['unset', 'unset', 3, 3],
-          right: 3,
+          top: ['72px', '80px', 'unset', 'unset'],
+          bottom: ['unset', 'unset', 4, 4],
+          right: [3, 4, 5, 6],
         }}
       >
         <Colorbar
@@ -92,6 +87,16 @@ const MapWrapper = ({ children, setLoading }) => {
           horizontal
         />
       </Box>
+      <Fill
+        color={theme.rawColors.background}
+        source={bucket + 'basemaps/land'}
+        variable={'land'}
+      />
+      <Line
+        color={theme.rawColors.secondary}
+        source={bucket + 'basemaps/land'}
+        variable={'land'}
+      />
     </Map>
   )
 }

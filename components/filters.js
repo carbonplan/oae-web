@@ -13,10 +13,10 @@ const Filters = ({ sx }) => {
     <>
       <Box sx={sx.heading}>injection</Box>
       <Row columns={[6, 4, 4, 4]}>
-        <Column start={1} width={[1]} sx={sx.label}>
+        <Column start={1} width={[2, 1, 2, 2]} sx={sx.label}>
           Season
         </Column>
-        <Column start={[3]} width={[2]} sx={sx.label}>
+        <Column start={[3, 2, 3, 3]} width={[4, 4, 2, 2]} sx={sx.label}>
           <Filter
             values={injectionSeason}
             setValues={(val) => setInjectionSeason(val)}
@@ -24,10 +24,10 @@ const Filters = ({ sx }) => {
         </Column>
       </Row>
       <Row columns={[6, 4, 4, 4]}>
-        <Column start={1} width={[2]} sx={sx.label}>
+        <Column start={1} width={[2, 1, 2, 2]} sx={sx.label}>
           Time horizon
         </Column>
-        <Column start={[3]} width={[2]} sx={sx.label}>
+        <Column start={[3, 2, 3, 3]} width={[4, 4, 2, 2]} sx={sx.label}>
           <Input
             sx={{
               ...sx.label,

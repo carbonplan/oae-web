@@ -89,7 +89,16 @@ const useStore = create((set) => ({
     JUL: false,
     OCT: false,
   },
-  setInjectionSeason: (injectionSeason) => set({ injectionSeason }),
+  setInjectionSeason: (injectionSeason) =>
+    set(() => {
+      if (injectionSeason.JAN) {
+        return { injectionSeason }
+      }
+      alert('only january is available at this time')
+      return {
+        injectionSeason: { JAN: true, APR: false, JUL: false, OCT: false },
+      }
+    }),
 
   showRegionPicker: false,
   setShowRegionPicker: (showRegionPicker) => set({ showRegionPicker }),

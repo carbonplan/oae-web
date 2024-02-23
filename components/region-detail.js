@@ -177,11 +177,11 @@ const RegionDetail = ({ sx }) => {
             <Expander
               id='expander'
               value={showRegionPicker}
-              sx={{ width: 18, ml: '2px' }}
+              sx={{ width: 20, ml: 1 }}
             />
           </Box>
 
-          <AnimateHeight duration={500} height={showRegionPicker ? 'auto' : 0}>
+          <AnimateHeight duration={250} height={showRegionPicker ? 'auto' : 0}>
             <Timeseries
               endYear={timeHorizon}
               xLimits={[0, 15]}
