@@ -21,6 +21,16 @@ const Regions = () => {
   const injectionDate =
     Object.values(injectionSeason).findIndex((value) => value) + 1
 
+  //reused colors
+  const transparent = 'rgba(0, 0, 0, 0)'
+  const lineColor = theme.rawColors.muted
+  const lineHighlightColor = [
+    'case',
+    ['boolean', ['feature-state', 'hover'], false],
+    theme.rawColors?.primary,
+    transparent,
+  ]
+
   const safeColorMap = useMemo(() => {
     return colormap[0].length === 3
       ? colormap.map((rgb) => `rgb(${rgb.join(',')})`)
@@ -28,16 +38,20 @@ const Regions = () => {
   }, [colormap])
 
   const buildColorExpression = () => {
+    const dataField = `eff_inj_${injectionDate}_year_${timeHorizon}`
+
     const fillColorExpression = [
-      'step',
-      ['get', `eff_inj_${injectionDate}_year_${timeHorizon}`],
-      safeColorMap[0],
+      'case',
+      ['has', dataField],
+      ['step', ['get', dataField], safeColorMap[0]],
+      transparent,
     ]
+
     const totalRange = colorLimits[1] - colorLimits[0]
     const stepIncrement = totalRange / (safeColorMap.length - 1)
     for (let i = 1; i < safeColorMap.length; i++) {
       const threshold = colorLimits[0] + stepIncrement * i
-      fillColorExpression.push(threshold, safeColorMap[i])
+      fillColorExpression[2].push(threshold, safeColorMap[i])
     }
     return fillColorExpression
   }
@@ -95,7 +109,7 @@ const Regions = () => {
             promoteId: 'polygon_id',
             maxzoom: 0,
             tiles: [
-              'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/tiles/{z}/{x}/{y}.pbf',
+              'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/allPoly/tiles/{z}/{x}/{y}.pbf',
             ],
           })
         }
@@ -107,6 +121,7 @@ const Regions = () => {
           'source-layer': 'regions_joined',
           paint: {
             'fill-color': buildColorExpression(),
+            'fill-outline-color': transparent,
           },
         })
 
@@ -116,12 +131,23 @@ const Regions = () => {
           source: 'regions',
           'source-layer': 'regions_joined',
           paint: {
-            'line-color': theme.rawColors.primary,
+            'line-color': lineColor,
+            'line-width': 1,
+          },
+        })
+
+        map.addLayer({
+          id: 'regions-hover',
+          type: 'line',
+          source: 'regions',
+          'source-layer': 'regions_joined',
+          paint: {
+            'line-color': lineHighlightColor,
             'line-width': [
               'case',
               ['boolean', ['feature-state', 'hover'], false],
               3, // Width when hovered
-              0.5, // Default width
+              0, // Default width
             ],
           },
         })
@@ -156,6 +182,9 @@ const Regions = () => {
         }
         if (map.getLayer('regions-line')) {
           map.removeLayer('regions-line')
+        }
+        if (map.getLayer('regions-hover')) {
+          map.removeLayer('regions-hover')
         }
       }
     }
@@ -193,11 +222,8 @@ const Regions = () => {
 
   useEffect(() => {
     if (map && map.getSource('regions') && map.getLayer('regions-line')) {
-      map.setPaintProperty(
-        'regions-line',
-        'line-color',
-        theme.rawColors.primary
-      )
+      map.setPaintProperty('regions-line', 'line-color', lineColor)
+      map.setPaintProperty('regions-hover', 'line-color', lineHighlightColor)
     }
   }, [map, theme])
 
