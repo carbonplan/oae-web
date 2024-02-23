@@ -76,7 +76,7 @@ const RegionFooter = ({ sx }) => {
               )}
             </Box>
           </Box>
-          <Box sx={{ fontSize: 0, color: 'primary' }}>
+          <Box sx={{ fontSize: [0, 0, 0, 1], color: 'primary' }}>
             {selectedRegion !== null ? (
               <Box
                 onClick={handleClear}
