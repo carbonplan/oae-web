@@ -1,9 +1,8 @@
 import React from 'react'
 import { Box, Flex } from 'theme-ui'
-import { Badge } from '@carbonplan/components'
+import { Badge, Expander } from '@carbonplan/components'
 import { SidebarFooter } from '@carbonplan/layouts'
 import AnimateHeight from 'react-animate-height'
-import { X } from '@carbonplan/icons'
 
 import useStore from '../store'
 import RegionDetail from './region-detail'
@@ -84,22 +83,14 @@ const RegionFooter = ({ sx }) => {
                 sx={{
                   textTransform: 'uppercase',
                   fontSize: 3,
-                  '&:hover #clear, &:hover': {
-                    cursor: 'pointer',
-                    color: 'primary',
+                  cursor: 'pointer',
+                  '&:hover #clear': {
+                    stroke: 'primary',
                   },
                 }}
               >
                 Clear
-                <X
-                  id={'clear'}
-                  sx={{
-                    height: 12,
-                    width: 12,
-                    ml: 2,
-                    color: 'secondary',
-                  }}
-                />
+                <Expander id='clear' value={true} sx={{ width: 20, ml: 1 }} />
               </Box>
             ) : (
               <Box

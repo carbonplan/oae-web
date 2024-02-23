@@ -177,7 +177,7 @@ const RegionDetail = ({ sx }) => {
             <Expander
               id='expander'
               value={showRegionPicker}
-              sx={{ width: 18, ml: '2px' }}
+              sx={{ width: 20, ml: 1 }}
             />
           </Box>
 
