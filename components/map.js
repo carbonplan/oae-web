@@ -79,9 +79,9 @@ const MapWrapper = ({ children, setLoading }) => {
       <Box
         sx={{
           position: 'absolute',
-          top: ['80px', '80px', 'unset', 'unset'],
+          top: ['72px', '80px', 'unset', 'unset'],
           bottom: ['unset', 'unset', 4, 4],
-          right: 4,
+          right: [3, 4, 5, 6],
         }}
       >
         <Colorbar
