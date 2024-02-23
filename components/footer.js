@@ -49,7 +49,7 @@ const RegionFooter = ({ sx }) => {
       }}
     >
       <AnimateHeight
-        duration={500}
+        duration={250}
         height={selectedRegion !== null ? 'auto' : 25}
       >
         <Flex

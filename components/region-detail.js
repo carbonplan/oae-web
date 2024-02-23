@@ -181,7 +181,7 @@ const RegionDetail = ({ sx }) => {
             />
           </Box>
 
-          <AnimateHeight duration={500} height={showRegionPicker ? 'auto' : 0}>
+          <AnimateHeight duration={250} height={showRegionPicker ? 'auto' : 0}>
             <Timeseries
               endYear={timeHorizon}
               xLimits={[0, 15]}
