@@ -23,7 +23,7 @@ const Regions = () => {
 
   //reused colors
   const transparent = 'rgba(0, 0, 0, 0)'
-  const lineColor = theme.rawColors.muted
+  const lineColor = theme.rawColors.hinted
   const lineHighlightColor = [
     'case',
     ['boolean', ['feature-state', 'hover'], false],
