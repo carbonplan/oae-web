@@ -68,7 +68,6 @@ const MapWrapper = ({ children, setLoading }) => {
           )}
         </>
       )}
-      <Regions />
       <Box
         sx={{
           position: 'absolute',
@@ -95,6 +94,7 @@ const MapWrapper = ({ children, setLoading }) => {
         source={bucket + 'basemaps/land'}
         variable={'land'}
       />
+      <Regions />
       {children}
     </Map>
   )
