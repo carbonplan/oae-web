@@ -7,6 +7,7 @@ import { useThemedColormap } from '@carbonplan/colormaps'
 const Regions = () => {
   const hoveredRegion = useStore((state) => state.hoveredRegion)
   const setHoveredRegion = useStore((state) => state.setHoveredRegion)
+  const selectedRegion = useStore((state) => state.selectedRegion)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
   const setRegionsInView = useStore((state) => state.setRegionsInView)
   const timeHorizon = useStore((state) => state.timeHorizon)
@@ -146,7 +147,23 @@ const Regions = () => {
             'line-width': [
               'case',
               ['boolean', ['feature-state', 'hover'], false],
-              3, // Width when hovered
+              2, // Width when hovered
+              0, // Default width
+            ],
+          },
+        })
+
+        map.addLayer({
+          id: 'regions-selected',
+          type: 'line',
+          source: 'regions',
+          'source-layer': 'regions_joined',
+          paint: {
+            'line-color': theme.rawColors.primary,
+            'line-width': [
+              'case',
+              ['boolean', ['feature-state', 'selected'], false],
+              2, // Width when hovered
               0, // Default width
             ],
           },
@@ -219,6 +236,33 @@ const Regions = () => {
       }
     }
   }, [map, hoveredRegion])
+
+  const toggleLayerVisibilities = (visible) => {
+    const visibility = visible ? 'visible' : 'none'
+    map.setLayoutProperty('regions-line', 'visibility', visibility)
+    map.setLayoutProperty('regions-hover', 'visibility', visibility)
+    map.setLayoutProperty('regions-fill', 'visibility', visibility)
+  }
+
+  useEffect(() => {
+    map.removeFeatureState({
+      source: 'regions',
+      sourceLayer: 'regions_joined',
+    })
+    if (selectedRegion !== null) {
+      map.setFeatureState(
+        {
+          source: 'regions',
+          sourceLayer: 'regions_joined',
+          id: selectedRegion,
+        },
+        { selected: true }
+      )
+      toggleLayerVisibilities(false)
+    } else {
+      toggleLayerVisibilities(true)
+    }
+  }, [selectedRegion])
 
   useEffect(() => {
     if (map && map.getSource('regions') && map.getLayer('regions-line')) {

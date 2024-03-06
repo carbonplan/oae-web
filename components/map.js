@@ -32,7 +32,7 @@ const MapWrapper = ({ children, setLoading }) => {
 
   return (
     <Map zoom={0} center={[0, 0]} debug={false} setLoading={setLoading}>
-      {selectedRegion !== null ? (
+      {selectedRegion !== null && (
         <>
           <Raster
             key={currentVariable.key}
@@ -67,10 +67,8 @@ const MapWrapper = ({ children, setLoading }) => {
             />
           )}
         </>
-      ) : (
-        <Regions />
       )}
-      {children}
+      <Regions />
       <Box
         sx={{
           position: 'absolute',
@@ -97,6 +95,7 @@ const MapWrapper = ({ children, setLoading }) => {
         source={bucket + 'basemaps/land'}
         variable={'land'}
       />
+      {children}
     </Map>
   )
 }
