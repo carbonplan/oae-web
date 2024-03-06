@@ -268,6 +268,11 @@ const Regions = () => {
     if (map && map.getSource('regions') && map.getLayer('regions-line')) {
       map.setPaintProperty('regions-line', 'line-color', lineColor)
       map.setPaintProperty('regions-hover', 'line-color', lineHighlightColor)
+      map.setPaintProperty(
+        'regions-selected',
+        'line-color',
+        theme.rawColors.primary
+      )
     }
   }, [map, theme])
 
