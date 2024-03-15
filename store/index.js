@@ -11,6 +11,14 @@ export const overviewVariable = {
 
 export const variables = [
   {
+    key: 'PERTURBATION',
+    colorLimits: [0, 0.075],
+    colormap: 'warm',
+    label: 'Perturbation',
+    unit: 'mEq/m³',
+    description: 'tk',
+  },
+  {
     key: 'ALK',
     colorLimits: [2000, 2800],
     colormap: 'warm',

@@ -9,6 +9,45 @@ import Regions from './regions'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
+const bands = ['ALK', 'ALK_ALT_CO2', 'DIC', 'DIC_ALT_CO2']
+const fillValue = 9.969209968386869e36
+
+const frag = `
+float value;
+
+if (pert == 1.0) {
+  value = ALK - ALK_ALT_CO2;
+}
+if (alk == 1.0) {
+  value = ALK;
+}
+if (alkAlt == 1.0) {
+  value = ALK_ALT_CO2;
+}
+if (dic == 1.0) {
+  value = DIC;
+}
+if (dicAlt == 1.0) {
+  value = DIC_ALT_CO2;
+}
+if (value == 0.0) {
+  gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+  gl_FragColor.rgb *= gl_FragColor.a;
+  return;
+}
+if (value == ${fillValue}) {
+  gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+  gl_FragColor.rgb *= gl_FragColor.a;
+  return;
+}
+
+// transform for display
+float rescaled = (value - clim.x)/(clim.y - clim.x);
+vec4 c = texture2D(colormap, vec2(rescaled, 1.0));
+gl_FragColor = vec4(c.x, c.y, c.z, opacity);
+gl_FragColor.rgb *= gl_FragColor.a;
+`
+
 const MapWrapper = ({ children, setLoading }) => {
   const selectedRegion = useStore((state) => state.selectedRegion)
   const elapsedTime = useStore((state) => state.elapsedTime)
@@ -37,13 +76,13 @@ const MapWrapper = ({ children, setLoading }) => {
           <Raster
             key={currentVariable.key}
             source={
-              'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store2_no_bands.zarr'
+              'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store2.zarr'
             }
             colormap={colormap}
             clim={currentVariable.colorLimits}
             mode={'texture'}
-            variable={currentVariable.key}
-            fillValue={9.969209968386869e36}
+            variable={'outputs'}
+            fillValue={fillValue}
             regionOptions={{
               setData: handleRegionData,
               selector: {
@@ -52,10 +91,19 @@ const MapWrapper = ({ children, setLoading }) => {
               },
             }}
             selector={{
+              band: bands,
               polygon_id: selectedRegion,
-              elapsed_time: elapsedTime,
               injection_date: injectionDate,
+              elapsed_time: elapsedTime,
             }}
+            uniforms={{
+              pert: currentVariable.key === 'PERTURBATION' ? 1.0 : 0.0,
+              alk: currentVariable.key === 'ALK' ? 1.0 : 0.0,
+              alkAlt: currentVariable.key === 'ALK_ALT_CO2' ? 1.0 : 0.0,
+              dic: currentVariable.key === 'DIC' ? 1.0 : 0.0,
+              dicAlt: currentVariable.key === 'DIC_ALT_CO2' ? 1.0 : 0.0,
+            }}
+            frag={frag}
           />
           {showRegionPicker && (
             <RegionPicker
