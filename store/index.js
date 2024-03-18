@@ -13,7 +13,7 @@ export const variables = [
   {
     key: 'DELTA_ALK',
     calc: ['ALK', 'ALK_ALT_CO2'],
-    colorLimits: [0, 0.15],
+    colorLimits: [-0.05, 0.15],
     colormap: 'warm',
     label: 'Alkalinity change',
     unit: 'mEq/m³',

@@ -33,13 +33,13 @@ if (dicAlt == 1.0) {
   value = DIC_ALT_CO2;
 }
 
-if (deltaAlk == 1.0 && value == 0.0) {
-    if (ALK == ${fillValue}) {
+if (deltaAlk == 1.0 && abs(value) < 0.001) {
+    if (ALK_ALT_CO2 == ${fillValue}) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
     } else {
-        float backRescaled = (ALK - 2000.0) / (2800.0 - 2000.0);
+        float backRescaled = (ALK_ALT_CO2 - 2000.0) / (2800.0 - 2000.0);
         vec4 bgc = texture2D(colormap, vec2(backRescaled, 1.0));
-        gl_FragColor = vec4(bgc.x, bgc.y, bgc.z, 0.1);
+        gl_FragColor = vec4(bgc.x, bgc.y, bgc.z, 0.2);
     }
     gl_FragColor.rgb *= gl_FragColor.a;
     return;
