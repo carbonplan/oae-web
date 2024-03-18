@@ -62,13 +62,14 @@ const RegionDetail = ({ sx }) => {
   const toLineData = useMemo(() => {
     if (!regionData) return []
     let averages = []
-    if (currentVariable.key === 'DELTA_ALK') {
-      const alk = regionData.outputs?.ALK
-      const alkAlt = regionData.outputs?.ALK_ALT_CO2
-      if (!alk || !alkAlt) return []
-      averages = Object.values(alk).map((data, index) => {
+    if (currentVariable.calc) {
+      const injected = regionData.outputs?.[currentVariable.calc[0]]
+      const notInjected = regionData.outputs?.[currentVariable.calc[1]]
+      if (!injected || !notInjected) return []
+      averages = Object.values(injected).map((data, index) => {
         const avg = data.reduce(
-          (acc, curr, i) => acc + (curr - alkAlt[index][i]) / (data.length - 1),
+          (acc, curr, i) =>
+            acc + (curr - notInjected[index][i]) / (data.length - 1),
           0
         )
         const toYear = index / 12

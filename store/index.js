@@ -12,10 +12,20 @@ export const overviewVariable = {
 export const variables = [
   {
     key: 'DELTA_ALK',
+    calc: ['ALK', 'ALK_ALT_CO2'],
     colorLimits: [0, 0.075],
     colormap: 'warm',
     label: 'Alkalinity change',
     unit: 'mEq/m³',
+    description: 'tk',
+  },
+  {
+    key: 'DELTA_DIC',
+    calc: ['DIC', 'DIC_ALT_CO2'],
+    colorLimits: [0, 0.075],
+    colormap: 'cool',
+    label: 'DIC change',
+    unit: 'mmol/m³',
     description: 'tk',
   },
   {

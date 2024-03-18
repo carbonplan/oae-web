@@ -18,6 +18,9 @@ float value;
 if (deltaAlk == 1.0) {
   value = ALK - ALK_ALT_CO2;
 }
+if (deltaDIC == 1.0) {
+  value = DIC - DIC_ALT_CO2;
+}
 if (alk == 1.0) {
   value = ALK;
 }
@@ -97,6 +100,7 @@ const MapWrapper = ({ children, setLoading }) => {
             }}
             uniforms={{
               deltaAlk: currentVariable.key === 'DELTA_ALK' ? 1.0 : 0.0,
+              deltaDIC: currentVariable.key === 'DELTA_DIC' ? 1.0 : 0.0,
               alk: currentVariable.key === 'ALK' ? 1.0 : 0.0,
               alkAlt: currentVariable.key === 'ALK_ALT_CO2' ? 1.0 : 0.0,
               dic: currentVariable.key === 'DIC' ? 1.0 : 0.0,
