@@ -14,7 +14,6 @@ const fillValue = 9.969209968386869e36
 
 const frag = `
 float value;
-
 if (deltaAlk == 1.0) {
   value = ALK - ALK_ALT_CO2;
 }
@@ -33,19 +32,26 @@ if (dic == 1.0) {
 if (dicAlt == 1.0) {
   value = DIC_ALT_CO2;
 }
-if (value == 0.0) {
-  gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
-  gl_FragColor.rgb *= gl_FragColor.a;
-  return;
-}
-if (value == ${fillValue}) {
-  gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
-  gl_FragColor.rgb *= gl_FragColor.a;
-  return;
+
+if (deltaAlk == 1.0 && value == 0.0) {
+    if (ALK == ${fillValue}) {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+    } else {
+        float backRescaled = (ALK - 2000.0) / (2800.0 - 2000.0);
+        vec4 bgc = texture2D(colormap, vec2(backRescaled, 1.0));
+        gl_FragColor = vec4(bgc.x, bgc.y, bgc.z, 0.1);
+    }
+    gl_FragColor.rgb *= gl_FragColor.a;
+    return;
 }
 
-// transform for display
-float rescaled = (value - clim.x)/(clim.y - clim.x);
+if (value == 0.0 || value == ${fillValue}) {
+    gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+    gl_FragColor.rgb *= gl_FragColor.a;
+    return;
+}
+
+float rescaled = (value - clim.x) / (clim.y - clim.x);
 vec4 c = texture2D(colormap, vec2(rescaled, 1.0));
 gl_FragColor = vec4(c.x, c.y, c.z, opacity);
 gl_FragColor.rgb *= gl_FragColor.a;
