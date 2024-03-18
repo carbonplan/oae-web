@@ -60,15 +60,30 @@ const RegionDetail = ({ sx }) => {
   const [minMax, setMinMax] = useState([0, 0])
 
   const toLineData = useMemo(() => {
-    if (!currentVariable || !regionData?.[currentVariable.key]) return []
-
-    const averages = Object.values(regionData[currentVariable.key]).map(
-      (data, index) => {
-        const { avg } = getArrayData(data, regionData.coordinates.lat, zoom)
+    let averages = []
+    if (currentVariable.key === 'PERTURBATION') {
+      const alk = regionData.outputs?.ALK
+      const alkAlt = regionData.outputs?.ALK_ALT_CO2
+      if (!alk || !alkAlt) return []
+      averages = Object.values(alk).map((data, index) => {
+        const avg = data.reduce(
+          (acc, curr, i) => acc + (curr - alkAlt[index][i]) / (data.length - 1),
+          0
+        )
         const toYear = index / 12
         return [toYear, avg]
-      }
-    )
+      })
+    } else if (regionData.outputs && regionData.outputs[currentVariable.key]) {
+      averages = Object.values(regionData.outputs[currentVariable.key]).map(
+        (data, index) => {
+          const { avg } = getArrayData(data, regionData.coordinates.lat, zoom)
+          const toYear = index / 12
+          return [toYear, avg]
+        }
+      )
+    } else {
+      return []
+    }
     const [min, max] = averages.reduce(
       ([min, max], [_, value]) => [Math.min(min, value), Math.max(max, value)],
       [Infinity, -Infinity]
