@@ -60,8 +60,9 @@ const RegionDetail = ({ sx }) => {
   const [minMax, setMinMax] = useState([0, 0])
 
   const toLineData = useMemo(() => {
+    if (!regionData) return []
     let averages = []
-    if (currentVariable.key === 'PERTURBATION') {
+    if (currentVariable.key === 'DELTA_ALK') {
       const alk = regionData.outputs?.ALK
       const alkAlt = regionData.outputs?.ALK_ALT_CO2
       if (!alk || !alkAlt) return []

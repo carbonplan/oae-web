@@ -11,10 +11,10 @@ export const overviewVariable = {
 
 export const variables = [
   {
-    key: 'PERTURBATION',
+    key: 'DELTA_ALK',
     colorLimits: [0, 0.075],
     colormap: 'warm',
-    label: 'Perturbation',
+    label: 'Alkalinity change',
     unit: 'mEq/m³',
     description: 'tk',
   },

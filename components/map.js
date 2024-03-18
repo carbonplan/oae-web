@@ -15,7 +15,7 @@ const fillValue = 9.969209968386869e36
 const frag = `
 float value;
 
-if (pert == 1.0) {
+if (deltaAlk == 1.0) {
   value = ALK - ALK_ALT_CO2;
 }
 if (alk == 1.0) {
@@ -96,7 +96,7 @@ const MapWrapper = ({ children, setLoading }) => {
               elapsed_time: elapsedTime,
             }}
             uniforms={{
-              pert: currentVariable.key === 'PERTURBATION' ? 1.0 : 0.0,
+              deltaAlk: currentVariable.key === 'DELTA_ALK' ? 1.0 : 0.0,
               alk: currentVariable.key === 'ALK' ? 1.0 : 0.0,
               alkAlt: currentVariable.key === 'ALK_ALT_CO2' ? 1.0 : 0.0,
               dic: currentVariable.key === 'DIC' ? 1.0 : 0.0,
