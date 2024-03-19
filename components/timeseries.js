@@ -243,8 +243,8 @@ const Timeseries = ({
             onClick={(e) => e.stopPropagation()}
           />
           {renderHoveredLine()}
-          {point !== null && renderPoint(point)}
-          {xSelectorValue !== null &&
+          {point && renderPoint(point)}
+          {xSelectorValue &&
             renderPoint({
               x: mousePosition,
               y: xSelectorValue,
@@ -253,8 +253,8 @@ const Timeseries = ({
           {renderXSelector()}
         </Plot>
         {renderXSelectorLabel()}
-        {point !== null && renderDataBadge(point)}
-        {xSelectorValue !== null &&
+        {point && renderDataBadge(point)}
+        {xSelectorValue &&
           renderDataBadge({
             x: mousePosition,
             y: xSelectorValue,
