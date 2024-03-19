@@ -13,6 +13,7 @@ const bands = ['ALK', 'ALK_ALT_CO2', 'DIC', 'DIC_ALT_CO2']
 
 const frag = `
     float value;
+    float threshold = 0.001;
     if (deltaAlk == 1.0) {
       value = ALK - ALK_ALT_CO2;
     }
@@ -32,7 +33,7 @@ const frag = `
       value = DIC_ALT_CO2;
     }
 
-    if (showBG == 1.0 && abs(value) < 0.001) {
+    if (showBG == 1.0 && abs(value) < threshold) {
         float baseLine;
         if (deltaAlk == 1.0) {
           baseLine = ALK_ALT_CO2;
@@ -51,7 +52,7 @@ const frag = `
         return;
     }
 
-    if (value == 0.0 || value == fillValue) {
+    if (value < threshold || value == fillValue) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
         gl_FragColor.rgb *= gl_FragColor.a;
         return;
