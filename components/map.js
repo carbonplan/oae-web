@@ -4,57 +4,12 @@ import { Box, useThemeUI } from 'theme-ui'
 import { Colorbar } from '@carbonplan/components'
 import { useThemedColormap } from '@carbonplan/colormaps'
 
-import useStore from '../store'
+import useStore, { variables } from '../store'
 import Regions from './regions'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
 const bands = ['ALK', 'ALK_ALT_CO2', 'DIC', 'DIC_ALT_CO2']
-
-const frag = `
-float value;
-if (deltaAlk == 1.0) {
-  value = ALK - ALK_ALT_CO2;
-}
-if (deltaDIC == 1.0) {
-  value = DIC - DIC_ALT_CO2;
-}
-if (alk == 1.0) {
-  value = ALK;
-}
-if (alkAlt == 1.0) {
-  value = ALK_ALT_CO2;
-}
-if (dic == 1.0) {
-  value = DIC;
-}
-if (dicAlt == 1.0) {
-  value = DIC_ALT_CO2;
-}
-
-if (deltaAlk == 1.0 && abs(value) < 0.001) {
-    if (ALK_ALT_CO2 == fillValue) {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
-    } else {
-        float backRescaled = (ALK_ALT_CO2 - 2000.0) / (2800.0 - 2000.0);
-        vec4 bgc = texture2D(colormap, vec2(backRescaled, 1.0));
-        gl_FragColor = vec4(bgc.x, bgc.y, bgc.z, 0.2);
-    }
-    gl_FragColor.rgb *= gl_FragColor.a;
-    return;
-}
-
-if (value == 0.0 || value == fillValue) {
-    gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
-    gl_FragColor.rgb *= gl_FragColor.a;
-    return;
-}
-
-float rescaled = (value - clim.x) / (clim.y - clim.x);
-vec4 c = texture2D(colormap, vec2(rescaled, 1.0));
-gl_FragColor = vec4(c.x, c.y, c.z, opacity);
-gl_FragColor.rgb *= gl_FragColor.a;
-`
 
 const MapWrapper = ({ children, setLoading }) => {
   const selectedRegion = useStore((state) => state.selectedRegion)
@@ -67,6 +22,65 @@ const MapWrapper = ({ children, setLoading }) => {
   const colormap = useThemedColormap(currentVariable.colormap)
 
   const { theme } = useThemeUI()
+
+  const alkColorLimits = variables.find((v) => v.key === 'ALK').colorLimits
+  const dicColorLimits = variables.find((v) => v.key === 'DIC').colorLimits
+
+  const secondaryColorLimits =
+    currentVariable.key === 'DELTA_ALK' ? alkColorLimits : dicColorLimits
+  console.log(secondaryColorLimits)
+
+  const frag = `
+    float value;
+    if (deltaAlk == 1.0) {
+      value = ALK - ALK_ALT_CO2;
+    }
+    if (deltaDIC == 1.0) {
+      value = DIC - DIC_ALT_CO2;
+    }
+    if (alk == 1.0) {
+      value = ALK;
+    }
+    if (alkAlt == 1.0) {
+      value = ALK_ALT_CO2;
+    }
+    if (dic == 1.0) {
+      value = DIC;
+    }
+    if (dicAlt == 1.0) {
+      value = DIC_ALT_CO2;
+    }
+
+    if (showBG == 1.0 && abs(value) < 0.001) {
+        float baseLine;
+        if (deltaAlk == 1.0) {
+          baseLine = ALK_ALT_CO2;
+        } else {
+          baseLine = DIC_ALT_CO2;
+        }
+        if (baseLine == fillValue) {
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+        } else {
+            
+            float backRescaled = (baseLine - bgColorLow) / (bgColorHigh - bgColorLow);
+            vec4 bgc = texture2D(colormap, vec2(backRescaled, 1.0));
+            gl_FragColor = vec4(bgc.x, bgc.y, bgc.z, 0.2);
+        }
+        gl_FragColor.rgb *= gl_FragColor.a;
+        return;
+    }
+
+    if (value == 0.0 || value == fillValue) {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+        gl_FragColor.rgb *= gl_FragColor.a;
+        return;
+    }
+
+    float rescaled = (value - clim.x) / (clim.y - clim.x);
+    vec4 c = texture2D(colormap, vec2(rescaled, 1.0));
+    gl_FragColor = vec4(c.x, c.y, c.z, opacity);
+    gl_FragColor.rgb *= gl_FragColor.a;
+  `
 
   const injectionDate = useMemo(() => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
@@ -110,6 +124,13 @@ const MapWrapper = ({ children, setLoading }) => {
               alkAlt: currentVariable.key === 'ALK_ALT_CO2' ? 1.0 : 0.0,
               dic: currentVariable.key === 'DIC' ? 1.0 : 0.0,
               dicAlt: currentVariable.key === 'DIC_ALT_CO2' ? 1.0 : 0.0,
+              bgColorHigh: secondaryColorLimits[1],
+              bgColorLow: secondaryColorLimits[0],
+              showBG:
+                currentVariable.key === 'DELTA_ALK' ||
+                currentVariable.key === 'DELTA_DIC'
+                  ? 1.0
+                  : 0.0,
             }}
             frag={frag}
           />
