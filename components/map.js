@@ -25,10 +25,8 @@ const MapWrapper = ({ children, setLoading }) => {
 
   const alkColorLimits = variables.find((v) => v.key === 'ALK').colorLimits
   const dicColorLimits = variables.find((v) => v.key === 'DIC').colorLimits
-
   const secondaryColorLimits =
     currentVariable.key === 'DELTA_ALK' ? alkColorLimits : dicColorLimits
-  console.log(secondaryColorLimits)
 
   const frag = `
     float value;
