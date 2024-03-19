@@ -22,7 +22,7 @@ export const variables = [
   {
     key: 'DELTA_DIC',
     calc: ['DIC', 'DIC_ALT_CO2'],
-    colorLimits: [0, 0.15],
+    colorLimits: [-0.05, 0.15],
     colormap: 'cool',
     label: 'DIC change',
     unit: 'mmol/m³',
