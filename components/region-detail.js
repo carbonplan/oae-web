@@ -217,7 +217,7 @@ const RegionDetail = ({ sx }) => {
             opacity: disableBGControl ? 0.2 : 1,
             color: 'secondary',
             cursor: 'pointer',
-            fontSize: 0,
+            fontSize: 1,
             mt: 2,
           }}
         >
