@@ -63,6 +63,7 @@ const RegionDetail = ({ sx }) => {
 
   const [minMax, setMinMax] = useState([0, 0])
   const [filterValues, setFilterValues] = useState({})
+  const disableBGControl = currentVariable.calc === undefined
 
   useEffect(() => {
     const initialFilterValues = variables[variableFamily].variables.reduce(
@@ -203,7 +204,7 @@ const RegionDetail = ({ sx }) => {
         ))}
       </Select>
 
-      <Box sx={{ ...sx.heading, mt: 3 }}>
+      <Box sx={{ mt: 3, mb: 2 }}>
         {Object.keys(filterValues).length && (
           <Filter
             key={variableFamily}
@@ -211,17 +212,29 @@ const RegionDetail = ({ sx }) => {
             setValues={handleVariableSelection}
           />
         )}
-      </Box>
-      <Box>
-        <Label sx={{ color: 'secondary', cursor: 'pointer' }}>
+        <Label
+          sx={{
+            opacity: disableBGControl ? 0.2 : 1,
+            color: 'secondary',
+            cursor: 'pointer',
+            fontSize: 0,
+            mt: 2,
+          }}
+        >
           <Checkbox
-            defaultChecked={false}
+            disabled={disableBGControl}
             value={showBackgroundInDiff}
             onChange={() => setShowBackgroundInDiff(!showBackgroundInDiff)}
+            sx={{
+              opacity: disableBGControl ? 0.2 : 1,
+              height: 20,
+              mr: 1,
+            }}
           />
-          show total values in background
+          display total values in background
         </Label>
       </Box>
+      <Box></Box>
       <Box sx={{ mb: [-3, -3, -3, -2], mt: 4 }}>
         <TimeSlider />
       </Box>
