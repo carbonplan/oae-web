@@ -218,6 +218,7 @@ const RegionDetail = ({ sx }) => {
             color: 'secondary',
             cursor: 'pointer',
             fontSize: 1,
+            fontFamily: 'mono',
             mt: 2,
           }}
         >
@@ -227,11 +228,12 @@ const RegionDetail = ({ sx }) => {
             onChange={() => setShowBackgroundInDiff(!showBackgroundInDiff)}
             sx={{
               opacity: disableBGControl ? 0.2 : 1,
-              height: 20,
+              width: 18,
               mr: 1,
+              mt: '-3px',
             }}
           />
-          display total values in background
+          display total in background
         </Label>
       </Box>
       <Box></Box>
