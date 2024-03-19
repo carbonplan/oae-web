@@ -43,10 +43,10 @@ const frag = `
         if (baseLine == fillValue) {
             gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
         } else {
-            
             float backRescaled = (baseLine - bgColorLow) / (bgColorHigh - bgColorLow);
             vec4 bgc = texture2D(colormap, vec2(backRescaled, 1.0));
-            gl_FragColor = vec4(bgc.x, bgc.y, bgc.z, 0.2);
+            float greyScale = 0.299 * bgc.r + 0.587 * bgc.g + 0.114 * bgc.b;
+            gl_FragColor = vec4(greyScale, greyScale, greyScale, 0.5);
         }
         gl_FragColor.rgb *= gl_FragColor.a;
         return;
