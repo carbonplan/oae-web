@@ -68,17 +68,18 @@ const MapWrapper = ({ children, setLoading }) => {
   const elapsedTime = useStore((state) => state.elapsedTime)
   const injectionSeason = useStore((state) => state.injectionSeason)
   const currentVariable = useStore((state) => state.currentVariable)
+  const variableFamily = useStore((state) => state.variableFamily)
   const showRegionPicker = useStore((state) => state.showRegionPicker)
   const setRegionData = useStore((state) => state.setRegionData)
+  const showBackgroundInDiff = useStore((state) => state.showBackgroundInDiff)
 
   const colormap = useThemedColormap(currentVariable.colormap)
 
   const { theme } = useThemeUI()
 
-  const alkColorLimits = variables.find((v) => v.key === 'ALK').colorLimits
-  const dicColorLimits = variables.find((v) => v.key === 'DIC').colorLimits
-  const secondaryColorLimits =
-    currentVariable.key === 'DELTA_ALK' ? alkColorLimits : dicColorLimits
+  const secondaryColorLimits = variables[variableFamily].variables.find(
+    (v) => v.key === variableFamily
+  ).colorLimits
 
   const injectionDate = useMemo(() => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
@@ -124,11 +125,7 @@ const MapWrapper = ({ children, setLoading }) => {
               dicAlt: currentVariable.key === 'DIC_ALT_CO2' ? 1.0 : 0.0,
               bgColorHigh: secondaryColorLimits[1],
               bgColorLow: secondaryColorLimits[0],
-              showBG:
-                currentVariable.key === 'DELTA_ALK' ||
-                currentVariable.key === 'DELTA_DIC'
-                  ? 1.0
-                  : 0.0,
+              showBG: showBackgroundInDiff ? 1.0 : 0.0,
             }}
             frag={frag}
           />

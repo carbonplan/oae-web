@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useState } from 'react'
-import { Box, Divider } from 'theme-ui'
-import { Expander, Select } from '@carbonplan/components'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { Box, Checkbox, Divider, Label } from 'theme-ui'
+import { Expander, Filter, Select } from '@carbonplan/components'
 import AnimateHeight from 'react-animate-height'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import { useRegion } from '@carbonplan/maps'
@@ -43,14 +43,18 @@ const getArrayData = (arr, lats, zoom) => {
 const hoveredLine = null
 
 const RegionDetail = ({ sx }) => {
-  const currentVariable = useStore((state) => state.currentVariable)
-  const setCurrentVariable = useStore((state) => state.setCurrentVariable)
-  const showRegionPicker = useStore((state) => state.showRegionPicker)
-  const setShowRegionPicker = useStore((state) => state.setShowRegionPicker)
-  const regionData = useStore((state) => state.regionData)
-  const timeHorizon = useStore((state) => state.timeHorizon)
-  const elapsedYears = useStore((state) => state.elapsedTime / 12)
-  const setElapsedTime = useStore((state) => state.setElapsedTime)
+  const currentVariable = useStore((s) => s.currentVariable)
+  const setCurrentVariable = useStore((s) => s.setCurrentVariable)
+  const variableFamily = useStore((s) => s.variableFamily)
+  const setVariableFamily = useStore((s) => s.setVariableFamily)
+  const showRegionPicker = useStore((s) => s.showRegionPicker)
+  const setShowRegionPicker = useStore((s) => s.setShowRegionPicker)
+  const regionData = useStore((s) => s.regionData)
+  const timeHorizon = useStore((s) => s.timeHorizon)
+  const elapsedYears = useStore((s) => s.elapsedTime / 12)
+  const setElapsedTime = useStore((s) => s.setElapsedTime)
+  const showBackgroundInDiff = useStore((s) => s.showBackgroundInDiff)
+  const setShowBackgroundInDiff = useStore((s) => s.setShowBackgroundInDiff)
 
   const colormap = useThemedColormap(currentVariable?.colormap)
   const { region } = useRegion()
@@ -58,6 +62,15 @@ const RegionDetail = ({ sx }) => {
   const index = useBreakpointIndex()
 
   const [minMax, setMinMax] = useState([0, 0])
+  const [filterValues, setFilterValues] = useState({})
+
+  useEffect(() => {
+    const initialFilterValues = variables[variableFamily].variables.reduce(
+      (acc, variable, index) => ({ ...acc, [variable.label]: index === 0 }),
+      {}
+    )
+    setFilterValues(initialFilterValues)
+  }, [variableFamily])
 
   const toLineData = useMemo(() => {
     if (!regionData) return []
@@ -135,15 +148,25 @@ const RegionDetail = ({ sx }) => {
     }
   }, [elapsedYears, selectedLines])
 
-  const handleSelection = useCallback(
-    (e) => {
-      const selectedVariable = variables.find(
-        (variable) => variable.key === e.target.value
+  const handleFamilySelection = (e) => {
+    setVariableFamily(e.target.value)
+    setCurrentVariable(variables[e.target.value].variables[0])
+  }
+
+  const handleVariableSelection = (updatedValues) => {
+    const selectedLabel = Object.keys(updatedValues).find(
+      (label) => updatedValues[label]
+    )
+    if (selectedLabel) {
+      const selectedVariable = variables[variableFamily].variables.find(
+        (variable) => variable.label === selectedLabel
       )
-      setCurrentVariable(selectedVariable)
-    },
-    [setCurrentVariable]
-  )
+      if (selectedVariable) {
+        setCurrentVariable(selectedVariable)
+        setFilterValues(updatedValues)
+      }
+    }
+  }
 
   const handleTimeseriesClick = useCallback(
     (e) => {
@@ -158,10 +181,10 @@ const RegionDetail = ({ sx }) => {
   return (
     <>
       <Divider sx={{ mt: 4, mb: 5 }} />
-      <Box sx={sx.heading}>Variables</Box>
+      <Box sx={sx.heading}>Variable</Box>
       <Select
-        onChange={handleSelection}
-        value={currentVariable.key}
+        onChange={handleFamilySelection}
+        value={variableFamily}
         size='xs'
         sx={{
           width: '100%',
@@ -173,12 +196,32 @@ const RegionDetail = ({ sx }) => {
           mt: 2,
         }}
       >
-        {variables.map((variable) => (
-          <option key={variable.key} value={variable.key}>
-            {variable.label}
+        {Object.keys(variables).map((variable) => (
+          <option key={variable} value={variable}>
+            {variables[variable].meta.label}
           </option>
         ))}
       </Select>
+
+      <Box sx={{ ...sx.heading, mt: 3 }}>
+        {Object.keys(filterValues).length && (
+          <Filter
+            key={variableFamily}
+            values={filterValues}
+            setValues={handleVariableSelection}
+          />
+        )}
+      </Box>
+      <Box>
+        <Label sx={{ color: 'secondary', cursor: 'pointer' }}>
+          <Checkbox
+            defaultChecked={false}
+            value={showBackgroundInDiff}
+            onChange={() => setShowBackgroundInDiff(!showBackgroundInDiff)}
+          />
+          show total values in background
+        </Label>
+      </Box>
       <Box sx={{ mb: [-3, -3, -3, -2], mt: 4 }}>
         <TimeSlider />
       </Box>
