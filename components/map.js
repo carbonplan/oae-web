@@ -11,24 +11,7 @@ const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
 const bands = ['ALK', 'ALK_ALT_CO2', 'DIC', 'DIC_ALT_CO2']
 
-const MapWrapper = ({ children, setLoading }) => {
-  const selectedRegion = useStore((state) => state.selectedRegion)
-  const elapsedTime = useStore((state) => state.elapsedTime)
-  const injectionSeason = useStore((state) => state.injectionSeason)
-  const currentVariable = useStore((state) => state.currentVariable)
-  const showRegionPicker = useStore((state) => state.showRegionPicker)
-  const setRegionData = useStore((state) => state.setRegionData)
-
-  const colormap = useThemedColormap(currentVariable.colormap)
-
-  const { theme } = useThemeUI()
-
-  const alkColorLimits = variables.find((v) => v.key === 'ALK').colorLimits
-  const dicColorLimits = variables.find((v) => v.key === 'DIC').colorLimits
-  const secondaryColorLimits =
-    currentVariable.key === 'DELTA_ALK' ? alkColorLimits : dicColorLimits
-
-  const frag = `
+const frag = `
     float value;
     if (deltaAlk == 1.0) {
       value = ALK - ALK_ALT_CO2;
@@ -79,6 +62,23 @@ const MapWrapper = ({ children, setLoading }) => {
     gl_FragColor = vec4(c.x, c.y, c.z, opacity);
     gl_FragColor.rgb *= gl_FragColor.a;
   `
+
+const MapWrapper = ({ children, setLoading }) => {
+  const selectedRegion = useStore((state) => state.selectedRegion)
+  const elapsedTime = useStore((state) => state.elapsedTime)
+  const injectionSeason = useStore((state) => state.injectionSeason)
+  const currentVariable = useStore((state) => state.currentVariable)
+  const showRegionPicker = useStore((state) => state.showRegionPicker)
+  const setRegionData = useStore((state) => state.setRegionData)
+
+  const colormap = useThemedColormap(currentVariable.colormap)
+
+  const { theme } = useThemeUI()
+
+  const alkColorLimits = variables.find((v) => v.key === 'ALK').colorLimits
+  const dicColorLimits = variables.find((v) => v.key === 'DIC').colorLimits
+  const secondaryColorLimits =
+    currentVariable.key === 'DELTA_ALK' ? alkColorLimits : dicColorLimits
 
   const injectionDate = useMemo(() => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
