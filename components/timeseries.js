@@ -13,6 +13,7 @@ import {
   Ticks,
 } from '@carbonplan/charts'
 import { Badge } from '@carbonplan/components'
+import useStore from '../store'
 
 const Timeseries = ({
   endYear,
@@ -30,6 +31,8 @@ const Timeseries = ({
   const { selectedLines, unselectedLines, hoveredLine } = timeData
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
+  const [xSelectorValue, setXSelectorValue] = useState(null)
+  const currentVariable = useStore((s) => s.currentVariable)
 
   const xYearsMonth = (x) => {
     const years = Math.floor(x)
@@ -43,6 +46,7 @@ const Timeseries = ({
     const months = Math.round((clickX / width) * 179)
     const years = months / 12
     setMousePosition(years)
+    setXSelectorValue(selectedLines[0]?.data?.[months]?.[1])
   }
 
   const handleXSelectorMouseEnter = () => {
@@ -52,6 +56,7 @@ const Timeseries = ({
   const handleXSelectorMouseLeave = () => {
     setIsHovering(false)
     setMousePosition(null)
+    setXSelectorValue(null)
   }
 
   const xSelectorHandlers = xSelector
@@ -71,13 +76,13 @@ const Timeseries = ({
       mousePosition < endYear
     ) {
       return (
-        <Rect
-          x={[mousePosition - 0.0001, mousePosition + 0.0001]}
-          y={yLimits}
-          color='none'
-          vectorEffect='non-scaling-stroke'
-          stroke={theme.colors.secondary}
+        <Line
+          data={[
+            [mousePosition, 0],
+            [mousePosition, yLimits[1]],
+          ]}
           strokeWidth={1}
+          color='secondary'
           opacity={1}
         />
       )
@@ -138,8 +143,7 @@ const Timeseries = ({
     )
   }
 
-  const renderPoint = () => {
-    if (!point) return null
+  const renderPoint = (point) => {
     const { x, y, color } = point
     return (
       <Circle
@@ -152,11 +156,10 @@ const Timeseries = ({
     )
   }
 
-  const renderDataBadge = () => {
-    if (!point || !point.text) return null
-    const { x, y, color, text } = point
+  const renderDataBadge = (point) => {
+    const { text, x, y, color } = point
     return (
-      <Point x={x} y={y} align={'center'} width={2}>
+      <Point x={x} y={y} align='center' width={2}>
         <Badge
           sx={{
             fontSize: 1,
@@ -240,11 +243,24 @@ const Timeseries = ({
             onClick={(e) => e.stopPropagation()}
           />
           {renderHoveredLine()}
-          {renderPoint()}
+          {point !== null && renderPoint(point)}
+          {xSelectorValue !== null &&
+            renderPoint({
+              x: mousePosition,
+              y: xSelectorValue,
+              color: 'secondary',
+            })}
           {renderXSelector()}
         </Plot>
         {renderXSelectorLabel()}
-        {renderDataBadge()}
+        {point !== null && renderDataBadge(point)}
+        {xSelectorValue !== null &&
+          renderDataBadge({
+            x: mousePosition,
+            y: xSelectorValue,
+            color: 'secondary',
+            text: xSelectorValue.toFixed(currentVariable.calc ? 3 : 1),
+          })}
       </Chart>
     </Box>
   )

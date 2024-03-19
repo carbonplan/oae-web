@@ -127,7 +127,12 @@ const RegionDetail = ({ sx }) => {
     const y = selectedLines[0]?.data?.[toMonthsIndex(elapsedYears, 0)]?.[1]
     if (!y) return null
     const color = getColorForValue(y, colormap, currentVariable.colorLimits)
-    return { x: elapsedYears, y, color, text: y.toFixed(1) }
+    return {
+      x: elapsedYears,
+      y,
+      color,
+      text: y.toFixed(currentVariable.calc ? 3 : 1),
+    }
   }, [elapsedYears, selectedLines])
 
   const handleSelection = useCallback(
