@@ -244,23 +244,25 @@ const Timeseries = ({
           />
           {renderHoveredLine()}
           {point && renderPoint(point)}
-          {xSelectorValue &&
-            renderPoint({
-              x: mousePosition,
-              y: xSelectorValue,
-              color: 'secondary',
-            })}
+          {xSelectorValue
+            ? renderPoint({
+                x: mousePosition,
+                y: xSelectorValue,
+                color: 'secondary',
+              })
+            : null}
           {renderXSelector()}
         </Plot>
         {renderXSelectorLabel()}
         {point && renderDataBadge(point)}
-        {xSelectorValue &&
-          renderDataBadge({
-            x: mousePosition,
-            y: xSelectorValue,
-            color: 'secondary',
-            text: xSelectorValue.toFixed(currentVariable.calc ? 3 : 1),
-          })}
+        {xSelectorValue
+          ? renderDataBadge({
+              x: mousePosition,
+              y: xSelectorValue,
+              color: 'secondary',
+              text: xSelectorValue.toFixed(currentVariable.calc ? 3 : 1),
+            })
+          : null}
       </Chart>
     </Box>
   )
