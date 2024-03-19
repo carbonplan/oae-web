@@ -10,7 +10,6 @@ import Regions from './regions'
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
 const bands = ['ALK', 'ALK_ALT_CO2', 'DIC', 'DIC_ALT_CO2']
-const fillValue = 9.969209968386869e36
 
 const frag = `
 float value;
@@ -34,7 +33,7 @@ if (dicAlt == 1.0) {
 }
 
 if (deltaAlk == 1.0 && abs(value) < 0.001) {
-    if (ALK_ALT_CO2 == ${fillValue}) {
+    if (ALK_ALT_CO2 == fillValue) {
         gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
     } else {
         float backRescaled = (ALK_ALT_CO2 - 2000.0) / (2800.0 - 2000.0);
@@ -45,7 +44,7 @@ if (deltaAlk == 1.0 && abs(value) < 0.001) {
     return;
 }
 
-if (value == 0.0 || value == ${fillValue}) {
+if (value == 0.0 || value == fillValue) {
     gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
     gl_FragColor.rgb *= gl_FragColor.a;
     return;
@@ -90,7 +89,7 @@ const MapWrapper = ({ children, setLoading }) => {
             clim={currentVariable.colorLimits}
             mode={'texture'}
             variable={'outputs'}
-            fillValue={fillValue}
+            fillValue={9.969209968386869e36}
             regionOptions={{
               setData: handleRegionData,
               selector: {
