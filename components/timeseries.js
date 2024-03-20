@@ -7,11 +7,13 @@ import {
   Grid,
   Line,
   Plot,
+  Point,
   Rect,
   TickLabels,
   Ticks,
 } from '@carbonplan/charts'
 import useStore from '../store'
+import { Badge } from '@carbonplan/components'
 
 const Timeseries = ({
   endYear,
@@ -118,7 +120,27 @@ const Timeseries = ({
     )
   }
 
+  const renderDataBadge = () => {
+    if (!point || !point.text) return null
+    const { x, y, color, text } = point
+    return (
+      <Point x={x} y={y} align={'center'} width={2}>
+        <Badge
+          sx={{
+            fontSize: 1,
+            height: '20px',
+            mt: 2,
+            bg: color,
+          }}
+        >
+          {text}
+        </Badge>
+      </Point>
+    )
+  }
+
   const renderTimeAndData = () => {
+    if (!xSelector) return null
     const isXSelectorAvailable =
       !!xSelector &&
       mousePosition !== null &&
@@ -126,7 +148,7 @@ const Timeseries = ({
       xSelectorValue !== null
     const isPointAvailable = point?.y !== undefined
     const formattedYValue = () => {
-      if (xSelectorValue !== null) {
+      if (!!xSelectorValue && isXSelectorAvailable) {
         return xSelectorValue.toFixed(currentVariable?.calc ? 3 : 1)
       } else if (point?.y) {
         return point.y.toFixed(currentVariable?.calc ? 3 : 1)
@@ -239,6 +261,7 @@ const Timeseries = ({
               })
             : null}
         </Plot>
+        {!xSelector && renderDataBadge()}
       </Chart>
     </Box>
   )
