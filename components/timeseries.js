@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, useThemeUI } from 'theme-ui'
+import { Box } from 'theme-ui'
 import {
   AxisLabel,
   Chart,
@@ -7,12 +7,10 @@ import {
   Grid,
   Line,
   Plot,
-  Point,
   Rect,
   TickLabels,
   Ticks,
 } from '@carbonplan/charts'
-import { Badge } from '@carbonplan/components'
 import useStore from '../store'
 
 const Timeseries = ({
@@ -27,7 +25,6 @@ const Timeseries = ({
   xSelector = false,
   handleXSelectorClick = () => {},
 }) => {
-  const { theme } = useThemeUI()
   const { selectedLines, unselectedLines, hoveredLine } = timeData
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
@@ -37,7 +34,9 @@ const Timeseries = ({
   const xYearsMonth = (x) => {
     const years = Math.floor(x)
     const months = Math.round((x - years) * 12)
-    return years > 0 ? `${years}y ${months}m` : `${months}m`
+    return `${years.toString().padStart(2, '0')}y ${months
+      .toString()
+      .padStart(2, '0')}m`
   }
 
   const handleXSelectorMouseMove = (e) => {
@@ -68,56 +67,19 @@ const Timeseries = ({
       }
     : {}
 
-  const renderXSelector = () => {
-    if (
-      xSelector &&
-      isHovering &&
-      mousePosition != null &&
-      mousePosition < endYear
-    ) {
-      return (
-        <Line
-          data={[
-            [mousePosition, 0],
-            [mousePosition, yLimits[1]],
-          ]}
-          strokeWidth={1}
-          color='secondary'
-          opacity={1}
-        />
-      )
-    }
-  }
-
-  const renderXSelectorLabel = () => {
-    if (
-      !isHovering ||
-      mousePosition == null ||
-      mousePosition >= endYear ||
-      !selectedLines.length
-    ) {
-      return null
-    }
+  const renderXSelector = (x, selected) => {
+    if ((!selected && !isHovering) || !xSelector) return null
+    const color = selected ? 'primary' : 'secondary'
     return (
-      <Point
-        x={mousePosition}
-        y={yLimits[1]}
-        align={mousePosition < 12 ? 'left' : 'right'}
-        verticalAlign='bottom'
-        height={20}
-      >
-        <Box sx={{ mb: -2, [mousePosition < 12 ? 'ml' : 'mr']: -2 }}>
-          <Badge
-            sx={{
-              fontSize: 0,
-              height: '20px',
-              background: 'secondary',
-            }}
-          >
-            {xYearsMonth(mousePosition)}
-          </Badge>
-        </Box>
-      </Point>
+      <Line
+        data={[
+          [x, 0],
+          [x, yLimits[1]],
+        ]}
+        strokeWidth={1}
+        color={color}
+        opacity={1}
+      />
     )
   }
 
@@ -156,22 +118,45 @@ const Timeseries = ({
     )
   }
 
-  const renderDataBadge = (point) => {
-    const { text, x, y, color } = point
-    return (
-      <Point x={x} y={y} align='center' width={2}>
-        <Badge
-          sx={{
-            fontSize: 1,
-            height: '20px',
-            mt: 2,
-            bg: color,
-          }}
-        >
-          {text}
-        </Badge>
-      </Point>
-    )
+  const renderTimeAndData = () => {
+    const isXSelectorAvailable =
+      !!xSelector &&
+      mousePosition !== null &&
+      isHovering &&
+      xSelectorValue !== null
+    const isPointAvailable = point?.y !== undefined
+    const formattedYValue = () => {
+      if (xSelectorValue !== null) {
+        return xSelectorValue.toFixed(currentVariable?.calc ? 3 : 1)
+      } else if (point?.y) {
+        return point.y.toFixed(currentVariable?.calc ? 3 : 1)
+      }
+      return ''
+    }
+    if (formattedYValue() === '') return null
+    const shouldDisplayBox = isXSelectorAvailable || isPointAvailable
+    const xValue = mousePosition ?? point?.x
+    const boxContent = `${xYearsMonth(xValue)}, ${formattedYValue()}`
+
+    return shouldDisplayBox ? (
+      <Box
+        sx={{
+          position: 'absolute',
+          right: 0,
+          top: 0,
+          fontFamily: 'mono',
+          fontSize: 1,
+          color: 'secondary',
+          pointerEvents: 'none',
+        }}
+      >
+        ({boxContent}
+        <Box as='span' sx={{ fontSize: 0 }}>
+          {currentVariable.unit}
+        </Box>
+        )
+      </Box>
+    ) : null
   }
 
   return (
@@ -184,6 +169,7 @@ const Timeseries = ({
         pointerEvents: 'none',
       }}
     >
+      {renderTimeAndData()}
       <Chart x={xLimits} y={yLimits} padding={{ top: 30 }}>
         <Grid vertical horizontal />
         <Ticks left bottom />
@@ -204,6 +190,8 @@ const Timeseries = ({
           }}
           {...xSelectorHandlers}
         >
+          {xSelector && mousePosition && renderXSelector(mousePosition, false)}
+          {point?.x && renderXSelector(point.x, true)}
           {selectedLines.map(({ data, id, color }) => (
             <Line
               key={id + '-selected'}
@@ -243,7 +231,6 @@ const Timeseries = ({
             onClick={(e) => e.stopPropagation()}
           />
           {renderHoveredLine()}
-          {point && renderPoint(point)}
           {xSelectorValue
             ? renderPoint({
                 x: mousePosition,
@@ -251,18 +238,8 @@ const Timeseries = ({
                 color: 'secondary',
               })
             : null}
-          {renderXSelector()}
+          {point && renderPoint(point)}
         </Plot>
-        {renderXSelectorLabel()}
-        {point && renderDataBadge(point)}
-        {xSelectorValue
-          ? renderDataBadge({
-              x: mousePosition,
-              y: xSelectorValue,
-              color: 'secondary',
-              text: xSelectorValue.toFixed(currentVariable.calc ? 3 : 1),
-            })
-          : null}
       </Chart>
     </Box>
   )
