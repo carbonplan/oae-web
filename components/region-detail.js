@@ -239,7 +239,7 @@ const RegionDetail = ({ sx }) => {
               mt: '-3px',
             }}
           />
-          display total in background
+          show background variability
         </Label>
       </Box>
       <Box sx={{ ...sx.heading, mt: 4 }}>Time</Box>
