@@ -141,26 +141,11 @@ const Timeseries = ({
 
   const renderTimeAndData = () => {
     if (!xSelector) return null
-    const isXSelectorAvailable =
-      !!xSelector &&
-      mousePosition !== null &&
-      isHovering &&
-      xSelectorValue !== null
-    const isPointAvailable = point?.y !== undefined
-    const formattedYValue = () => {
-      if (!!xSelectorValue && isXSelectorAvailable) {
-        return xSelectorValue.toFixed(currentVariable?.calc ? 3 : 1)
-      } else if (point?.y) {
-        return point.y.toFixed(currentVariable?.calc ? 3 : 1)
-      }
-      return ''
-    }
-    if (formattedYValue() === '') return null
-    const shouldDisplayBox = isXSelectorAvailable || isPointAvailable
+    if (xSelectorValue === undefined && point?.y === undefined) return null
+    const yValue = xSelectorValue ?? point?.y
     const xValue = mousePosition ?? point?.x
-    const boxContent = `${xYearsMonth(xValue)}, ${formattedYValue()}`
-
-    return shouldDisplayBox ? (
+    const formattedValue = yValue.toFixed(currentVariable?.calc ? 3 : 1)
+    return (
       <Box
         sx={{
           position: 'absolute',
@@ -172,13 +157,13 @@ const Timeseries = ({
           pointerEvents: 'none',
         }}
       >
-        ({boxContent}
+        ({xYearsMonth(xValue)}, {formattedValue}
         <Box as='span' sx={{ fontSize: 0 }}>
           {currentVariable.unit}
         </Box>
         )
       </Box>
-    ) : null
+    )
   }
 
   return (
