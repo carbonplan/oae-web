@@ -191,7 +191,6 @@ const Timeseries = ({
           {...xSelectorHandlers}
         >
           {xSelector && mousePosition && renderXSelector(mousePosition, false)}
-          {point?.x && renderXSelector(point.x, true)}
           {selectedLines.map(({ data, id, color }) => (
             <Line
               key={id + '-selected'}
@@ -231,6 +230,7 @@ const Timeseries = ({
             onClick={(e) => e.stopPropagation()}
           />
           {renderHoveredLine()}
+          {point && renderPoint(point)}
           {xSelectorValue
             ? renderPoint({
                 x: mousePosition,
@@ -238,7 +238,6 @@ const Timeseries = ({
                 color: 'secondary',
               })
             : null}
-          {point && renderPoint(point)}
         </Plot>
       </Chart>
     </Box>
