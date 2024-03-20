@@ -241,7 +241,7 @@ const RegionDetail = ({ sx }) => {
           display total in background
         </Label>
       </Box>
-      <Box></Box>
+      <Box sx={{ ...sx.heading, mt: 4 }}>Time</Box>
       <Box sx={{ mb: [-3, -3, -3, -2], mt: 4 }}>
         <TimeSlider />
       </Box>
