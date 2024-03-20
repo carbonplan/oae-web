@@ -141,7 +141,6 @@ const RegionDetail = ({ sx }) => {
 
   const point = useMemo(() => {
     const y = selectedLines[0]?.data?.[toMonthsIndex(elapsedYears, 0)]?.[1]
-    if (!y) return null
     const color = getColorForValue(
       lineAverageValue,
       colormap,
