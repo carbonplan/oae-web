@@ -124,7 +124,7 @@ const RegionDetail = ({ sx }) => {
         avgValueForLine,
         colormap,
         currentVariable.colorLimits,
-        40
+        50
       )
       selectedLines.push({
         id: index,
@@ -147,7 +147,7 @@ const RegionDetail = ({ sx }) => {
       lineAverageValue,
       colormap,
       currentVariable.colorLimits,
-      40
+      50
     )
     return {
       x: elapsedYears,
