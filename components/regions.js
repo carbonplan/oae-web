@@ -203,6 +203,9 @@ const Regions = () => {
         if (map.getLayer('regions-hover')) {
           map.removeLayer('regions-hover')
         }
+        if (map.getLayer('regions-selected')) {
+          map.removeLayer('regions-selected')
+        }
       }
     }
   }, [])

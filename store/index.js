@@ -9,44 +9,65 @@ export const overviewVariable = {
   description: 'tk',
 }
 
-export const variables = [
-  {
-    key: 'ALK',
-    colorLimits: [2000, 2800],
-    colormap: 'warm',
-    label: 'Alkalinity',
-    unit: 'mEq/m³',
-    description: 'tk',
+export const variables = {
+  ALK: {
+    meta: {
+      label: 'Alkalinity',
+      description: 'tk',
+    },
+    variables: [
+      {
+        key: 'DELTA_ALK',
+        calc: ['ALK', 'ALK_ALT_CO2'],
+        colorLimits: [0, 0.1],
+        colormap: 'warm',
+        label: 'change',
+        unit: 'mEq/m³',
+        description: 'tk',
+      },
+      {
+        key: 'ALK',
+        colorLimits: [2000, 2800],
+        colormap: 'warm',
+        label: 'Total',
+        unit: 'mEq/m³',
+        description: 'tk',
+      },
+    ],
   },
-  {
-    key: 'ALK_ALT_CO2',
-    colorLimits: [2000, 2800],
-    colormap: 'warm',
-    label: 'Alk. counterfactual',
-    unit: 'mEq/m³',
-    description: 'tk',
+  DIC: {
+    meta: {
+      label: 'Dissolved inorganic carbon (DIC)',
+      description: 'tk',
+    },
+    variables: [
+      {
+        key: 'DELTA_DIC',
+        calc: ['DIC', 'DIC_ALT_CO2'],
+        colorLimits: [0, 0.1],
+        colormap: 'cool',
+        label: 'change',
+        unit: 'mmol/m³',
+        description: 'tk',
+      },
+      {
+        key: 'DIC',
+        colorLimits: [1800, 2300],
+        colormap: 'cool',
+        label: 'Total',
+        unit: 'mmol/m³',
+        description: 'tk',
+      },
+    ],
   },
-  {
-    key: 'DIC',
-    colorLimits: [1800, 2300],
-    colormap: 'cool',
-    label: 'DIC',
-    unit: 'mmol/m³',
-    description: 'tk',
-  },
-  {
-    key: 'DIC_ALT_CO2',
-    colorLimits: [1800, 2300],
-    colormap: 'cool',
-    label: 'DIC counterfactual',
-    unit: 'mmol/m³',
-    description: 'tk',
-  },
-]
+}
 
 const useStore = create((set) => ({
   expanded: true,
   setExpanded: (expanded) => set({ expanded }),
+
+  variableFamily: 'ALK',
+  setVariableFamily: (variableFamily) => set({ variableFamily }),
 
   currentVariable: overviewVariable,
   setCurrentVariable: (currentVariable) => set({ currentVariable }),
@@ -59,7 +80,7 @@ const useStore = create((set) => ({
             alert('only region 0 (near greenland!) is available at this time')
             return { selectedRegion: null }
           }
-          return { selectedRegion, currentVariable: variables[0] }
+          return { selectedRegion, currentVariable: variables.ALK.variables[0] }
         })
       : set({
           selectedRegion,
@@ -69,6 +90,10 @@ const useStore = create((set) => ({
           hoveredRegion: null,
           elapsedTime: 0,
         }),
+
+  showBackgroundInDiff: false,
+  setShowBackgroundInDiff: (showBackgroundInDiff) =>
+    set({ showBackgroundInDiff }),
 
   hoveredRegion: null,
   setHoveredRegion: (hoveredRegion) => set({ hoveredRegion }),

@@ -4,22 +4,83 @@ import { Box, useThemeUI } from 'theme-ui'
 import { Colorbar } from '@carbonplan/components'
 import { useThemedColormap } from '@carbonplan/colormaps'
 
-import useStore from '../store'
+import useStore, { variables } from '../store'
 import Regions from './regions'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
+
+const bands = ['ALK', 'ALK_ALT_CO2', 'DIC', 'DIC_ALT_CO2']
+
+const frag = `
+    float value;
+    float threshold = 0.001;
+    if (deltaAlk == 1.0) {
+      value = ALK - ALK_ALT_CO2;
+    }
+    if (deltaDIC == 1.0) {
+      value = DIC - DIC_ALT_CO2;
+    }
+    if (alk == 1.0) {
+      value = ALK;
+    }
+    if (alkAlt == 1.0) {
+      value = ALK_ALT_CO2;
+    }
+    if (dic == 1.0) {
+      value = DIC;
+    }
+    if (dicAlt == 1.0) {
+      value = DIC_ALT_CO2;
+    }
+
+    if (showBG == 1.0 && abs(value) < threshold) {
+        float baseLine;
+        if (deltaAlk == 1.0) {
+          baseLine = ALK_ALT_CO2;
+        } else {
+          baseLine = DIC_ALT_CO2;
+        }
+        if (baseLine == fillValue) {
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+        } else {
+            float backRescaled = (baseLine - bgColorLow) / (bgColorHigh - bgColorLow);
+            vec4 bgc = texture2D(colormap, vec2(backRescaled, 1.0));
+            float greyScale = 0.299 * bgc.r + 0.587 * bgc.g + 0.114 * bgc.b;
+            gl_FragColor = vec4(greyScale, greyScale, greyScale, 0.5);
+        }
+        gl_FragColor.rgb *= gl_FragColor.a;
+        return;
+    }
+
+    if (value < threshold || value == fillValue) {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+        gl_FragColor.rgb *= gl_FragColor.a;
+        return;
+    }
+
+    float rescaled = (value - clim.x) / (clim.y - clim.x);
+    vec4 c = texture2D(colormap, vec2(rescaled, 1.0));
+    gl_FragColor = vec4(c.x, c.y, c.z, opacity);
+    gl_FragColor.rgb *= gl_FragColor.a;
+  `
 
 const MapWrapper = ({ children, setLoading }) => {
   const selectedRegion = useStore((state) => state.selectedRegion)
   const elapsedTime = useStore((state) => state.elapsedTime)
   const injectionSeason = useStore((state) => state.injectionSeason)
   const currentVariable = useStore((state) => state.currentVariable)
+  const variableFamily = useStore((state) => state.variableFamily)
   const showRegionPicker = useStore((state) => state.showRegionPicker)
   const setRegionData = useStore((state) => state.setRegionData)
+  const showBackgroundInDiff = useStore((state) => state.showBackgroundInDiff)
 
   const colormap = useThemedColormap(currentVariable.colormap)
 
   const { theme } = useThemeUI()
+
+  const secondaryColorLimits = variables[variableFamily].variables.find(
+    (v) => v.key === variableFamily
+  ).colorLimits
 
   const injectionDate = useMemo(() => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
@@ -35,14 +96,13 @@ const MapWrapper = ({ children, setLoading }) => {
       {selectedRegion !== null && (
         <>
           <Raster
-            key={currentVariable.key}
             source={
-              'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store2_no_bands.zarr'
+              'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store2.zarr'
             }
             colormap={colormap}
             clim={currentVariable.colorLimits}
             mode={'texture'}
-            variable={currentVariable.key}
+            variable={'outputs'}
             fillValue={9.969209968386869e36}
             regionOptions={{
               setData: handleRegionData,
@@ -52,10 +112,23 @@ const MapWrapper = ({ children, setLoading }) => {
               },
             }}
             selector={{
+              band: bands,
               polygon_id: selectedRegion,
-              elapsed_time: elapsedTime,
               injection_date: injectionDate,
+              elapsed_time: elapsedTime,
             }}
+            uniforms={{
+              deltaAlk: currentVariable.key === 'DELTA_ALK' ? 1.0 : 0.0,
+              deltaDIC: currentVariable.key === 'DELTA_DIC' ? 1.0 : 0.0,
+              alk: currentVariable.key === 'ALK' ? 1.0 : 0.0,
+              alkAlt: currentVariable.key === 'ALK_ALT_CO2' ? 1.0 : 0.0,
+              dic: currentVariable.key === 'DIC' ? 1.0 : 0.0,
+              dicAlt: currentVariable.key === 'DIC_ALT_CO2' ? 1.0 : 0.0,
+              bgColorHigh: secondaryColorLimits[1],
+              bgColorLow: secondaryColorLimits[0],
+              showBG: showBackgroundInDiff ? 1.0 : 0.0,
+            }}
+            frag={frag}
           />
           {showRegionPicker && (
             <RegionPicker

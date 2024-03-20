@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo, useState } from 'react'
-import { Box, Divider } from 'theme-ui'
-import { Expander, Select } from '@carbonplan/components'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { Box, Checkbox, Divider, Label } from 'theme-ui'
+import { Expander, Filter, Select } from '@carbonplan/components'
 import AnimateHeight from 'react-animate-height'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import { useRegion } from '@carbonplan/maps'
@@ -43,14 +43,18 @@ const getArrayData = (arr, lats, zoom) => {
 const hoveredLine = null
 
 const RegionDetail = ({ sx }) => {
-  const currentVariable = useStore((state) => state.currentVariable)
-  const setCurrentVariable = useStore((state) => state.setCurrentVariable)
-  const showRegionPicker = useStore((state) => state.showRegionPicker)
-  const setShowRegionPicker = useStore((state) => state.setShowRegionPicker)
-  const regionData = useStore((state) => state.regionData)
-  const timeHorizon = useStore((state) => state.timeHorizon)
-  const elapsedYears = useStore((state) => state.elapsedTime / 12)
-  const setElapsedTime = useStore((state) => state.setElapsedTime)
+  const currentVariable = useStore((s) => s.currentVariable)
+  const setCurrentVariable = useStore((s) => s.setCurrentVariable)
+  const variableFamily = useStore((s) => s.variableFamily)
+  const setVariableFamily = useStore((s) => s.setVariableFamily)
+  const showRegionPicker = useStore((s) => s.showRegionPicker)
+  const setShowRegionPicker = useStore((s) => s.setShowRegionPicker)
+  const regionData = useStore((s) => s.regionData)
+  const timeHorizon = useStore((s) => s.timeHorizon)
+  const elapsedYears = useStore((s) => s.elapsedTime / 12)
+  const setElapsedTime = useStore((s) => s.setElapsedTime)
+  const showBackgroundInDiff = useStore((s) => s.showBackgroundInDiff)
+  const setShowBackgroundInDiff = useStore((s) => s.setShowBackgroundInDiff)
 
   const colormap = useThemedColormap(currentVariable?.colormap)
   const { region } = useRegion()
@@ -58,17 +62,45 @@ const RegionDetail = ({ sx }) => {
   const index = useBreakpointIndex()
 
   const [minMax, setMinMax] = useState([0, 0])
+  const [lineAverageValue, setLineAverageValue] = useState(0)
+  const [filterValues, setFilterValues] = useState({})
+  const disableBGControl = currentVariable.calc === undefined
+
+  useEffect(() => {
+    const initialFilterValues = variables[variableFamily].variables.reduce(
+      (acc, variable, index) => ({ ...acc, [variable.label]: index === 0 }),
+      {}
+    )
+    setFilterValues(initialFilterValues)
+  }, [variableFamily])
 
   const toLineData = useMemo(() => {
-    if (!currentVariable || !regionData?.[currentVariable.key]) return []
-
-    const averages = Object.values(regionData[currentVariable.key]).map(
-      (data, index) => {
-        const { avg } = getArrayData(data, regionData.coordinates.lat, zoom)
+    if (!regionData) return []
+    let averages = []
+    if (currentVariable.calc) {
+      const injected = regionData.outputs?.[currentVariable.calc[0]]
+      const notInjected = regionData.outputs?.[currentVariable.calc[1]]
+      if (!injected || !notInjected) return []
+      averages = Object.values(injected).map((data, index) => {
+        const avg = data.reduce(
+          (acc, curr, i) =>
+            acc + (curr - notInjected[index][i]) / (data.length - 1),
+          0
+        )
         const toYear = index / 12
         return [toYear, avg]
-      }
-    )
+      })
+    } else if (regionData.outputs && regionData.outputs[currentVariable.key]) {
+      averages = Object.values(regionData.outputs[currentVariable.key]).map(
+        (data, index) => {
+          const { avg } = getArrayData(data, regionData.coordinates.lat, zoom)
+          const toYear = index / 12
+          return [toYear, avg]
+        }
+      )
+    } else {
+      return []
+    }
     const [min, max] = averages.reduce(
       ([min, max], [_, value]) => [Math.min(min, value), Math.max(max, value)],
       [Infinity, -Infinity]
@@ -87,10 +119,12 @@ const RegionDetail = ({ sx }) => {
       const avgValueForLine =
         selectedSlice.reduce((acc, curr) => acc + curr[1], 0) /
         selectedSlice.length
+      setLineAverageValue(avgValueForLine)
       const color = getColorForValue(
         avgValueForLine,
         colormap,
-        currentVariable.colorLimits
+        currentVariable.colorLimits,
+        50
       )
       selectedLines.push({
         id: index,
@@ -108,20 +142,40 @@ const RegionDetail = ({ sx }) => {
 
   const point = useMemo(() => {
     const y = selectedLines[0]?.data?.[toMonthsIndex(elapsedYears, 0)]?.[1]
-    if (!y) return null
-    const color = getColorForValue(y, colormap, currentVariable.colorLimits)
-    return { x: elapsedYears, y, color, text: y.toFixed(1) }
-  }, [elapsedYears, selectedLines])
+    if (y === undefined) return null
+    const color = getColorForValue(
+      lineAverageValue,
+      colormap,
+      currentVariable.colorLimits,
+      50
+    )
+    return {
+      x: elapsedYears,
+      y,
+      color,
+      text: y.toFixed(currentVariable.calc ? 3 : 1),
+    }
+  }, [elapsedYears, selectedLines, lineAverageValue, colormap, currentVariable])
 
-  const handleSelection = useCallback(
-    (e) => {
-      const selectedVariable = variables.find(
-        (variable) => variable.key === e.target.value
+  const handleFamilySelection = (e) => {
+    setVariableFamily(e.target.value)
+    setCurrentVariable(variables[e.target.value].variables[0])
+  }
+
+  const handleVariableSelection = (updatedValues) => {
+    const selectedLabel = Object.keys(updatedValues).find(
+      (label) => updatedValues[label]
+    )
+    if (selectedLabel) {
+      const selectedVariable = variables[variableFamily].variables.find(
+        (variable) => variable.label === selectedLabel
       )
-      setCurrentVariable(selectedVariable)
-    },
-    [setCurrentVariable]
-  )
+      if (selectedVariable) {
+        setCurrentVariable(selectedVariable)
+        setFilterValues(updatedValues)
+      }
+    }
+  }
 
   const handleTimeseriesClick = useCallback(
     (e) => {
@@ -136,10 +190,10 @@ const RegionDetail = ({ sx }) => {
   return (
     <>
       <Divider sx={{ mt: 4, mb: 5 }} />
-      <Box sx={sx.heading}>Variables</Box>
+      <Box sx={sx.heading}>Variable</Box>
       <Select
-        onChange={handleSelection}
-        value={currentVariable.key}
+        onChange={handleFamilySelection}
+        value={variableFamily}
         size='xs'
         sx={{
           width: '100%',
@@ -151,12 +205,46 @@ const RegionDetail = ({ sx }) => {
           mt: 2,
         }}
       >
-        {variables.map((variable) => (
-          <option key={variable.key} value={variable.key}>
-            {variable.label}
+        {Object.keys(variables).map((variable) => (
+          <option key={variable} value={variable}>
+            {variables[variable].meta.label}
           </option>
         ))}
       </Select>
+
+      <Box sx={{ mt: 3, mb: 2 }}>
+        {Object.keys(filterValues).length && (
+          <Filter
+            key={variableFamily}
+            values={filterValues}
+            setValues={handleVariableSelection}
+          />
+        )}
+        <Label
+          sx={{
+            opacity: disableBGControl ? 0.2 : 1,
+            color: 'secondary',
+            cursor: 'pointer',
+            fontSize: 1,
+            fontFamily: 'mono',
+            pt: 2,
+          }}
+        >
+          <Checkbox
+            disabled={disableBGControl}
+            value={showBackgroundInDiff}
+            onChange={() => setShowBackgroundInDiff(!showBackgroundInDiff)}
+            sx={{
+              opacity: disableBGControl ? 0.2 : 1,
+              width: 18,
+              mr: 1,
+              mt: '-3px',
+            }}
+          />
+          show background variability
+        </Label>
+      </Box>
+      <Box sx={{ ...sx.heading, mt: 4 }}>Time</Box>
       <Box sx={{ mb: [-3, -3, -3, -2], mt: 4 }}>
         <TimeSlider />
       </Box>
