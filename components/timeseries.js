@@ -141,9 +141,9 @@ const Timeseries = ({
 
   const renderTimeAndData = () => {
     if (!xSelector) return null
-    if (xSelectorValue === undefined && point?.y === undefined) return null
     const yValue = xSelectorValue ?? point?.y
     const xValue = mousePosition ?? point?.x
+    if (yValue === undefined || xValue === undefined) return null
     const formattedValue = yValue.toFixed(currentVariable?.calc ? 3 : 1)
     return (
       <Box
