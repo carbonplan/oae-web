@@ -219,7 +219,7 @@ const RegionDetail = ({ sx }) => {
             cursor: 'pointer',
             fontSize: 1,
             fontFamily: 'mono',
-            mt: 2,
+            pt: 2,
           }}
         >
           <Checkbox
