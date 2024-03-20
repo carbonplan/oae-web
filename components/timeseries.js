@@ -180,7 +180,16 @@ const Timeseries = ({
       <Chart x={xLimits} y={yLimits} padding={{ top: 30 }}>
         <Grid vertical horizontal />
         <Ticks left bottom />
-        <TickLabels left bottom />
+        <TickLabels
+          left
+          format={(d) => {
+            if (Math.abs(d) < 0.001) {
+              return d.toExponential(0)
+            }
+            return d
+          }}
+        />
+        <TickLabels bottom />
         <AxisLabel units={yLabels.units} sx={{ fontSize: 0 }} left>
           {yLabels.title}
         </AxisLabel>
