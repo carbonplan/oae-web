@@ -190,7 +190,6 @@ const Timeseries = ({
           }}
           {...xSelectorHandlers}
         >
-          {xSelector && mousePosition && renderXSelector(mousePosition, false)}
           {selectedLines.map(({ data, id, color }) => (
             <Line
               key={id + '-selected'}
@@ -230,6 +229,7 @@ const Timeseries = ({
             onClick={(e) => e.stopPropagation()}
           />
           {renderHoveredLine()}
+          {xSelector && mousePosition && renderXSelector(mousePosition, false)}
           {point && renderPoint(point)}
           {xSelectorValue
             ? renderPoint({
