@@ -57,6 +57,8 @@ const RegionDetail = ({ sx }) => {
   const setShowBackgroundInDiff = useStore((s) => s.setShowBackgroundInDiff)
 
   const colormap = useThemedColormap(currentVariable?.colormap)
+  const minColormap = colormap.slice(30) // used to keep lower values visible
+
   const { region } = useRegion()
   const zoom = region?.properties?.zoom || 0
   const index = useBreakpointIndex()
@@ -122,7 +124,7 @@ const RegionDetail = ({ sx }) => {
       setLineAverageValue(avgValueForLine)
       const color = getColorForValue(
         avgValueForLine,
-        colormap,
+        minColormap,
         currentVariable.colorLimits
       )
       selectedLines.push({
@@ -144,7 +146,7 @@ const RegionDetail = ({ sx }) => {
     if (y === undefined) return null
     const color = getColorForValue(
       lineAverageValue,
-      colormap,
+      minColormap,
       currentVariable.colorLimits
     )
     return {
