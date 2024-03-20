@@ -117,6 +117,14 @@ const TimeSlider = () => {
   return (
     <Flex sx={{ gap: [2, 2, 2, 3] }}>
       <UnitSlider
+        value={Math.floor(elapsedTime / 12)}
+        range={[0, timeHorizon - 1]}
+        onChange={handleYearChange}
+        formatLabel={(d) => `Year ${d + 1}`}
+        debounce
+        showValue
+      />
+      <UnitSlider
         value={elapsedTime % 12}
         range={[0, 11]}
         onChange={handleMonthChange}
@@ -128,14 +136,6 @@ const TimeSlider = () => {
             }
           )
         }
-        showValue
-      />
-      <UnitSlider
-        value={Math.floor(elapsedTime / 12)}
-        range={[0, timeHorizon - 1]}
-        onChange={handleYearChange}
-        formatLabel={(d) => `Year ${d + 1}`}
-        debounce
         showValue
       />
     </Flex>
