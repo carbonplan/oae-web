@@ -62,6 +62,7 @@ const RegionDetail = ({ sx }) => {
   const index = useBreakpointIndex()
 
   const [minMax, setMinMax] = useState([0, 0])
+  const [lineAverageValue, setLineAverageValue] = useState(0)
   const [filterValues, setFilterValues] = useState({})
   const disableBGControl = currentVariable.calc === undefined
 
@@ -118,6 +119,7 @@ const RegionDetail = ({ sx }) => {
       const avgValueForLine =
         selectedSlice.reduce((acc, curr) => acc + curr[1], 0) /
         selectedSlice.length
+      setLineAverageValue(avgValueForLine)
       const color = getColorForValue(
         avgValueForLine,
         colormap,
@@ -140,14 +142,18 @@ const RegionDetail = ({ sx }) => {
   const point = useMemo(() => {
     const y = selectedLines[0]?.data?.[toMonthsIndex(elapsedYears, 0)]?.[1]
     if (!y) return null
-    const color = getColorForValue(y, colormap, currentVariable.colorLimits)
+    const color = getColorForValue(
+      lineAverageValue,
+      colormap,
+      currentVariable.colorLimits
+    )
     return {
       x: elapsedYears,
       y,
       color,
       text: y.toFixed(currentVariable.calc ? 3 : 1),
     }
-  }, [elapsedYears, selectedLines])
+  }, [elapsedYears, selectedLines, lineAverageValue, colormap, currentVariable])
 
   const handleFamilySelection = (e) => {
     setVariableFamily(e.target.value)
