@@ -19,7 +19,7 @@ export const variables = {
       {
         key: 'DELTA_ALK',
         calc: ['ALK', 'ALK_ALT_CO2'],
-        colorLimits: [-0.05, 0.15],
+        colorLimits: [0, 0.1],
         colormap: 'warm',
         label: 'change',
         unit: 'mEq/m³',
@@ -44,7 +44,7 @@ export const variables = {
       {
         key: 'DELTA_DIC',
         calc: ['DIC', 'DIC_ALT_CO2'],
-        colorLimits: [-0.05, 0.15],
+        colorLimits: [0, 0.1],
         colormap: 'cool',
         label: 'change',
         unit: 'mmol/m³',
