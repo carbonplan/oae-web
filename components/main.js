@@ -108,7 +108,7 @@ const Main = () => {
                     top: '16px',
                   }}
                 >
-                  <Spinner />
+                  <Spinner size={32} />
                 </SidebarAttachment>
               )}
             </>
