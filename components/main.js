@@ -126,7 +126,6 @@ const Main = () => {
                   <Spinner size={32} />
                 </Box>
               )}
-
               <MobileSettings expanded={expanded}>
                 <Intro />
                 <Filters sx={sx} />
