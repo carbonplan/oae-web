@@ -258,7 +258,7 @@ const Timeseries = ({
             : null}
         </Plot>
         {!xSelector && renderDataBadge()}
-        {loading && xSelector && selectedLines.length === 0 && (
+        {loading && xSelector && (
           <Box
             sx={{
               position: 'absolute',
