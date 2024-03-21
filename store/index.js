@@ -63,6 +63,9 @@ export const variables = {
 }
 
 const useStore = create((set) => ({
+  loading: false,
+  setLoading: (loading) => set({ loading }),
+
   expanded: true,
   setExpanded: (expanded) => set({ expanded }),
 

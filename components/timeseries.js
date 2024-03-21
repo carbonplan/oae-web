@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box } from 'theme-ui'
+import { Box, Spinner } from 'theme-ui'
 import {
   AxisLabel,
   Chart,
@@ -28,6 +28,7 @@ const Timeseries = ({
   handleXSelectorClick = () => {},
 }) => {
   const { selectedLines, unselectedLines, hoveredLine } = timeData
+  const loading = useStore((s) => s.loading)
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
   const [xSelectorValue, setXSelectorValue] = useState(null)
@@ -256,6 +257,18 @@ const Timeseries = ({
             : null}
         </Plot>
         {!xSelector && renderDataBadge()}
+        {loading && xSelector && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(0, -50%)',
+            }}
+          >
+            <Spinner />
+          </Box>
+        )}
       </Chart>
     </Box>
   )

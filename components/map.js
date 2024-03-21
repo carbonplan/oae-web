@@ -64,7 +64,8 @@ const frag = `
     gl_FragColor.rgb *= gl_FragColor.a;
   `
 
-const MapWrapper = ({ children, setLoading }) => {
+const MapWrapper = ({ children }) => {
+  const setLoading = useStore((state) => state.setLoading)
   const selectedRegion = useStore((state) => state.selectedRegion)
   const elapsedTime = useStore((state) => state.elapsedTime)
   const injectionSeason = useStore((state) => state.injectionSeason)
