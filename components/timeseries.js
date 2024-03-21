@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box } from 'theme-ui'
+import { Box, Spinner } from 'theme-ui'
 import {
   AxisLabel,
   Chart,
@@ -28,6 +28,7 @@ const Timeseries = ({
   handleXSelectorClick = () => {},
 }) => {
   const { selectedLines, unselectedLines, hoveredLine } = timeData
+  const regionDataLoading = useStore((s) => s.regionDataLoading)
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
   const [xSelectorValue, setXSelectorValue] = useState(null)
@@ -109,6 +110,7 @@ const Timeseries = ({
 
   const renderPoint = (point) => {
     const { x, y, color } = point
+    if (x === undefined || y === undefined || color === undefined) return null
     return (
       <Circle
         x={x}
@@ -247,7 +249,7 @@ const Timeseries = ({
           {renderHoveredLine()}
           {xSelector && mousePosition && renderXSelector(mousePosition, false)}
           {point && renderPoint(point)}
-          {xSelectorValue
+          {xSelectorValue !== null
             ? renderPoint({
                 x: mousePosition,
                 y: xSelectorValue,
@@ -256,6 +258,19 @@ const Timeseries = ({
             : null}
         </Plot>
         {!xSelector && renderDataBadge()}
+        {regionDataLoading && xSelector && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '45%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              ml: 5,
+            }}
+          >
+            <Spinner size={28} />
+          </Box>
+        )}
       </Chart>
     </Box>
   )

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import useStore from '../store'
-import { Sidebar } from '@carbonplan/layouts'
-import { Box, Divider } from 'theme-ui'
+import { Sidebar, SidebarAttachment } from '@carbonplan/layouts'
+import { Box, Divider, Spinner } from 'theme-ui'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import Header from './header'
 import MapWrapper from './map'
@@ -33,6 +33,7 @@ const sx = {
 }
 
 const Main = () => {
+  const loading = useStore((state) => state.loading)
   const expanded = useStore((state) => state.expanded)
   const setExpanded = useStore((state) => state.setExpanded)
   const selectedRegion = useStore((state) => state.selectedRegion)
@@ -66,39 +67,65 @@ const Main = () => {
       >
         <MapWrapper>
           {index >= 2 ? (
-            <Sidebar
-              expanded={expanded}
-              setExpanded={setExpanded}
-              side='left'
-              width={4}
-              footer={<RegionFooter sx={sx} />}
-            >
-              <>
-                <Box
+            <>
+              <Sidebar
+                expanded={expanded}
+                setExpanded={setExpanded}
+                side='left'
+                width={4}
+                footer={<RegionFooter sx={sx} />}
+              >
+                <>
+                  <Box
+                    sx={{
+                      // overlay
+                      width: '100%',
+                      height: '100%',
+                      backgroundColor:
+                        selectedRegion !== null
+                          ? 'rgba(0,0,0,0.65)'
+                          : 'rgba(0,0,0,0)',
+                      pointerEvents: selectedRegion !== null ? 'auto' : 'none',
+                      transition: 'background-color 0.5s ease',
+                      position: 'absolute',
+                      left: 0,
+                      top: 0,
+                      zIndex: 1,
+                    }}
+                  />
+                  <Intro />
+                  <Filters sx={sx} />
+                  <Divider sx={{ mt: 4, mb: 5 }} />
+                  <OverviewChart sx={sx} />
+                </>
+              </Sidebar>
+              {loading && (
+                <SidebarAttachment
+                  expanded={expanded}
+                  side='left'
+                  width={4}
                   sx={{
-                    // overlay
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor:
-                      selectedRegion !== null
-                        ? 'rgba(0,0,0,0.65)'
-                        : 'rgba(0,0,0,0)',
-                    pointerEvents: selectedRegion !== null ? 'auto' : 'none',
-                    transition: 'background-color 0.5s ease',
-                    position: 'absolute',
-                    left: 0,
-                    top: 0,
-                    zIndex: 1,
+                    top: '16px',
                   }}
-                />
-                <Intro />
-                <Filters sx={sx} />
-                <Divider sx={{ mt: 4, mb: 5 }} />
-                <OverviewChart sx={sx} />
-              </>
-            </Sidebar>
+                >
+                  <Spinner size={32} />
+                </SidebarAttachment>
+              )}
+            </>
           ) : (
             <>
+              {loading && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '72px',
+                    left: '16px',
+                    zIndex: 20220,
+                  }}
+                >
+                  <Spinner size={32} />
+                </Box>
+              )}
               <MobileSettings expanded={expanded}>
                 <Intro />
                 <Filters sx={sx} />

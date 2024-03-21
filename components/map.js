@@ -64,7 +64,9 @@ const frag = `
     gl_FragColor.rgb *= gl_FragColor.a;
   `
 
-const MapWrapper = ({ children, setLoading }) => {
+const MapWrapper = ({ children }) => {
+  const setLoading = useStore((state) => state.setLoading)
+  const setRegionDataLoading = useStore((state) => state.setRegionDataLoading)
   const selectedRegion = useStore((state) => state.selectedRegion)
   const elapsedTime = useStore((state) => state.elapsedTime)
   const injectionSeason = useStore((state) => state.injectionSeason)
@@ -87,8 +89,12 @@ const MapWrapper = ({ children, setLoading }) => {
   }, [injectionSeason])
 
   const handleRegionData = (data) => {
-    if (data.value === null) return
-    setRegionData(data.value)
+    if (data.value === null) {
+      setRegionDataLoading(true)
+    } else {
+      setRegionData(data.value)
+      setRegionDataLoading(false)
+    }
   }
 
   return (
