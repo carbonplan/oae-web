@@ -110,6 +110,7 @@ const Timeseries = ({
 
   const renderPoint = (point) => {
     const { x, y, color } = point
+    if (x === undefined || y === undefined || color === undefined) return null
     return (
       <Circle
         x={x}
@@ -248,7 +249,7 @@ const Timeseries = ({
           {renderHoveredLine()}
           {xSelector && mousePosition && renderXSelector(mousePosition, false)}
           {point && renderPoint(point)}
-          {xSelectorValue
+          {xSelectorValue !== null
             ? renderPoint({
                 x: mousePosition,
                 y: xSelectorValue,
