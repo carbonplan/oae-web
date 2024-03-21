@@ -114,6 +114,19 @@ const Main = () => {
             </>
           ) : (
             <>
+              {loading && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '72px',
+                    left: '16px',
+                    zIndex: 20220,
+                  }}
+                >
+                  <Spinner size={32} />
+                </Box>
+              )}
+
               <MobileSettings expanded={expanded}>
                 <Intro />
                 <Filters sx={sx} />
