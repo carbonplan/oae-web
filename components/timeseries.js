@@ -261,12 +261,13 @@ const Timeseries = ({
           <Box
             sx={{
               position: 'absolute',
-              top: '50%',
+              top: '45%',
               left: '50%',
-              transform: 'translate(0, -50%)',
+              transform: 'translate(-50%, -50%)',
+              ml: 5,
             }}
           >
-            <Spinner />
+            <Spinner size={28} />
           </Box>
         )}
       </Chart>
