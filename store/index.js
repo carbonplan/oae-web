@@ -66,6 +66,9 @@ const useStore = create((set) => ({
   loading: false,
   setLoading: (loading) => set({ loading }),
 
+  regionDataLoading: false,
+  setRegionDataLoading: (regionDataLoading) => set({ regionDataLoading }),
+
   expanded: true,
   setExpanded: (expanded) => set({ expanded }),
 

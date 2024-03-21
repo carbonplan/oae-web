@@ -28,7 +28,7 @@ const Timeseries = ({
   handleXSelectorClick = () => {},
 }) => {
   const { selectedLines, unselectedLines, hoveredLine } = timeData
-  const loading = useStore((s) => s.loading)
+  const regionDataLoading = useStore((s) => s.regionDataLoading)
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
   const [xSelectorValue, setXSelectorValue] = useState(null)
@@ -258,7 +258,7 @@ const Timeseries = ({
             : null}
         </Plot>
         {!xSelector && renderDataBadge()}
-        {loading && xSelector && (
+        {regionDataLoading && xSelector && (
           <Box
             sx={{
               position: 'absolute',

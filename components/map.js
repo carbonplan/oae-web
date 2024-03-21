@@ -66,6 +66,7 @@ const frag = `
 
 const MapWrapper = ({ children }) => {
   const setLoading = useStore((state) => state.setLoading)
+  const setRegionDataLoading = useStore((state) => state.setRegionDataLoading)
   const selectedRegion = useStore((state) => state.selectedRegion)
   const elapsedTime = useStore((state) => state.elapsedTime)
   const injectionSeason = useStore((state) => state.injectionSeason)
@@ -88,8 +89,12 @@ const MapWrapper = ({ children }) => {
   }, [injectionSeason])
 
   const handleRegionData = (data) => {
-    if (data.value === null) return
-    setRegionData(data.value)
+    if (data.value === null) {
+      setRegionDataLoading(true)
+    } else {
+      setRegionData(data.value)
+      setRegionDataLoading(false)
+    }
   }
 
   return (
