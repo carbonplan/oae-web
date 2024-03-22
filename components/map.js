@@ -143,7 +143,7 @@ const MapWrapper = ({ children }) => {
               bgColorHigh: secondaryColorLimits[1],
               bgColorLow: secondaryColorLimits[0],
               showBG: showBackgroundInDiff ? 1.0 : 0.0,
-              threshold: 0.001,
+              threshold: currentVariable.threshold ?? 0.0,
             }}
             frag={frag}
           />
