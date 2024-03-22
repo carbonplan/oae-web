@@ -13,55 +13,58 @@ const bands = ['ALK', 'ALK_ALT_CO2', 'DIC', 'DIC_ALT_CO2']
 
 const frag = `
     float value;
-    float threshold = 0.001;
-    if (deltaAlk == 1.0) {
-      value = ALK - ALK_ALT_CO2;
-    }
-    if (deltaDIC == 1.0) {
-      value = DIC - DIC_ALT_CO2;
-    }
-    if (alk == 1.0) {
-      value = ALK;
-    }
-    if (alkAlt == 1.0) {
-      value = ALK_ALT_CO2;
-    }
-    if (dic == 1.0) {
-      value = DIC;
-    }
-    if (dicAlt == 1.0) {
-      value = DIC_ALT_CO2;
+    bool isDelta = false;
+    float baseValue = 0.0;
+    float blendFactor = 0.5;
+    vec4 bgc = vec4(0.0);
+
+    if (deltaAlk == 1.0 || deltaDIC == 1.0) {
+        value = (deltaAlk == 1.0) ? ALK - ALK_ALT_CO2 : DIC - DIC_ALT_CO2;
+        baseValue = (deltaAlk == 1.0) ? ALK_ALT_CO2 : DIC_ALT_CO2;
+        if (baseValue == fillValue) baseValue = 0.0;
+        isDelta = true;
+    } else if (alk == 1.0) {
+        value = ALK;
+    } else if (alkAlt == 1.0) {
+        value = ALK_ALT_CO2;
+    } else if (dic == 1.0) {
+        value = DIC;
+    } else if (dicAlt == 1.0) {
+        value = DIC_ALT_CO2;
     }
 
-    if (showBG == 1.0 && abs(value) < threshold) {
-        float baseLine;
-        if (deltaAlk == 1.0) {
-          baseLine = ALK_ALT_CO2;
-        } else {
-          baseLine = DIC_ALT_CO2;
-        }
-        if (baseLine == fillValue) {
-            gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
-        } else {
-            float backRescaled = (baseLine - bgColorLow) / (bgColorHigh - bgColorLow);
-            vec4 bgc = texture2D(colormap, vec2(backRescaled, 1.0));
-            float greyScale = 0.299 * bgc.r + 0.587 * bgc.g + 0.114 * bgc.b;
-            gl_FragColor = vec4(greyScale, greyScale, greyScale, 0.5);
-        }
-        gl_FragColor.rgb *= gl_FragColor.a;
+    if (value == fillValue) {
+        gl_FragColor = vec4(0.0);
         return;
     }
 
-    if (value < threshold || value == fillValue) {
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+    if (showBG == 0.0 || (!isDelta && showBG == 1.0)) {
+        float rescaled = (value - clim.x) / (clim.y - clim.x);
+        gl_FragColor = texture2D(colormap, vec2(rescaled, 1.0));
+        gl_FragColor.a = opacity;
         gl_FragColor.rgb *= gl_FragColor.a;
         return;
     }
-
-    float rescaled = (value - clim.x) / (clim.y - clim.x);
-    vec4 c = texture2D(colormap, vec2(rescaled, 1.0));
-    gl_FragColor = vec4(c.x, c.y, c.z, opacity);
-    gl_FragColor.rgb *= gl_FragColor.a;
+    
+    // background mixing
+    float bgRescaled = (baseValue - bgColorLow) / (bgColorHigh - bgColorLow);
+    bgc = texture2D(colormap, vec2(bgRescaled, 1.0));
+    bgc.a = opacity;
+    if (abs(value) <= threshold) {
+      // background color
+      gl_FragColor = vec4(bgc.rgb, bgc.a);
+      gl_FragColor.rgb *= gl_FragColor.a;
+    } else {
+      // show grey delta
+      float deltaRescaled = (value - clim.x) / (clim.y - clim.x);
+      vec4 deltaColor = texture2D(colormap, vec2(deltaRescaled, 1.0));
+      float greyScale = 0.299 * deltaColor.r + 0.587 * deltaColor.g + 0.114 * deltaColor.b;
+      greyScale = 1.0 - greyScale;
+      vec4 invertedGreyColor = vec4(greyScale, greyScale, greyScale, 0.5);
+      vec4 blendedColor = mix(bgc, invertedGreyColor, blendFactor * invertedGreyColor.a);
+      gl_FragColor = vec4(blendedColor.rgb, blendedColor.a);
+      gl_FragColor.rgb *= gl_FragColor.a;
+    }
   `
 
 const MapWrapper = ({ children }) => {
@@ -83,6 +86,13 @@ const MapWrapper = ({ children }) => {
   const secondaryColorLimits = variables[variableFamily].variables.find(
     (v) => v.key === variableFamily
   ).colorLimits
+  const colorBarClimOverride = showBackgroundInDiff
+    ? secondaryColorLimits
+    : currentVariable.colorLimits
+  const colorBarLabelOverride = showBackgroundInDiff
+    ? variables[variableFamily].variables.find((v) => v.key === variableFamily)
+        .label
+    : currentVariable.label
 
   const injectionDate = useMemo(() => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
@@ -133,6 +143,7 @@ const MapWrapper = ({ children }) => {
               bgColorHigh: secondaryColorLimits[1],
               bgColorLow: secondaryColorLimits[0],
               showBG: showBackgroundInDiff ? 1.0 : 0.0,
+              threshold: 0.001,
             }}
             frag={frag}
           />
@@ -157,8 +168,8 @@ const MapWrapper = ({ children }) => {
       >
         <Colorbar
           colormap={colormap}
-          clim={currentVariable.colorLimits}
-          label={currentVariable.label}
+          clim={colorBarClimOverride}
+          label={colorBarLabelOverride}
           units={currentVariable.unit}
           horizontal
         />
