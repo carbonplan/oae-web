@@ -146,7 +146,7 @@ const RegionDetail = ({ sx }) => {
     const y = selectedLines[0]?.data?.[toMonthsIndex(elapsedYears, 0)]?.[1]
     if (y === undefined) return null
     const color = showBackgroundInDiff
-      ? 'secondary'
+      ? 'primary'
       : getColorForValue(
           lineAverageValue,
           colormap,
