@@ -68,6 +68,7 @@ const MapWrapper = ({ children }) => {
   const setLoading = useStore((state) => state.setLoading)
   const setRegionDataLoading = useStore((state) => state.setRegionDataLoading)
   const selectedRegion = useStore((state) => state.selectedRegion)
+  const selectedRegionCenter = useStore((state) => state.selectedRegionCenter)
   const elapsedTime = useStore((state) => state.elapsedTime)
   const injectionSeason = useStore((state) => state.injectionSeason)
   const currentVariable = useStore((state) => state.currentVariable)
@@ -143,6 +144,7 @@ const MapWrapper = ({ children }) => {
               fontFamily={theme.fonts.mono}
               fontSize={'14px'}
               maxRadius={2000}
+              initialCenter={selectedRegionCenter}
             />
           )}
         </>

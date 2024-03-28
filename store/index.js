@@ -97,6 +97,10 @@ const useStore = create((set) => ({
           elapsedTime: 0,
         }),
 
+  selectedRegionCenter: null,
+  setSelectedRegionCenter: (selectedRegionCenter) =>
+    set({ selectedRegionCenter }),
+
   showBackgroundInDiff: false,
   setShowBackgroundInDiff: (showBackgroundInDiff) =>
     set({ showBackgroundInDiff }),

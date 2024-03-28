@@ -3,12 +3,16 @@ import useStore, { overviewVariable } from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
+import centroid from '@turf/centroid'
 
 const Regions = () => {
   const hoveredRegion = useStore((state) => state.hoveredRegion)
   const setHoveredRegion = useStore((state) => state.setHoveredRegion)
   const selectedRegion = useStore((state) => state.selectedRegion)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
+  const setSelectedRegionCenter = useStore(
+    (state) => state.setSelectedRegionCenter
+  )
   const setRegionsInView = useStore((state) => state.setRegionsInView)
   const timeHorizon = useStore((state) => state.timeHorizon)
   const injectionSeason = useStore((state) => state.injectionSeason)
@@ -74,8 +78,11 @@ const Regions = () => {
 
   const handleClick = (e) => {
     if (e.features.length > 0) {
-      const polygonId = e.features[0].properties.polygon_id
+      const feature = e.features[0]
+      const polygonId = feature.properties.polygon_id
+      const center = centroid(feature.geometry).geometry.coordinates
       setSelectedRegion(polygonId)
+      setSelectedRegionCenter(center)
     }
   }
 
