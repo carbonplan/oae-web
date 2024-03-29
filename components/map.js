@@ -15,14 +15,14 @@ const frag = `
     float value;
     bool isDelta = delta == 1.0;
     bool showDeltaOverBackground = showDeltaOverBackground == 1.0;
-    bool isDIC = varFam == 1.0;
     bool isALK = varFam == 0.0;
+    bool isDIC = varFam == 1.0;
     float baseValue = 0.0;
     float blendFactor = 0.1;
     vec4 bgc = vec4(0.0);
 
     if (!isDelta && !showDeltaOverBackground) {
-      if (varFam == 0.0) {
+      if (isALK) {
         value = ALK;
       } else {
         value = DIC;
