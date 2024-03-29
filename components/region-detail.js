@@ -122,14 +122,12 @@ const RegionDetail = ({ sx }) => {
         selectedSlice.reduce((acc, curr) => acc + curr[1], 0) /
         selectedSlice.length
       setLineAverageValue(avgValueForLine)
-      const color = showDeltaOverBackground
-        ? 'secondary'
-        : getColorForValue(
-            avgValueForLine,
-            colormap,
-            currentVariable.colorLimits,
-            50
-          )
+      const color = getColorForValue(
+        avgValueForLine,
+        colormap,
+        currentVariable.colorLimits,
+        50
+      )
       selectedLines.push({
         id: index,
         color,
@@ -147,14 +145,12 @@ const RegionDetail = ({ sx }) => {
   const point = useMemo(() => {
     const y = selectedLines[0]?.data?.[toMonthsIndex(elapsedYears, 0)]?.[1]
     if (y === undefined) return null
-    const color = showDeltaOverBackground
-      ? 'primary'
-      : getColorForValue(
-          lineAverageValue,
-          colormap,
-          currentVariable.colorLimits,
-          50
-        )
+    const color = getColorForValue(
+      lineAverageValue,
+      colormap,
+      currentVariable.colorLimits,
+      50
+    )
     return {
       x: elapsedYears,
       y,
