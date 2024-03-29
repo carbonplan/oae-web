@@ -14,13 +14,13 @@ export const variables = {
     meta: {
       label: 'Alkalinity',
       description: 'tk',
+      threshold: 0.1,
     },
     variables: [
       {
         key: 'DELTA_ALK',
         calc: ['ALK', 'ALK_ALT_CO2'],
         colorLimits: [0, 0.1],
-        threshold: 0.001,
         colormap: 'warm',
         label: 'change',
         unit: 'mEq/m³',
@@ -40,13 +40,13 @@ export const variables = {
     meta: {
       label: 'Dissolved inorganic carbon (DIC)',
       description: 'tk',
+      threshold: 0.001,
     },
     variables: [
       {
         key: 'DELTA_DIC',
         calc: ['DIC', 'DIC_ALT_CO2'],
         colorLimits: [0, 0.1],
-        threshold: 0.001,
         colormap: 'cool',
         label: 'change',
         unit: 'mmol/m³',

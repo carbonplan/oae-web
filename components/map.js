@@ -4,7 +4,7 @@ import { Box, useThemeUI } from 'theme-ui'
 import { Colorbar } from '@carbonplan/components'
 import { useThemedColormap } from '@carbonplan/colormaps'
 
-import useStore from '../store'
+import useStore, { variables } from '../store'
 import Regions from './regions'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
@@ -40,7 +40,7 @@ const frag = `
 
     if (isDelta && !showDeltaOverBackground) {
       value = isALK ? ALK - ALK_ALT_CO2 : DIC - DIC_ALT_CO2;
-      if (value <= threshold || value == fillValue) {
+      if (value < threshold || value == fillValue) {
         gl_FragColor = vec4(0.0);
         return;
       }
@@ -61,7 +61,7 @@ const frag = `
         gl_FragColor = vec4(0.0);
         return;
       }
-      if (value <= threshold) {
+      if (value < threshold) {
         // background color
         gl_FragColor = vec4(bgc.rgb, bgc.a);
         gl_FragColor.rgb *= gl_FragColor.a;
@@ -150,7 +150,7 @@ const MapWrapper = ({ children }) => {
                 !currentVariable.key.includes('DELTA')
                   ? 1.0
                   : 0.0,
-              threshold: currentVariable.threshold ?? 0.0,
+              threshold: variables[variableFamily].meta.threshold ?? 0.0,
             }}
             frag={frag}
           />
