@@ -57,7 +57,6 @@ const RegionDetail = ({ sx }) => {
   const setShowDeltaOverBackground = useStore(
     (s) => s.setShowDeltaOverBackground
   )
-
   const colormap = useThemedColormap(currentVariable?.colormap)
   const { region } = useRegion()
   const zoom = region?.properties?.zoom || 0
@@ -65,16 +64,17 @@ const RegionDetail = ({ sx }) => {
 
   const [minMax, setMinMax] = useState([0, 0])
   const [lineAverageValue, setLineAverageValue] = useState(0)
-  const [filterValues, setFilterValues] = useState({})
   const disableBGControl = currentVariable.calc !== undefined
 
-  useEffect(() => {
-    const initialFilterValues = variables[variableFamily].variables.reduce(
-      (acc, variable, index) => ({ ...acc, [variable.label]: index === 0 }),
+  const filterValues = useMemo(() => {
+    return variables[variableFamily].variables.reduce(
+      (acc, variable, index) => ({
+        ...acc,
+        [variable.label]: currentVariable.label === variable.label,
+      }),
       {}
     )
-    setFilterValues(initialFilterValues)
-  }, [variableFamily])
+  }, [variableFamily, currentVariable])
 
   const toLineData = useMemo(() => {
     if (!regionData) return []
@@ -159,25 +159,30 @@ const RegionDetail = ({ sx }) => {
     }
   }, [elapsedYears, selectedLines, lineAverageValue, colormap, currentVariable])
 
-  const handleFamilySelection = (e) => {
-    setVariableFamily(e.target.value)
-    setCurrentVariable(variables[e.target.value].variables[0])
-  }
+  const handleFamilySelection = useCallback(
+    (e) => {
+      setVariableFamily(e.target.value)
+      setCurrentVariable(variables[e.target.value].variables[0])
+    },
+    [setVariableFamily, setCurrentVariable, variables]
+  )
 
-  const handleVariableSelection = (updatedValues) => {
-    const selectedLabel = Object.keys(updatedValues).find(
-      (label) => updatedValues[label]
-    )
-    if (selectedLabel) {
-      const selectedVariable = variables[variableFamily].variables.find(
-        (variable) => variable.label === selectedLabel
+  const handleVariableSelection = useCallback(
+    (updatedValues) => {
+      const selectedLabel = Object.keys(updatedValues).find(
+        (label) => updatedValues[label]
       )
-      if (selectedVariable) {
-        setCurrentVariable(selectedVariable)
-        setFilterValues(updatedValues)
+      if (selectedLabel) {
+        const selectedVariable = variables[variableFamily].variables.find(
+          (variable) => variable.label === selectedLabel
+        )
+        if (selectedVariable) {
+          setCurrentVariable(selectedVariable)
+        }
       }
-    }
-  }
+    },
+    [variableFamily, setCurrentVariable]
+  )
 
   const handleTimeseriesClick = useCallback(
     (e) => {
