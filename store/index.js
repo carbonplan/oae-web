@@ -14,7 +14,7 @@ export const variables = {
     meta: {
       label: 'Alkalinity',
       description: 'tk',
-      threshold: 0.1,
+      threshold: 0.001,
     },
     variables: [
       {
