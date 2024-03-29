@@ -4,7 +4,7 @@ import { Box, useThemeUI } from 'theme-ui'
 import { Colorbar } from '@carbonplan/components'
 import { useThemedColormap } from '@carbonplan/colormaps'
 
-import useStore, { variables } from '../store'
+import useStore from '../store'
 import Regions from './regions'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
@@ -13,86 +13,95 @@ const bands = ['ALK', 'ALK_ALT_CO2', 'DIC', 'DIC_ALT_CO2']
 
 const frag = `
     float value;
-    bool isDelta = false;
+    bool isDelta = delta == 1.0;
+    bool showDeltaOverBackground = showDeltaOverBackground == 1.0;
+    bool isDIC = varFam == 1.0;
+    bool isALK = varFam == 0.0;
     float baseValue = 0.0;
-    float blendFactor = 0.5;
+    float blendFactor = 0.1;
     vec4 bgc = vec4(0.0);
 
-    if (deltaAlk == 1.0 || deltaDIC == 1.0) {
-        value = (deltaAlk == 1.0) ? ALK - ALK_ALT_CO2 : DIC - DIC_ALT_CO2;
-        baseValue = (deltaAlk == 1.0) ? ALK_ALT_CO2 : DIC_ALT_CO2;
-        if (baseValue == fillValue) baseValue = 0.0;
-        isDelta = true;
-    } else if (alk == 1.0) {
+    if (!isDelta && !showDeltaOverBackground) {
+      if (varFam == 0.0) {
         value = ALK;
-    } else if (alkAlt == 1.0) {
-        value = ALK_ALT_CO2;
-    } else if (dic == 1.0) {
+      } else {
         value = DIC;
-    } else if (dicAlt == 1.0) {
-        value = DIC_ALT_CO2;
-    }
-
-    if (value == fillValue) {
+      }
+      if (value == fillValue) {
         gl_FragColor = vec4(0.0);
         return;
+      }
+      float rescaled = (value - clim.x) / (clim.y - clim.x);
+      gl_FragColor = texture2D(colormap, vec2(rescaled, 1.0));
+      gl_FragColor.a = opacity;
+      gl_FragColor.rgb *= gl_FragColor.a;
+      return;
     }
 
-    if (showBG == 0.0 || (!isDelta && showBG == 1.0)) {
-        float rescaled = (value - clim.x) / (clim.y - clim.x);
-        gl_FragColor = texture2D(colormap, vec2(rescaled, 1.0));
-        gl_FragColor.a = opacity;
+    if (isDelta && !showDeltaOverBackground) {
+      value = isALK ? ALK - ALK_ALT_CO2 : DIC - DIC_ALT_CO2;
+      if (value <= threshold || value == fillValue) {
+        gl_FragColor = vec4(0.0);
+        return;
+      }
+      float rescaled = (value - clim.x) / (clim.y - clim.x);
+      gl_FragColor = texture2D(colormap, vec2(rescaled, 1.0));
+      gl_FragColor.a = opacity;
+      gl_FragColor.rgb *= gl_FragColor.a;
+      return;
+    }
+
+    if (showDeltaOverBackground) {
+      value = isALK ? ALK - ALK_ALT_CO2 : DIC - DIC_ALT_CO2;
+      baseValue = isALK ? ALK : DIC;
+      float bgRescaled = (baseValue - clim.x) / (clim.y - clim.x);
+      bgc = texture2D(colormap, vec2(bgRescaled, 1.0));
+      bgc.a = opacity;
+      if (baseValue == fillValue) {
+        gl_FragColor = vec4(0.0);
+        return;
+      }
+      if (value <= threshold) {
+        // background color
+        gl_FragColor = vec4(bgc.rgb, bgc.a);
         gl_FragColor.rgb *= gl_FragColor.a;
         return;
-    }
-    
-    // background mixing
-    float bgRescaled = (baseValue - bgColorLow) / (bgColorHigh - bgColorLow);
-    bgc = texture2D(colormap, vec2(bgRescaled, 1.0));
-    bgc.a = opacity;
-    if (abs(value) <= threshold) {
-      // background color
-      gl_FragColor = vec4(bgc.rgb, bgc.a);
-      gl_FragColor.rgb *= gl_FragColor.a;
-    } else {
-      // show grey delta
-      float deltaRescaled = (value - clim.x) / (clim.y - clim.x);
-      vec4 deltaColor = texture2D(colormap, vec2(deltaRescaled, 1.0));
-      float greyScale = 0.299 * deltaColor.r + 0.587 * deltaColor.g + 0.114 * deltaColor.b;
-      greyScale = 1.0 - greyScale;
-      vec4 invertedGreyColor = vec4(greyScale, greyScale, greyScale, 0.5);
-      vec4 blendedColor = mix(bgc, invertedGreyColor, blendFactor * invertedGreyColor.a);
-      gl_FragColor = vec4(blendedColor.rgb, blendedColor.a);
-      gl_FragColor.rgb *= gl_FragColor.a;
+      } else {
+        // show grey delta
+        vec4 greyColor = vec4(1, 1, 1, 1.0);
+        vec4 blendedColor = mix(bgc, greyColor, blendFactor * greyColor.a);
+        gl_FragColor = vec4(blendedColor.rgb, blendedColor.a);
+        gl_FragColor.rgb *= gl_FragColor.a;
+        return;
+      }
     }
   `
 
 const MapWrapper = ({ children }) => {
-  const setLoading = useStore((state) => state.setLoading)
-  const setRegionDataLoading = useStore((state) => state.setRegionDataLoading)
-  const selectedRegion = useStore((state) => state.selectedRegion)
-  const elapsedTime = useStore((state) => state.elapsedTime)
-  const injectionSeason = useStore((state) => state.injectionSeason)
-  const currentVariable = useStore((state) => state.currentVariable)
-  const variableFamily = useStore((state) => state.variableFamily)
-  const showRegionPicker = useStore((state) => state.showRegionPicker)
-  const setRegionData = useStore((state) => state.setRegionData)
-  const showBackgroundInDiff = useStore((state) => state.showBackgroundInDiff)
+  const setLoading = useStore((s) => s.setLoading)
+  const setRegionDataLoading = useStore((s) => s.setRegionDataLoading)
+  const selectedRegion = useStore((s) => s.selectedRegion)
+  const elapsedTime = useStore((s) => s.elapsedTime)
+  const injectionSeason = useStore((s) => s.injectionSeason)
+  const currentVariable = useStore((s) => s.currentVariable)
+  const variableFamily = useStore((s) => s.variableFamily)
+  const showRegionPicker = useStore((s) => s.showRegionPicker)
+  const setRegionData = useStore((s) => s.setRegionData)
+  const showDeltaOverBackground = useStore((s) => s.showDeltaOverBackground)
 
   const colormap = useThemedColormap(currentVariable.colormap)
 
   const { theme } = useThemeUI()
 
-  const secondaryColorLimits = variables[variableFamily].variables.find(
-    (v) => v.key === variableFamily
-  ).colorLimits
-  const colorBarClimOverride = showBackgroundInDiff
-    ? secondaryColorLimits
-    : currentVariable.colorLimits
-  const colorBarLabelOverride = showBackgroundInDiff
-    ? variables[variableFamily].variables.find((v) => v.key === variableFamily)
-        .label
-    : currentVariable.label
+  const varFamUniform = () => {
+    if (variableFamily === 'ALK') {
+      return 0.0
+    }
+    if (variableFamily === 'DIC') {
+      return 1.0
+    }
+    return 0.0
+  }
 
   const injectionDate = useMemo(() => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
@@ -134,15 +143,13 @@ const MapWrapper = ({ children }) => {
               elapsed_time: elapsedTime,
             }}
             uniforms={{
-              deltaAlk: currentVariable.key === 'DELTA_ALK' ? 1.0 : 0.0,
-              deltaDIC: currentVariable.key === 'DELTA_DIC' ? 1.0 : 0.0,
-              alk: currentVariable.key === 'ALK' ? 1.0 : 0.0,
-              alkAlt: currentVariable.key === 'ALK_ALT_CO2' ? 1.0 : 0.0,
-              dic: currentVariable.key === 'DIC' ? 1.0 : 0.0,
-              dicAlt: currentVariable.key === 'DIC_ALT_CO2' ? 1.0 : 0.0,
-              bgColorHigh: secondaryColorLimits[1],
-              bgColorLow: secondaryColorLimits[0],
-              showBG: showBackgroundInDiff ? 1.0 : 0.0,
+              varFam: varFamUniform(),
+              delta: currentVariable.key.includes('DELTA') ? 1.0 : 0.0,
+              showDeltaOverBackground:
+                showDeltaOverBackground &&
+                !currentVariable.key.includes('DELTA')
+                  ? 1.0
+                  : 0.0,
               threshold: currentVariable.threshold ?? 0.0,
             }}
             frag={frag}
@@ -168,8 +175,8 @@ const MapWrapper = ({ children }) => {
       >
         <Colorbar
           colormap={colormap}
-          clim={colorBarClimOverride}
-          label={colorBarLabelOverride}
+          clim={currentVariable.colorLimits}
+          label={currentVariable.label}
           units={currentVariable.unit}
           horizontal
         />

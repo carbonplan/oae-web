@@ -53,8 +53,10 @@ const RegionDetail = ({ sx }) => {
   const timeHorizon = useStore((s) => s.timeHorizon)
   const elapsedYears = useStore((s) => s.elapsedTime / 12)
   const setElapsedTime = useStore((s) => s.setElapsedTime)
-  const showBackgroundInDiff = useStore((s) => s.showBackgroundInDiff)
-  const setShowBackgroundInDiff = useStore((s) => s.setShowBackgroundInDiff)
+  const showDeltaOverBackground = useStore((s) => s.showDeltaOverBackground)
+  const setShowDeltaOverBackground = useStore(
+    (s) => s.setShowDeltaOverBackground
+  )
 
   const colormap = useThemedColormap(currentVariable?.colormap)
   const { region } = useRegion()
@@ -64,7 +66,7 @@ const RegionDetail = ({ sx }) => {
   const [minMax, setMinMax] = useState([0, 0])
   const [lineAverageValue, setLineAverageValue] = useState(0)
   const [filterValues, setFilterValues] = useState({})
-  const disableBGControl = currentVariable.calc === undefined
+  const disableBGControl = currentVariable.calc !== undefined
 
   useEffect(() => {
     const initialFilterValues = variables[variableFamily].variables.reduce(
@@ -120,7 +122,7 @@ const RegionDetail = ({ sx }) => {
         selectedSlice.reduce((acc, curr) => acc + curr[1], 0) /
         selectedSlice.length
       setLineAverageValue(avgValueForLine)
-      const color = showBackgroundInDiff
+      const color = showDeltaOverBackground
         ? 'secondary'
         : getColorForValue(
             avgValueForLine,
@@ -145,7 +147,7 @@ const RegionDetail = ({ sx }) => {
   const point = useMemo(() => {
     const y = selectedLines[0]?.data?.[toMonthsIndex(elapsedYears, 0)]?.[1]
     if (y === undefined) return null
-    const color = showBackgroundInDiff
+    const color = showDeltaOverBackground
       ? 'primary'
       : getColorForValue(
           lineAverageValue,
@@ -236,8 +238,8 @@ const RegionDetail = ({ sx }) => {
         >
           <Checkbox
             disabled={disableBGControl}
-            value={showBackgroundInDiff}
-            onChange={() => setShowBackgroundInDiff(!showBackgroundInDiff)}
+            checked={showDeltaOverBackground}
+            onChange={(e) => setShowDeltaOverBackground(e.target.checked)}
             sx={{
               opacity: disableBGControl ? 0.2 : 1,
               width: 18,
@@ -245,7 +247,7 @@ const RegionDetail = ({ sx }) => {
               mt: '-3px',
             }}
           />
-          show background variability
+          show area of change
         </Label>
       </Box>
       <Box sx={{ ...sx.heading, mt: 4 }}>Time</Box>

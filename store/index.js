@@ -99,9 +99,9 @@ const useStore = create((set) => ({
           elapsedTime: 0,
         }),
 
-  showBackgroundInDiff: false,
-  setShowBackgroundInDiff: (showBackgroundInDiff) =>
-    set({ showBackgroundInDiff }),
+  showDeltaOverBackground: false,
+  setShowDeltaOverBackground: (showDeltaOverBackground) =>
+    set({ showDeltaOverBackground }),
 
   hoveredRegion: null,
   setHoveredRegion: (hoveredRegion) => set({ hoveredRegion }),
