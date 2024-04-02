@@ -49,6 +49,7 @@ const TooltipWrapper = ({
       <Flex
         sx={{
           alignItems: 'center',
+          justifyContent: 'space-between',
           ...sx,
         }}
       >
