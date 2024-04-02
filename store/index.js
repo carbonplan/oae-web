@@ -99,6 +99,10 @@ const useStore = create((set) => ({
           elapsedTime: 0,
         }),
 
+  selectedRegionCenter: null,
+  setSelectedRegionCenter: (selectedRegionCenter) =>
+    set({ selectedRegionCenter }),
+
   showDeltaOverBackground: false,
   setShowDeltaOverBackground: (showDeltaOverBackground) =>
     set({ showDeltaOverBackground }),
