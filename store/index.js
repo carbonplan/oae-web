@@ -14,6 +14,7 @@ export const variables = {
     meta: {
       label: 'Alkalinity',
       description: 'tk',
+      threshold: 0.001,
     },
     variables: [
       {
@@ -39,6 +40,7 @@ export const variables = {
     meta: {
       label: 'Dissolved inorganic carbon (DIC)',
       description: 'tk',
+      threshold: 0.001,
     },
     variables: [
       {
@@ -97,9 +99,9 @@ const useStore = create((set) => ({
           elapsedTime: 0,
         }),
 
-  showBackgroundInDiff: false,
-  setShowBackgroundInDiff: (showBackgroundInDiff) =>
-    set({ showBackgroundInDiff }),
+  showDeltaOverBackground: false,
+  setShowDeltaOverBackground: (showDeltaOverBackground) =>
+    set({ showDeltaOverBackground }),
 
   hoveredRegion: null,
   setHoveredRegion: (hoveredRegion) => set({ hoveredRegion }),
