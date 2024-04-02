@@ -6,6 +6,7 @@ import { useThemedColormap } from '@carbonplan/colormaps'
 
 import useStore, { variables } from '../store'
 import Regions from './regions'
+import RegionPickerWrapper from './region-picker'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
@@ -137,16 +138,7 @@ const MapWrapper = ({ children }) => {
             }}
             frag={frag}
           />
-          {showRegionPicker && (
-            <RegionPicker
-              color={theme.colors.primary}
-              backgroundColor={'#00000099'}
-              fontFamily={theme.fonts.mono}
-              fontSize={'14px'}
-              maxRadius={2000}
-              initialCenter={selectedRegionCenter}
-            />
-          )}
+          {showRegionPicker && <RegionPickerWrapper />}
         </>
       )}
       <Box
