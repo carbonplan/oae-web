@@ -11,7 +11,6 @@ const RegionPickerWrapper = () => {
   const isCenterInView = useCallback(
     (center) => {
       const bounds = map.getBounds()
-      console.log(bounds.contains(center))
       return bounds.contains(center)
     },
     [map]
