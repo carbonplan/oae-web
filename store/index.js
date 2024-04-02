@@ -13,7 +13,7 @@ export const variables = {
   ALK: {
     meta: {
       label: 'Alkalinity',
-      description: `Alkalinity (mEq/m³) averaged over depth. Higher alkalinity values correlate with increases in the ocean's ability to absorb carbon dioxide.`,
+      description: `Alkalinity (mEq/m³). Higher alkalinity values correlate with increases in the ocean's ability to absorb carbon dioxide.`,
       threshold: 0.001,
     },
     variables: [
@@ -41,7 +41,7 @@ export const variables = {
   DIC: {
     meta: {
       label: 'Dissolved inorganic carbon (DIC)',
-      description: `DIC (mmol/m³) is the sum of inorganic carbon in the ocean, shown here averaged over depth.`,
+      description: `DIC (mmol/m³) is the sum of inorganic carbon in water. It is a measure of how much carbon is stored in the ocean.`,
       threshold: 0.001,
     },
     variables: [
