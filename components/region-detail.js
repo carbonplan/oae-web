@@ -7,6 +7,7 @@ import { useRegion } from '@carbonplan/maps'
 
 import TimeSlider from './time-slider'
 import Timeseries from './timeseries'
+import TooltipWrapper from './tooltip'
 import { getColorForValue } from '../utils/color'
 import useStore, { variables } from '../store'
 import { useBreakpointIndex } from '@theme-ui/match-media'
@@ -198,27 +199,31 @@ const RegionDetail = ({ sx }) => {
     <>
       <Divider sx={{ mt: 4, mb: 5 }} />
       <Box sx={sx.heading}>Variable</Box>
-      <Select
-        onChange={handleFamilySelection}
-        value={variableFamily}
-        size='xs'
-        sx={{
-          width: '100%',
-          mt: 2,
-        }}
-        sxSelect={{
-          fontFamily: 'mono',
-          width: '100%',
-          mt: 2,
-        }}
+      <TooltipWrapper
+        tooltip={variables[variableFamily].meta.description}
+        sx={{}}
       >
-        {Object.keys(variables).map((variable) => (
-          <option key={variable} value={variable}>
-            {variables[variable].meta.label}
-          </option>
-        ))}
-      </Select>
-
+        <Select
+          onChange={handleFamilySelection}
+          value={variableFamily}
+          size='xs'
+          sx={{
+            width: '100%',
+            mt: 2,
+          }}
+          sxSelect={{
+            fontFamily: 'mono',
+            width: '100%',
+            mt: 2,
+          }}
+        >
+          {Object.keys(variables).map((variable) => (
+            <option key={variable} value={variable}>
+              {variables[variable].meta.label}
+            </option>
+          ))}
+        </Select>
+      </TooltipWrapper>
       <Box sx={{ mt: 3, mb: 2 }}>
         {Object.keys(filterValues).length && (
           <Filter
