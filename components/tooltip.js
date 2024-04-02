@@ -20,7 +20,6 @@ const Tooltip = ({ expanded, setExpanded, sx }) => {
           },
         },
         p: [0],
-        transform: 'translate(0px, -3.75px)',
         ...sx,
       }}
     >
@@ -40,8 +39,8 @@ const Tooltip = ({ expanded, setExpanded, sx }) => {
 const TooltipWrapper = ({
   children,
   tooltip,
-  mt = '8px',
-  color = 'secondary',
+  mt = 0,
+  color = 'primary',
   sx,
 }) => {
   const [expanded, setExpanded] = useState(false)
