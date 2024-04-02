@@ -25,7 +25,7 @@ export const variables = {
         label: 'change',
         unit: 'mEq/m³',
         description:
-          'Plume showing the change in alkalinity (mEq/m³) due to alkalinity enhancement in the selected region.',
+          'Change in alkalinity (mEq/m³) due to alkalinity enhancement in the selected region.',
       },
       {
         key: 'ALK',
@@ -53,7 +53,7 @@ export const variables = {
         label: 'change',
         unit: 'mmol/m³',
         description:
-          'Plume showing the change in DIC (mmol/m³) due to alkalinity enhancement in the selected region.',
+          'Change in DIC (mmol/m³) due to alkalinity enhancement in the selected region.',
       },
       {
         key: 'DIC',
