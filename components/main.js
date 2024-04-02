@@ -28,7 +28,6 @@ const sx = {
     letterSpacing: 'mono',
     fontSize: [1, 1, 1, 2],
     textTransform: 'uppercase',
-    my: 2,
   },
 }
 
