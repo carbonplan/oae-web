@@ -200,30 +200,32 @@ const RegionDetail = ({ sx }) => {
       <Divider sx={{ mt: 4, mb: 5 }} />
       <Box sx={sx.heading}>Variable</Box>
       <Box sx={{ mt: 4 }}>
-        <TooltipWrapper tooltip={variables[variableFamily].meta.description}>
-          <Select
-            onChange={handleFamilySelection}
-            value={variableFamily}
-            size='xs'
-            sx={{
-              width: '100%',
-              mr: 2,
-            }}
-            sxSelect={{
-              fontFamily: 'mono',
-              width: '100%',
-            }}
-          >
-            {Object.keys(variables).map((variable) => (
-              <option key={variable} value={variable}>
-                {variables[variable].meta.label}
-              </option>
-            ))}
-          </Select>
-        </TooltipWrapper>
+        <Select
+          onChange={handleFamilySelection}
+          value={variableFamily}
+          size='xs'
+          sx={{
+            width: '100%',
+            mr: 2,
+            mb: 1,
+          }}
+          sxSelect={{
+            fontFamily: 'mono',
+            width: '100%',
+          }}
+        >
+          {Object.keys(variables).map((variable) => (
+            <option key={variable} value={variable}>
+              {variables[variable].meta.label}
+            </option>
+          ))}
+        </Select>
+        <Box sx={{ fontSize: 0, color: 'secondary' }}>
+          {variables[variableFamily]?.meta?.description}
+        </Box>
       </Box>
       <Box sx={{ mt: 3, mb: 2 }}>
-        <TooltipWrapper tooltip={currentVariable.description}>
+        <TooltipWrapper tooltip='Toggle between a view of the shift in the selected variable and its total values.'>
           {Object.keys(filterValues).length && (
             <Filter
               key={variableFamily}
