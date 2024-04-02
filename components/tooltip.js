@@ -1,5 +1,4 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import AnimateHeight from 'react-animate-height'
 import { IconButton, Box, Flex } from 'theme-ui'
 import { Info } from '@carbonplan/icons'
