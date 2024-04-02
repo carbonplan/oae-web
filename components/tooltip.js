@@ -38,14 +38,19 @@ const Tooltip = ({ expanded, setExpanded, sx }) => {
   )
 }
 
-const TooltipWrapper = ({ children, tooltip, mt = '8px', color, sx }) => {
+const TooltipWrapper = ({
+  children,
+  tooltip,
+  mt = '8px',
+  color = 'secondary',
+  sx,
+}) => {
   const [expanded, setExpanded] = useState(false)
   return (
     <>
       <Flex
         sx={{
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
+          alignItems: 'center',
           ...sx,
         }}
       >

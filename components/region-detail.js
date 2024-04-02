@@ -199,39 +199,39 @@ const RegionDetail = ({ sx }) => {
     <>
       <Divider sx={{ mt: 4, mb: 5 }} />
       <Box sx={sx.heading}>Variable</Box>
-      <TooltipWrapper
-        tooltip={variables[variableFamily].meta.description}
-        sx={{}}
-      >
-        <Select
-          onChange={handleFamilySelection}
-          value={variableFamily}
-          size='xs'
-          sx={{
-            width: '100%',
-            mt: 2,
-          }}
-          sxSelect={{
-            fontFamily: 'mono',
-            width: '100%',
-            mt: 2,
-          }}
-        >
-          {Object.keys(variables).map((variable) => (
-            <option key={variable} value={variable}>
-              {variables[variable].meta.label}
-            </option>
-          ))}
-        </Select>
-      </TooltipWrapper>
+      <Box sx={{ mt: 4 }}>
+        <TooltipWrapper tooltip={variables[variableFamily].meta.description}>
+          <Select
+            onChange={handleFamilySelection}
+            value={variableFamily}
+            size='xs'
+            sx={{
+              width: '100%',
+              mr: 2,
+            }}
+            sxSelect={{
+              fontFamily: 'mono',
+              width: '100%',
+            }}
+          >
+            {Object.keys(variables).map((variable) => (
+              <option key={variable} value={variable}>
+                {variables[variable].meta.label}
+              </option>
+            ))}
+          </Select>
+        </TooltipWrapper>
+      </Box>
       <Box sx={{ mt: 3, mb: 2 }}>
-        {Object.keys(filterValues).length && (
-          <Filter
-            key={variableFamily}
-            values={filterValues}
-            setValues={handleVariableSelection}
-          />
-        )}
+        <TooltipWrapper tooltip={currentVariable.description}>
+          {Object.keys(filterValues).length && (
+            <Filter
+              key={variableFamily}
+              values={filterValues}
+              setValues={handleVariableSelection}
+            />
+          )}
+        </TooltipWrapper>
         <Label
           sx={{
             opacity: disableBGControl ? 0.2 : 1,
@@ -256,6 +256,7 @@ const RegionDetail = ({ sx }) => {
           show change footprint
         </Label>
       </Box>
+
       <Box sx={{ ...sx.heading, mt: 4 }}>Time</Box>
       <Box sx={{ mb: [-3, -3, -3, -2], mt: 4 }}>
         <TimeSlider />
