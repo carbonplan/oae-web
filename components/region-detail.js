@@ -248,7 +248,7 @@ const RegionDetail = ({ sx }) => {
               mt: '-3px',
             }}
           />
-          show area of change
+          show change footprint
         </Label>
       </Box>
       <Box sx={{ ...sx.heading, mt: 4 }}>Time</Box>
