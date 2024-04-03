@@ -13,7 +13,7 @@ export const variables = {
   ALK: {
     meta: {
       label: 'Alkalinity',
-      description: 'tk',
+      description: `Alkalinity (mEq/m³). Higher alkalinity values correlate with increases in the ocean's ability to absorb carbon dioxide.`,
       threshold: 0.001,
     },
     variables: [
@@ -24,7 +24,8 @@ export const variables = {
         colormap: 'warm',
         label: 'change',
         unit: 'mEq/m³',
-        description: 'tk',
+        description:
+          'Change in alkalinity (mEq/m³) due to alkalinity enhancement in the selected region.',
       },
       {
         key: 'ALK',
@@ -32,14 +33,15 @@ export const variables = {
         colormap: 'warm',
         label: 'Total',
         unit: 'mEq/m³',
-        description: 'tk',
+        description:
+          'Total alkalinity (mEq/m³) in the ocean after alkalinity enhancement in the selected region.',
       },
     ],
   },
   DIC: {
     meta: {
       label: 'Dissolved inorganic carbon (DIC)',
-      description: 'tk',
+      description: `DIC (mmol/m³) is the sum of inorganic carbon in water. It is a measure of how much carbon is stored in the ocean.`,
       threshold: 0.001,
     },
     variables: [
@@ -50,7 +52,8 @@ export const variables = {
         colormap: 'cool',
         label: 'change',
         unit: 'mmol/m³',
-        description: 'tk',
+        description:
+          'Change in DIC (mmol/m³) due to alkalinity enhancement in the selected region.',
       },
       {
         key: 'DIC',
@@ -58,7 +61,8 @@ export const variables = {
         colormap: 'cool',
         label: 'Total',
         unit: 'mmol/m³',
-        description: 'tk',
+        description:
+          'Total DIC (mmol/m³) in the ocean after alkalinity enhancement in the selected region.',
       },
     ],
   },
