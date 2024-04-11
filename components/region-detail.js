@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { Box, Checkbox, Divider, Label } from 'theme-ui'
-import { Expander, Filter, Select } from '@carbonplan/components'
+import { Button, Expander, Filter, Select } from '@carbonplan/components'
 import AnimateHeight from 'react-animate-height'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import { useRegion } from '@carbonplan/maps'
@@ -9,8 +9,10 @@ import TimeSlider from './time-slider'
 import Timeseries from './timeseries'
 import TooltipWrapper from './tooltip'
 import { getColorForValue } from '../utils/color'
+import { downloadCsv } from '../utils/csv'
 import useStore, { variables } from '../store'
 import { useBreakpointIndex } from '@theme-ui/match-media'
+import { Down } from '@carbonplan/icons'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12
 const degToRad = (degrees) => {
@@ -58,6 +60,7 @@ const RegionDetail = ({ sx }) => {
   const setShowDeltaOverBackground = useStore(
     (s) => s.setShowDeltaOverBackground
   )
+  const selectedRegion = useStore((s) => s.selectedRegion)
   const colormap = useThemedColormap(currentVariable?.colormap)
   const { region } = useRegion()
   const zoom = region?.properties?.zoom || 0
@@ -195,6 +198,17 @@ const RegionDetail = ({ sx }) => {
     [setElapsedTime]
   )
 
+  const handleCSVDownload = useCallback(() => {
+    const data = selectedLines[0]?.data.map((d) => ({
+      month: toMonthsIndex(d[0], 0),
+      value: d[1],
+    }))
+    downloadCsv(
+      data,
+      `region-${selectedRegion}-${currentVariable.key}-${currentVariable.unit}.csv`
+    )
+  }, [selectedLines])
+
   return (
     <>
       <Divider sx={{ mt: 4, mb: 5 }} />
@@ -300,6 +314,12 @@ const RegionDetail = ({ sx }) => {
               xSelector={true}
               handleXSelectorClick={handleTimeseriesClick}
             />
+            <Box sx={{ mt: -3 }}>
+              <Button inverted onClick={handleCSVDownload} sx={{ fontSize: 0 }}>
+                Download CSV
+                <Down sx={{ height: 10 }} />
+              </Button>
+            </Box>
           </AnimateHeight>
         </>
       )}
