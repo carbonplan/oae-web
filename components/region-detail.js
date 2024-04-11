@@ -299,6 +299,20 @@ const RegionDetail = ({ sx }) => {
           </Box>
 
           <AnimateHeight duration={250} height={showRegionPicker ? 'auto' : 0}>
+            <Box sx={{ mt: 3 }}>
+              <Button
+                inverted
+                onClick={handleCSVDownload}
+                sx={{
+                  fontSize: 0,
+                  textTransform: 'uppercase',
+                  fontFamily: 'mono',
+                }}
+              >
+                <Down sx={{ height: 10, width: 10, mr: 1 }} />
+                Download CSV
+              </Button>
+            </Box>
             <Timeseries
               endYear={timeHorizon}
               xLimits={[0, 15]}
@@ -314,12 +328,6 @@ const RegionDetail = ({ sx }) => {
               xSelector={true}
               handleXSelectorClick={handleTimeseriesClick}
             />
-            <Box sx={{ mt: -3 }}>
-              <Button inverted onClick={handleCSVDownload} sx={{ fontSize: 0 }}>
-                Download CSV
-                <Down sx={{ height: 10 }} />
-              </Button>
-            </Box>
           </AnimateHeight>
         </>
       )}

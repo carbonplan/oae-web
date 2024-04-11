@@ -134,10 +134,10 @@ const OverviewChart = ({ sx }) => {
         <Button
           inverted
           onClick={handleCSVDownload}
-          sx={{ fontSize: 0, textTransform: 'uppercase' }}
+          sx={{ fontSize: 0, textTransform: 'uppercase', fontFamily: 'mono' }}
         >
+          <Down sx={{ height: 10, width: 10, mr: 1 }} />
           Download CSV
-          <Down sx={{ height: 10, width: 10, ml: 1 }} />
         </Button>
       </Flex>
       <Timeseries
