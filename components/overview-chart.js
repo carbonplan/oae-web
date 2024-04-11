@@ -1,11 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useThemedColormap } from '@carbonplan/colormaps'
-import { Box } from 'theme-ui'
+import { Box, Flex } from 'theme-ui'
 
 import useStore, { overviewVariable } from '../store'
 import Timeseries from './timeseries'
 import { openZarr, getChunk, getTimeSeriesData, loadZarr } from '../utils/zarr'
+import { downloadCsv } from '../utils/csv'
 import { getColorForValue } from '../utils/color'
+import { Button } from '@carbonplan/components'
+import { Down } from '@carbonplan/icons'
 
 const zarrUrl =
   'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr'
@@ -107,12 +110,36 @@ const OverviewChart = ({ sx }) => {
     setHoveredRegion(region)
   }
 
+  const handleCSVDownload = useCallback(() => {
+    const totalMonths = selectedLines[0].data.length
+    const csvData = Array.from({ length: totalMonths }, (_, index) => ({
+      month: index + 1,
+    }))
+    selectedLines.forEach((line, lineIndex) => {
+      line.data.forEach(([year, value]) => {
+        const monthIndex = toMonthsIndex(year, 0)
+        csvData[monthIndex][`region_${lineIndex}`] = value
+      })
+    })
+    downloadCsv(csvData, `oae-efficiency-timeseries.csv`)
+  }, [selectedLines, toMonthsIndex])
+
   return (
     <>
       <Box sx={sx.heading}>efficiency</Box>
-      <Box sx={{ fontSize: 0, color: 'secondary', pt: 3 }}>
+      <Box sx={{ fontSize: 0, color: 'secondary', my: 3 }}>
         Graph filtered to regions in current map view
       </Box>
+      <Flex sx={{ justifyContent: 'flex-end' }}>
+        <Button
+          inverted
+          onClick={handleCSVDownload}
+          sx={{ fontSize: 0, textTransform: 'uppercase' }}
+        >
+          Download CSV
+          <Down sx={{ height: 10, width: 10, ml: 1 }} />
+        </Button>
+      </Flex>
       <Timeseries
         endYear={timeHorizon}
         xLimits={[startYear, 15]}
