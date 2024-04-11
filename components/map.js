@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { Map, Line, Raster, RegionPicker, Fill } from '@carbonplan/maps'
+import { Map, Line, Raster, Fill } from '@carbonplan/maps'
 import { Box, useThemeUI } from 'theme-ui'
 import { Colorbar } from '@carbonplan/components'
 import { useThemedColormap } from '@carbonplan/colormaps'
