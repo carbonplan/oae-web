@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Box, Checkbox, Divider, Label } from 'theme-ui'
-import { Expander, Filter, Select } from '@carbonplan/components'
+import React, { useCallback, useMemo, useState } from 'react'
+import { Box, Checkbox, Divider, Flex, Label } from 'theme-ui'
+import { Button, Expander, Filter, Select } from '@carbonplan/components'
 import AnimateHeight from 'react-animate-height'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import { useRegion } from '@carbonplan/maps'
@@ -9,8 +9,10 @@ import TimeSlider from './time-slider'
 import Timeseries from './timeseries'
 import TooltipWrapper from './tooltip'
 import { getColorForValue } from '../utils/color'
+import { downloadCsv } from '../utils/csv'
 import useStore, { variables } from '../store'
 import { useBreakpointIndex } from '@theme-ui/match-media'
+import { Down } from '@carbonplan/icons'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12
 const degToRad = (degrees) => {
@@ -58,6 +60,9 @@ const RegionDetail = ({ sx }) => {
   const setShowDeltaOverBackground = useStore(
     (s) => s.setShowDeltaOverBackground
   )
+  const selectedRegion = useStore((s) => s.selectedRegion)
+  const regionDataLoading = useStore((s) => s.regionDataLoading)
+
   const colormap = useThemedColormap(currentVariable?.colormap)
   const { region } = useRegion()
   const zoom = region?.properties?.zoom || 0
@@ -195,6 +200,17 @@ const RegionDetail = ({ sx }) => {
     [setElapsedTime]
   )
 
+  const handleCSVDownload = useCallback(() => {
+    const data = selectedLines[0]?.data.map((d) => ({
+      month: toMonthsIndex(d[0], 0),
+      value: d[1],
+    }))
+    downloadCsv(
+      data,
+      `region-${selectedRegion}-${currentVariable.key}-${currentVariable.unit}.csv`
+    )
+  }, [selectedLines])
+
   return (
     <>
       <Divider sx={{ mt: 4, mb: 5 }} />
@@ -285,6 +301,25 @@ const RegionDetail = ({ sx }) => {
           </Box>
 
           <AnimateHeight duration={250} height={showRegionPicker ? 'auto' : 0}>
+            <Flex sx={{ justifyContent: 'flex-end', mb: 2, height: 15 }}>
+              <Button
+                inverted
+                disabled={selectedLines.length === 0 || regionDataLoading}
+                onClick={handleCSVDownload}
+                sx={{
+                  fontSize: 0,
+                  textTransform: 'uppercase',
+                  fontFamily: 'mono',
+                  '&:disabled': {
+                    color: 'muted',
+                    pointerEvents: 'none',
+                  },
+                }}
+              >
+                <Down sx={{ height: 10, width: 10, mr: 1 }} />
+                Download CSV
+              </Button>
+            </Flex>
             <Timeseries
               endYear={timeHorizon}
               xLimits={[0, 15]}
