@@ -127,18 +127,20 @@ const OverviewChart = ({ sx }) => {
   return (
     <>
       <Box sx={sx.heading}>efficiency</Box>
-      <Box sx={{ fontSize: 0, color: 'secondary', my: 3 }}>
+      <Box sx={{ fontSize: 0, color: 'secondary', my: 2 }}>
         Graph filtered to regions in current map view
       </Box>
-      <Flex sx={{ justifyContent: 'flex-end' }}>
-        <Button
-          inverted
-          onClick={handleCSVDownload}
-          sx={{ fontSize: 0, textTransform: 'uppercase', fontFamily: 'mono' }}
-        >
-          <Down sx={{ height: 10, width: 10, mr: 1 }} />
-          Download CSV
-        </Button>
+      <Flex sx={{ justifyContent: 'flex-end', height: 15 }}>
+        {selectedLines.length > 0 && (
+          <Button
+            inverted
+            onClick={handleCSVDownload}
+            sx={{ fontSize: 0, textTransform: 'uppercase', fontFamily: 'mono' }}
+          >
+            <Down sx={{ height: 10, width: 10, mr: 1 }} />
+            Download CSV
+          </Button>
+        )}
       </Flex>
       <Timeseries
         endYear={timeHorizon}

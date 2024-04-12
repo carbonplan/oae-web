@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react'
-import { Box, Checkbox, Divider, Label } from 'theme-ui'
+import { Box, Checkbox, Divider, Flex, Label } from 'theme-ui'
 import { Button, Expander, Filter, Select } from '@carbonplan/components'
 import AnimateHeight from 'react-animate-height'
 import { useThemedColormap } from '@carbonplan/colormaps'
@@ -61,6 +61,8 @@ const RegionDetail = ({ sx }) => {
     (s) => s.setShowDeltaOverBackground
   )
   const selectedRegion = useStore((s) => s.selectedRegion)
+  const regionDataLoading = useStore((s) => s.regionDataLoading)
+
   const colormap = useThemedColormap(currentVariable?.colormap)
   const { region } = useRegion()
   const zoom = region?.properties?.zoom || 0
@@ -299,20 +301,22 @@ const RegionDetail = ({ sx }) => {
           </Box>
 
           <AnimateHeight duration={250} height={showRegionPicker ? 'auto' : 0}>
-            <Box sx={{ mt: 3 }}>
-              <Button
-                inverted
-                onClick={handleCSVDownload}
-                sx={{
-                  fontSize: 0,
-                  textTransform: 'uppercase',
-                  fontFamily: 'mono',
-                }}
-              >
-                <Down sx={{ height: 10, width: 10, mr: 1 }} />
-                Download CSV
-              </Button>
-            </Box>
+            <Flex sx={{ justifyContent: 'flex-end', mb: 2, height: 15 }}>
+              {!regionDataLoading && (
+                <Button
+                  inverted
+                  onClick={handleCSVDownload}
+                  sx={{
+                    fontSize: 0,
+                    textTransform: 'uppercase',
+                    fontFamily: 'mono',
+                  }}
+                >
+                  <Down sx={{ height: 10, width: 10, mr: 1 }} />
+                  Download CSV
+                </Button>
+              )}
+            </Flex>
             <Timeseries
               endYear={timeHorizon}
               xLimits={[0, 15]}
