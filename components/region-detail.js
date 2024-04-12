@@ -310,6 +310,10 @@ const RegionDetail = ({ sx }) => {
                   fontSize: 0,
                   textTransform: 'uppercase',
                   fontFamily: 'mono',
+                  '&:disabled': {
+                    color: 'muted',
+                    pointerEvents: 'none',
+                  },
                 }}
               >
                 <Down sx={{ height: 10, width: 10, mr: 1 }} />

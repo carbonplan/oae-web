@@ -135,7 +135,15 @@ const OverviewChart = ({ sx }) => {
           inverted
           disabled={selectedLines.length === 0}
           onClick={handleCSVDownload}
-          sx={{ fontSize: 0, textTransform: 'uppercase', fontFamily: 'mono' }}
+          sx={{
+            fontSize: 0,
+            textTransform: 'uppercase',
+            fontFamily: 'mono',
+            '&:disabled': {
+              color: 'muted',
+              pointerEvents: 'none',
+            },
+          }}
         >
           <Down sx={{ height: 10, width: 10, mr: 1 }} />
           Download CSV
