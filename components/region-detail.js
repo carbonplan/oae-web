@@ -302,20 +302,19 @@ const RegionDetail = ({ sx }) => {
 
           <AnimateHeight duration={250} height={showRegionPicker ? 'auto' : 0}>
             <Flex sx={{ justifyContent: 'flex-end', mb: 2, height: 15 }}>
-              {!regionDataLoading && (
-                <Button
-                  inverted
-                  onClick={handleCSVDownload}
-                  sx={{
-                    fontSize: 0,
-                    textTransform: 'uppercase',
-                    fontFamily: 'mono',
-                  }}
-                >
-                  <Down sx={{ height: 10, width: 10, mr: 1 }} />
-                  Download CSV
-                </Button>
-              )}
+              <Button
+                inverted
+                disabled={selectedLines.length === 0 || regionDataLoading}
+                onClick={handleCSVDownload}
+                sx={{
+                  fontSize: 0,
+                  textTransform: 'uppercase',
+                  fontFamily: 'mono',
+                }}
+              >
+                <Down sx={{ height: 10, width: 10, mr: 1 }} />
+                Download CSV
+              </Button>
             </Flex>
             <Timeseries
               endYear={timeHorizon}

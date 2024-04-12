@@ -131,16 +131,15 @@ const OverviewChart = ({ sx }) => {
         Graph filtered to regions in current map view
       </Box>
       <Flex sx={{ justifyContent: 'flex-end', height: 15 }}>
-        {selectedLines.length > 0 && (
-          <Button
-            inverted
-            onClick={handleCSVDownload}
-            sx={{ fontSize: 0, textTransform: 'uppercase', fontFamily: 'mono' }}
-          >
-            <Down sx={{ height: 10, width: 10, mr: 1 }} />
-            Download CSV
-          </Button>
-        )}
+        <Button
+          inverted
+          disabled={selectedLines.length === 0}
+          onClick={handleCSVDownload}
+          sx={{ fontSize: 0, textTransform: 'uppercase', fontFamily: 'mono' }}
+        >
+          <Down sx={{ height: 10, width: 10, mr: 1 }} />
+          Download CSV
+        </Button>
       </Flex>
       <Timeseries
         endYear={timeHorizon}
