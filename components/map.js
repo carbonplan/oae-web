@@ -118,7 +118,7 @@ const MapWrapper = ({ children }) => {
   }
 
   return (
-    <Map zoom={0} center={[0, 0]} debug={false} setLoading={setLoading}>
+    <Map zoom={1.5} center={[140, -45]} debug={false} setLoading={setLoading}>
       {selectedRegion !== null && (
         <>
           <Raster
