@@ -2,7 +2,7 @@ import { create } from 'zustand'
 
 export const overviewVariable = {
   key: 'EFFICIENCY',
-  colorLimits: [0, 1],
+  colorLimits: [0.15, 0.9],
   colormap: 'warm',
   label: 'Efficiency',
   unit: '',
