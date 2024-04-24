@@ -216,8 +216,9 @@ const Timeseries = ({
               onMouseOver={() => handleHover(id)}
               onMouseLeave={() => handleHover(null)}
               sx={{
-                stroke: color,
-                strokeWidth: 2,
+                stroke: 'primary',
+                strokeWidth: 1,
+                opacity: 0.5,
                 pointerEvents: 'visiblePainted',
                 '&:hover': {
                   cursor: 'pointer',
