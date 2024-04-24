@@ -101,14 +101,20 @@ const OverviewChart = ({ sx }) => {
     }
   }, [hoveredLine, endYear, color])
 
-  const handleClick = (e) => {
-    const id = parseInt(e.target.id)
-    setSelectedRegion(id)
-  }
+  const handleClick = useCallback(
+    (e) => {
+      const id = parseInt(e.target.id)
+      setSelectedRegion(id)
+    },
+    [setSelectedRegion]
+  )
 
-  const handleHover = (region) => {
-    setHoveredRegion(region)
-  }
+  const handleHover = useCallback(
+    (region) => {
+      setHoveredRegion(region)
+    },
+    [setHoveredRegion]
+  )
 
   const handleCSVDownload = useCallback(() => {
     const totalMonths = selectedLines[0].data.length
