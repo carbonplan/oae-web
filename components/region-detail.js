@@ -70,7 +70,7 @@ const RegionDetail = ({ sx }) => {
 
   const [minMax, setMinMax] = useState([0, 0])
   const [lineAverageValue, setLineAverageValue] = useState(0)
-  const disableBGControl = currentVariable.calc !== undefined
+  const disableBGControl = currentVariable.delta
 
   const filterValues = useMemo(() => {
     return variables[variableFamily].variables.reduce(
@@ -87,7 +87,7 @@ const RegionDetail = ({ sx }) => {
     const variableData = regionData[currentVariable.variable]
     if (!variableData) return []
     let averages = []
-    if (currentVariable.calc) {
+    if (currentVariable.delta) {
       const injected = variableData.experiment
       const notInjected = variableData.counterfactual
       if (!injected || !notInjected) return []
@@ -185,7 +185,7 @@ const RegionDetail = ({ sx }) => {
       x: elapsedYears,
       y,
       color,
-      text: y.toFixed(currentVariable.calc ? 3 : 1),
+      text: y.toFixed(currentVariable.delta ? 3 : 1),
     }
   }, [elapsedYears, selectedLines, lineAverageValue, colormap, currentVariable])
 
@@ -231,7 +231,9 @@ const RegionDetail = ({ sx }) => {
     }))
     downloadCsv(
       data,
-      `region-${selectedRegion}-${currentVariable.key}-${currentVariable.unit}.csv`
+      `region-${selectedRegion}-${currentVariable.variable}${
+        currentVariable.delta ? '-delta' : ''
+      }-${currentVariable.unit}.csv`
     )
   }, [selectedLines])
 

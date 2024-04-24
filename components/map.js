@@ -129,12 +129,9 @@ const MapWrapper = ({ children }) => {
               month: (elapsedTime % 12) + 1,
             }}
             uniforms={{
-              delta: currentVariable.key.includes('DELTA') ? 1.0 : 0.0,
+              delta: currentVariable.delta ? 1.0 : 0.0,
               showDeltaOverBackground:
-                showDeltaOverBackground &&
-                !currentVariable.key.includes('DELTA')
-                  ? 1.0
-                  : 0.0,
+                showDeltaOverBackground && !currentVariable.delta ? 1.0 : 0.0,
               threshold: variables[variableFamily].meta.threshold ?? 0.0,
             }}
             frag={frag}
