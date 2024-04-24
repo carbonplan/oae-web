@@ -84,28 +84,52 @@ const RegionDetail = ({ sx }) => {
 
   const toLineData = useMemo(() => {
     if (!regionData) return []
+    const variableData = regionData[currentVariable.variable]
+    if (!variableData) return []
     let averages = []
     if (currentVariable.calc) {
-      const injected = regionData.outputs?.[currentVariable.calc[0]]
-      const notInjected = regionData.outputs?.[currentVariable.calc[1]]
+      const injected = variableData.experiment
+      const notInjected = variableData.counterfactual
       if (!injected || !notInjected) return []
-      averages = Object.values(injected).map((data, index) => {
-        const avg = data.reduce(
-          (acc, curr, i) =>
-            acc + (curr - notInjected[index][i]) / (data.length - 1),
-          0
-        )
-        const toYear = index / 12
-        return [toYear, avg]
-      })
-    } else if (regionData.outputs && regionData.outputs[currentVariable.key]) {
-      averages = Object.values(regionData.outputs[currentVariable.key]).map(
-        (data, index) => {
-          const { avg } = getArrayData(data, regionData.coordinates.lat, zoom)
-          const toYear = index / 12
-          return [toYear, avg]
-        }
-      )
+
+      Array(15)
+        .fill()
+        .map((d, i) => i + 1)
+        .map((year) => {
+          Array(12)
+            .fill()
+            .map((d, i) => i + 1)
+            .map((month) => {
+              const data = injected[month][year].map(
+                (injectedEl, i) => injectedEl - notInjected[month][year][i]
+              )
+              const { avg } = getArrayData(
+                data,
+                regionData.coordinates.lat,
+                zoom
+              )
+              const toYear = year - 1 + (month - 1) / 12
+              averages.push([toYear, avg])
+            })
+        })
+    } else if (variableData) {
+      Array(15)
+        .fill()
+        .map((d, i) => i + 1)
+        .map((year) => {
+          Array(12)
+            .fill()
+            .map((d, i) => i + 1)
+            .map((month) => {
+              const { avg } = getArrayData(
+                variableData.experiment[month][year],
+                regionData.coordinates.lat,
+                zoom
+              )
+              const toYear = year - 1 + (month - 1) / 12
+              averages.push([toYear, avg])
+            })
+        })
     } else {
       return []
     }

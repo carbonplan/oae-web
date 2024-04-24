@@ -19,7 +19,8 @@ export const variables = {
     variables: [
       {
         key: 'DELTA_ALK',
-        calc: ['ALK', 'ALK_ALT_CO2'],
+        variable: 'ALK',
+        calc: ['experiment', 'counterfactual'],
         colorLimits: [0, 0.1],
         colormap: 'warm',
         label: 'change',
@@ -29,6 +30,7 @@ export const variables = {
       },
       {
         key: 'ALK',
+        variable: 'ALK',
         colorLimits: [2000, 2800],
         colormap: 'warm',
         label: 'Total',
@@ -47,7 +49,8 @@ export const variables = {
     variables: [
       {
         key: 'DELTA_DIC',
-        calc: ['DIC', 'DIC_ALT_CO2'],
+        variable: 'DIC',
+        calc: ['experiment', 'counterfactual'],
         colorLimits: [0, 0.1],
         colormap: 'cool',
         label: 'change',
@@ -57,6 +60,7 @@ export const variables = {
       },
       {
         key: 'DIC',
+        variable: 'DIC',
         colorLimits: [1800, 2300],
         colormap: 'cool',
         label: 'Total',
