@@ -10,24 +10,18 @@ import RegionPickerWrapper from './region-picker'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
-const bands = ['ALK', 'ALK_ALT_CO2', 'DIC', 'DIC_ALT_CO2']
+const bands = ['experiment', 'counterfactual']
 
 const frag = `
     float value;
     bool isDelta = delta == 1.0;
     bool showDeltaOverBackground = showDeltaOverBackground == 1.0;
-    bool isALK = varFam == 0.0;
-    bool isDIC = varFam == 1.0;
     float baseValue = 0.0;
     float blendFactor = 0.1;
     vec4 bgc = vec4(0.0);
 
     if (!isDelta && !showDeltaOverBackground) {
-      if (isALK) {
-        value = ALK;
-      } else {
-        value = DIC;
-      }
+      value = experiment;
       if (value == fillValue) {
         gl_FragColor = vec4(0.0);
         return;
@@ -40,7 +34,7 @@ const frag = `
     }
 
     if (isDelta && !showDeltaOverBackground) {
-      value = isALK ? ALK - ALK_ALT_CO2 : DIC - DIC_ALT_CO2;
+      value = experiment - counterfactual;
       if (value < threshold || value == fillValue) {
         gl_FragColor = vec4(0.0);
         return;
@@ -53,8 +47,8 @@ const frag = `
     }
 
     if (showDeltaOverBackground) {
-      value = isALK ? ALK - ALK_ALT_CO2 : DIC - DIC_ALT_CO2;
-      baseValue = isALK ? ALK : DIC;
+      value = experiment - counterfactual;
+      baseValue = experiment;
       float bgRescaled = (baseValue - clim.x) / (clim.y - clim.x);
       bgc = texture2D(colormap, vec2(bgRescaled, 1.0));
       bgc.a = opacity;
@@ -94,16 +88,6 @@ const MapWrapper = ({ children }) => {
 
   const { theme } = useThemeUI()
 
-  const varFamUniform = () => {
-    if (variableFamily === 'ALK') {
-      return 0.0
-    }
-    if (variableFamily === 'DIC') {
-      return 1.0
-    }
-    return 0.0
-  }
-
   const injectionDate = useMemo(() => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
   }, [injectionSeason])
@@ -123,28 +107,28 @@ const MapWrapper = ({ children }) => {
         <>
           <Raster
             source={
-              'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store2.zarr'
+              'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/reshaped_time_pyramid.zarr'
             }
             colormap={colormap}
             clim={currentVariable.colorLimits}
             mode={'texture'}
-            variable={'outputs'}
+            variable={'ALK'} // TODO: remove hardcoded variable when all values become available in data
             fillValue={9.969209968386869e36}
             regionOptions={{
               setData: handleRegionData,
               selector: {
-                polygon_id: selectedRegion,
+                polygon_id: 301, // TODO: remove hardcoded ID when all polygons become available in data
                 injection_date: injectionDate,
               },
             }}
             selector={{
               band: bands,
-              polygon_id: selectedRegion,
-              injection_date: injectionDate,
-              elapsed_time: elapsedTime,
+              polygon_id: 301, // TODO: remove hardcoded ID when all polygons become available in data
+              injection_date: 1,
+              year: 1,
+              month: 1,
             }}
             uniforms={{
-              varFam: varFamUniform(),
               delta: currentVariable.key.includes('DELTA') ? 1.0 : 0.0,
               showDeltaOverBackground:
                 showDeltaOverBackground &&
