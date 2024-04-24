@@ -11,7 +11,7 @@ import { Button } from '@carbonplan/components'
 import { Down } from '@carbonplan/icons'
 
 const zarrUrl =
-  'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr'
+  'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b_subset.zarr'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12
 
