@@ -11,7 +11,7 @@ import { Button } from '@carbonplan/components'
 import { Down } from '@carbonplan/icons'
 
 const zarrUrl =
-  'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b_subset.zarr'
+  'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12
 
@@ -37,7 +37,7 @@ const OverviewChart = ({ sx }) => {
       const injectionDate =
         Object.values(injectionSeason).findIndex((value) => value) + 1
       const injectionChunkIndex = injectionDate - 1
-      const raw = await getChunk(getter, [0, injectionChunkIndex, 0])
+      const raw = await getChunk(getter, [0, 0, injectionChunkIndex])
       const timeSeriesData = getTimeSeriesData(raw, ids, startYear)
       setTimeData(timeSeriesData)
     }
@@ -51,7 +51,7 @@ const OverviewChart = ({ sx }) => {
       if (regionsInView?.has(index)) {
         const cutIndex = toMonthsIndex(endYear, startYear)
         const color = getColorForValue(
-          line[cutIndex - 1][1],
+          line[cutIndex - 1]?.[1],
           colormap,
           colorLimits
         )
