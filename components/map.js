@@ -124,9 +124,9 @@ const MapWrapper = ({ children }) => {
             selector={{
               band: bands,
               polygon_id: 301, // TODO: remove hardcoded ID when all polygons become available in data
-              injection_date: 1,
-              year: 1,
-              month: 1,
+              injection_date: injectionDate,
+              year: Math.floor(elapsedTime / 12) + 1,
+              month: (elapsedTime % 12) + 1,
             }}
             uniforms={{
               delta: currentVariable.key.includes('DELTA') ? 1.0 : 0.0,

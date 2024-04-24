@@ -121,7 +121,6 @@ const TimeSlider = () => {
         range={[0, timeHorizon - 1]}
         onChange={handleYearChange}
         formatLabel={(d) => `Year ${d + 1}`}
-        debounce
         showValue
       />
       <UnitSlider
@@ -136,6 +135,7 @@ const TimeSlider = () => {
             }
           )
         }
+        debounce
         showValue
       />
     </Flex>
