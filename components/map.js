@@ -106,13 +106,14 @@ const MapWrapper = ({ children }) => {
       {selectedRegion !== null && (
         <>
           <Raster
+            key={variableFamily}
+            variable={variableFamily}
             source={
               'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/reshaped_time_pyramid.zarr'
             }
             colormap={colormap}
             clim={currentVariable.colorLimits}
             mode={'texture'}
-            variable={'ALK'} // TODO: remove hardcoded variable when all values become available in data
             fillValue={9.969209968386869e36}
             regionOptions={{
               setData: handleRegionData,
