@@ -15,8 +15,10 @@ ds = xr.open_zarr(store, consolidated=True)
 
 gdf.set_index('polygon_id', inplace=True)
 
-def flatten_efficiency_data_and_apply(polygon_id, ds, gdf):
-    for injection_date in range(1, 5):  # Injection dates labeled 1 to 4
+injection_dates = ds["injection_date"].values
+
+def (polygon_id, ds, gdf):
+    for injection_date in injection_dates:  # Injection dates labeled 1 to 4
         try:
             efficiency_data = np.round(ds['OAE_efficiency'].sel(polygon_id=polygon_id, injection_date=injection_date, drop=True).values, 3)
             for year in range(1, 16):  # 1 to 15 representing 15 years
