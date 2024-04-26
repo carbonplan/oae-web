@@ -47,7 +47,7 @@ const Filters = ({ sx }) => {
                 }}
                 value={timeHorizon}
                 type='number'
-                min={5} // prevent graph from showing decimal years
+                min={1} // prevent graph from showing decimal years
                 max={15}
                 onChange={(e) => {
                   const value = parseInt(e.target.value, 10)

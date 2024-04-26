@@ -138,7 +138,7 @@ const Timeseries = ({
         <TickLabels
           left
           format={(d) => {
-            if (Math.abs(d) < 0.001) {
+            if (d !== 0 && Math.abs(d) < 0.001) {
               return d.toExponential(0)
             }
             return d
