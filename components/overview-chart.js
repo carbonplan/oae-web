@@ -133,9 +133,6 @@ const OverviewChart = ({ sx }) => {
   return (
     <>
       <Box sx={sx.heading}>efficiency</Box>
-      <Box sx={{ fontSize: 0, color: 'secondary', my: 2 }}>
-        Graph filtered to regions in current map view
-      </Box>
       <Flex sx={{ justifyContent: 'flex-end', height: 15 }}>
         <Button
           inverted

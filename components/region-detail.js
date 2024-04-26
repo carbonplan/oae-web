@@ -141,7 +141,7 @@ const RegionDetail = ({ sx }) => {
     return [averages]
   }, [regionData, currentVariable])
 
-  const { selectedLines, unselectedLines } = useMemo(() => {
+  const timeData = useMemo(() => {
     const selectedLines = []
     const unselectedLines = []
     toLineData.forEach((line, index) => {
@@ -171,6 +171,8 @@ const RegionDetail = ({ sx }) => {
     })
     return { selectedLines, unselectedLines }
   }, [toLineData, timeHorizon, toMonthsIndex])
+
+  const { selectedLines } = timeData
 
   const point = useMemo(() => {
     const y = selectedLines[0]?.data?.[toMonthsIndex(elapsedYears, 0)]?.[1]
@@ -354,7 +356,7 @@ const RegionDetail = ({ sx }) => {
                 title: currentVariable.label ?? '',
                 units: currentVariable.unit ?? '',
               }}
-              timeData={{ selectedLines, unselectedLines, hoveredLine }}
+              timeData={timeData}
               handleClick={handleTimeseriesClick}
               handleHover={() => {}}
               point={point}

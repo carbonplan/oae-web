@@ -22,15 +22,12 @@ const Timeseries = ({
   yLabels,
   timeData,
   handleClick,
-  handleHover,
   point,
   xSelector = false,
-  handleXSelectorClick = () => {},
 }) => {
   const { selectedLines, unselectedLines, hoveredLine } = timeData
   const regionDataLoading = useStore((s) => s.regionDataLoading)
   const [mousePosition, setMousePosition] = useState(null)
-  const [isHovering, setIsHovering] = useState(false)
   const [xSelectorValue, setXSelectorValue] = useState(null)
   const currentVariable = useStore((s) => s.currentVariable)
 
@@ -40,50 +37,6 @@ const Timeseries = ({
     return `${years.toString().padStart(2, '0')}y${months
       .toString()
       .padStart(2, '0')}m`
-  }
-
-  const handleXSelectorMouseMove = (e) => {
-    const { left, width } = e.currentTarget.getBoundingClientRect()
-    const clickX = Math.max(e.clientX - left, 0)
-    const months = Math.round((clickX / width) * 179)
-    const years = months / 12
-    setMousePosition(years)
-    setXSelectorValue(selectedLines[0]?.data?.[months]?.[1])
-  }
-
-  const handleXSelectorMouseEnter = () => {
-    setIsHovering(true)
-  }
-
-  const handleXSelectorMouseLeave = () => {
-    setIsHovering(false)
-    setMousePosition(null)
-    setXSelectorValue(null)
-  }
-
-  const xSelectorHandlers = xSelector
-    ? {
-        onMouseMove: handleXSelectorMouseMove,
-        onMouseEnter: handleXSelectorMouseEnter,
-        onMouseLeave: handleXSelectorMouseLeave,
-        onClick: handleXSelectorClick,
-      }
-    : {}
-
-  const renderXSelector = (x, selected) => {
-    if ((!selected && !isHovering) || !xSelector) return null
-    const color = selected ? 'primary' : 'secondary'
-    return (
-      <Line
-        data={[
-          [x, 0],
-          [x, yLimits[1]],
-        ]}
-        strokeWidth={1}
-        color={color}
-        opacity={1}
-      />
-    )
   }
 
   const renderHoveredLine = () => {
@@ -198,48 +151,7 @@ const Timeseries = ({
         <AxisLabel units='years' sx={{ fontSize: 0 }} bottom>
           Time
         </AxisLabel>
-        <Plot
-          sx={{
-            pointerEvents: 'auto',
-            cursor:
-              xSelector && mousePosition && mousePosition < endYear
-                ? 'pointer'
-                : 'auto',
-          }}
-          {...xSelectorHandlers}
-        >
-          {selectedLines.map(({ data, id, color }) => (
-            <Line
-              key={id + '-selected'}
-              id={id + '-selected'}
-              onClick={handleClick}
-              onMouseOver={() => handleHover(id)}
-              onMouseLeave={() => handleHover(null)}
-              sx={{
-                stroke: 'primary',
-                strokeWidth: 1,
-                opacity: 0.5,
-                pointerEvents: 'visiblePainted',
-                '&:hover': {
-                  cursor: 'pointer',
-                },
-                transition: 'all 0.2s',
-              }}
-              data={data}
-            />
-          ))}
-          {unselectedLines.map(({ data, id, color }) => (
-            <Line
-              key={id + '-unselected'}
-              id={id + '-unselected'}
-              sx={{
-                stroke: color,
-                strokeWidth: 2,
-                transition: 'all 0.2s',
-              }}
-              data={data}
-            />
-          ))}
+        <Plot>
           <Rect
             x={[endYear, 15]}
             y={[0, 1000000]}
@@ -248,15 +160,7 @@ const Timeseries = ({
             onClick={(e) => e.stopPropagation()}
           />
           {renderHoveredLine()}
-          {xSelector && mousePosition && renderXSelector(mousePosition, false)}
           {point && renderPoint(point)}
-          {xSelectorValue !== null
-            ? renderPoint({
-                x: mousePosition,
-                y: xSelectorValue,
-                color: 'secondary',
-              })
-            : null}
         </Plot>
         {!xSelector && renderDataBadge()}
         {regionDataLoading && xSelector && (
