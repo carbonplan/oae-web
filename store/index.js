@@ -18,8 +18,8 @@ export const variables = {
     },
     variables: [
       {
-        key: 'DELTA_ALK',
-        calc: ['ALK', 'ALK_ALT_CO2'],
+        variable: 'ALK',
+        delta: true,
         colorLimits: [0, 0.1],
         colormap: 'warm',
         label: 'change',
@@ -28,7 +28,8 @@ export const variables = {
           'Change in alkalinity (mEq/m³) due to alkalinity enhancement in the selected region.',
       },
       {
-        key: 'ALK',
+        variable: 'ALK',
+        delta: false,
         colorLimits: [2000, 2800],
         colormap: 'warm',
         label: 'Total',
@@ -46,8 +47,8 @@ export const variables = {
     },
     variables: [
       {
-        key: 'DELTA_DIC',
-        calc: ['DIC', 'DIC_ALT_CO2'],
+        variable: 'DIC',
+        delta: true,
         colorLimits: [0, 0.1],
         colormap: 'cool',
         label: 'change',
@@ -56,7 +57,8 @@ export const variables = {
           'Change in DIC (mmol/m³) due to alkalinity enhancement in the selected region.',
       },
       {
-        key: 'DIC',
+        variable: 'DIC',
+        delta: false,
         colorLimits: [1800, 2300],
         colormap: 'cool',
         label: 'Total',
@@ -88,8 +90,8 @@ const useStore = create((set) => ({
   setSelectedRegion: (selectedRegion) =>
     selectedRegion !== null
       ? set(() => {
-          if (selectedRegion !== 0) {
-            alert('only region 0 (near greenland!) is available at this time')
+          if (selectedRegion !== 301) {
+            alert('only region 301 (in the pacific!) is available at this time')
             return { selectedRegion: null }
           }
           return { selectedRegion, currentVariable: variables.ALK.variables[0] }
