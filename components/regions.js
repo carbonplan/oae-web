@@ -82,7 +82,7 @@ const Regions = () => {
       const polygonId = feature.properties.polygon_id
       const center = centroid(feature.geometry).geometry.coordinates
       setSelectedRegion(polygonId)
-      setSelectedRegionCenter(center)
+      setSelectedRegionCenter([166.9921875, 43.38908193911749])
     }
   }
 
