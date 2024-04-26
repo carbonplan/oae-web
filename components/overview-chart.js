@@ -161,8 +161,8 @@ const OverviewChart = ({ sx }) => {
         yLimits={[0, 1]}
         yLabels={{ title: 'OAE efficiency', units: '' }}
         timeData={{
-          selectedLines,
-          unselectedLines,
+          selectedLines: [],
+          unselectedLines: [],
           hoveredLine,
         }}
         handleClick={handleClick}
