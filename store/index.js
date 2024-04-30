@@ -18,8 +18,8 @@ export const variables = {
     },
     variables: [
       {
-        key: 'DELTA_ALK',
-        calc: ['ALK', 'ALK_ALT_CO2'],
+        variable: 'ALK',
+        delta: true,
         colorLimits: [0, 0.1],
         colormap: 'warm',
         label: 'change',
@@ -28,7 +28,8 @@ export const variables = {
           'Change in alkalinity (mEq/m³) due to alkalinity enhancement in the selected region.',
       },
       {
-        key: 'ALK',
+        variable: 'ALK',
+        delta: false,
         colorLimits: [2000, 2800],
         colormap: 'warm',
         label: 'Total',
@@ -46,8 +47,8 @@ export const variables = {
     },
     variables: [
       {
-        key: 'DELTA_DIC',
-        calc: ['DIC', 'DIC_ALT_CO2'],
+        variable: 'DIC',
+        delta: true,
         colorLimits: [0, 0.1],
         colormap: 'cool',
         label: 'change',
@@ -56,7 +57,8 @@ export const variables = {
           'Change in DIC (mmol/m³) due to alkalinity enhancement in the selected region.',
       },
       {
-        key: 'DIC',
+        variable: 'DIC',
+        delta: false,
         colorLimits: [1800, 2300],
         colormap: 'cool',
         label: 'Total',

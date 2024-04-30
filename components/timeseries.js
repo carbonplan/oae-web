@@ -189,7 +189,7 @@ const Timeseries = ({
     const yValue = xSelectorValue ?? point?.y
     const xValue = mousePosition ?? point?.x
     if (yValue === undefined || xValue === undefined) return null
-    const formattedValue = yValue.toFixed(currentVariable?.calc ? 3 : 1)
+    const formattedValue = yValue.toFixed(currentVariable?.delta ? 3 : 1)
     return (
       <Box
         sx={{
