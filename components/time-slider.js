@@ -96,7 +96,6 @@ const TimeSlider = () => {
   const injectionSeason = useStore((state) =>
     Object.keys(state.injectionSeason).find((k) => state.injectionSeason[k])
   )
-  const timeHorizon = useStore((state) => state.timeHorizon)
 
   const handleMonthChange = useCallback(
     (month) => {
@@ -118,24 +117,9 @@ const TimeSlider = () => {
     <Flex sx={{ gap: [2, 2, 2, 3] }}>
       <UnitSlider
         value={Math.floor(elapsedTime / 12)}
-        range={[0, timeHorizon - 1]}
+        range={[0, 14]}
         onChange={handleYearChange}
         formatLabel={(d) => `Year ${d + 1}`}
-        showValue
-      />
-      <UnitSlider
-        value={elapsedTime % 12}
-        range={[0, 11]}
-        onChange={handleMonthChange}
-        formatLabel={(d) =>
-          new Date(2024, d + OFFSETS[injectionSeason], 1).toLocaleString(
-            'default',
-            {
-              month: 'short',
-            }
-          )
-        }
-        debounce
         showValue
       />
     </Flex>

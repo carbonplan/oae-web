@@ -51,7 +51,6 @@ const RegionDetail = ({ sx }) => {
   const showRegionPicker = useStore((s) => s.showRegionPicker)
   const setShowRegionPicker = useStore((s) => s.setShowRegionPicker)
   const regionData = useStore((s) => s.regionData)
-  const timeHorizon = useStore((s) => s.timeHorizon)
   const elapsedYears = useStore((s) => s.elapsedTime / 12)
   const setElapsedTime = useStore((s) => s.setElapsedTime)
   const showDeltaOverBackground = useStore((s) => s.showDeltaOverBackground)
@@ -142,11 +141,8 @@ const RegionDetail = ({ sx }) => {
   const selectedLines = useMemo(() => {
     const selected = {}
     Object.entries(toLineData).forEach(([id, line]) => {
-      const cutIndex = toMonthsIndex(timeHorizon, 0)
-      const selectedSlice = line.slice(0, cutIndex + 1)
       const avgValueForLine =
-        selectedSlice.reduce((acc, curr) => acc + curr[1], 0) /
-        selectedSlice.length
+        line.reduce((acc, curr) => acc + curr[1], 0) / line.length
       setLineAverageValue(avgValueForLine)
       const color = getColorForValue(
         avgValueForLine,
@@ -158,17 +154,11 @@ const RegionDetail = ({ sx }) => {
         id: id,
         color,
         strokeWidth: 2,
-        data: selectedSlice,
+        data: line,
       }
     })
     return selected
-  }, [
-    toLineData,
-    toMonthsIndex,
-    timeHorizon,
-    colormap,
-    currentVariable.colorLimits,
-  ])
+  }, [toLineData, toMonthsIndex, colormap, currentVariable.colorLimits])
 
   const point = useMemo(() => {
     const y = selectedLines[0]?.data?.[toMonthsIndex(elapsedYears, 0)]?.[1]
@@ -299,10 +289,6 @@ const RegionDetail = ({ sx }) => {
         </Label>
       </Box>
 
-      <Box sx={{ ...sx.heading, mt: 4 }}>Time</Box>
-      <Box sx={{ mb: [-3, -3, -3, -2], mt: 4 }}>
-        <TimeSlider />
-      </Box>
       {index >= 2 && (
         <>
           <Divider sx={{ mt: 4, mb: 5 }} />
@@ -345,7 +331,7 @@ const RegionDetail = ({ sx }) => {
               </Button>
             </Flex>
             <Timeseries
-              endYear={timeHorizon}
+              endYear={15}
               xLimits={[0, 15]}
               yLimits={minMax}
               yLabels={{

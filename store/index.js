@@ -102,7 +102,7 @@ const useStore = create((set) => ({
           showRegionPicker: false,
           regionData: null,
           hoveredRegion: null,
-          elapsedTime: 0,
+          elapsedTime: 179,
         }),
 
   selectedRegionCenter: null,
@@ -131,10 +131,7 @@ const useStore = create((set) => ({
   hoveredLineData: null,
   setHoveredLineData: (hoveredLineData) => set({ hoveredLineData }),
 
-  timeHorizon: 15,
-  setTimeHorizon: (timeHorizon) => set({ timeHorizon }),
-
-  elapsedTime: 0,
+  elapsedTime: 179,
   setElapsedTime: (elapsedTime) => set({ elapsedTime }),
 
   regionsInView: new Set(),

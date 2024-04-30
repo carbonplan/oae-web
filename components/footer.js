@@ -6,6 +6,8 @@ import AnimateHeight from 'react-animate-height'
 
 import useStore from '../store'
 import RegionDetail from './region-detail'
+import TimeSlider from './time-slider'
+
 import { useBreakpointIndex } from '@theme-ui/match-media'
 
 const RegionFooter = ({ sx }) => {
@@ -50,7 +52,7 @@ const RegionFooter = ({ sx }) => {
     >
       <AnimateHeight
         duration={250}
-        height={selectedRegion !== null ? 'auto' : 25}
+        height={selectedRegion !== null ? 'auto' : 85}
       >
         <Flex
           sx={{
@@ -109,6 +111,9 @@ const RegionFooter = ({ sx }) => {
             )}
           </Box>
         </Flex>
+        <Box sx={{ mb: [-3, -3, -3, -2], mt: 4, mx: 1 }}>
+          <TimeSlider />
+        </Box>
         <RegionDetail sx={sx} />
       </AnimateHeight>
     </SidebarFooter>

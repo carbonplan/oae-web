@@ -14,8 +14,9 @@ const Regions = () => {
     (state) => state.setSelectedRegionCenter
   )
   const setRegionsInView = useStore((state) => state.setRegionsInView)
-  const timeHorizon = useStore((state) => state.timeHorizon)
   const injectionSeason = useStore((state) => state.injectionSeason)
+  const elapsedTime = useStore((state) => state.elapsedTime)
+  const yearsElapsed = Math.round(elapsedTime / 12)
 
   const colormap = useThemedColormap(overviewVariable.colormap)
   const colorLimits = overviewVariable.colorLimits
@@ -43,7 +44,7 @@ const Regions = () => {
   }, [colormap])
 
   const buildColorExpression = () => {
-    const dataField = `eff_inj_${injectionDate}_year_${timeHorizon}`
+    const dataField = `eff_inj_${injectionDate}_year_${yearsElapsed}`
 
     const fillColorExpression = [
       'case',
@@ -84,26 +85,6 @@ const Regions = () => {
       setSelectedRegion(polygonId)
       setSelectedRegionCenter(center)
     }
-  }
-
-  const handleRegionsInView = () => {
-    if (map.getLayer('regions-fill')) {
-      const features = map.queryRenderedFeatures({
-        layers: ['regions-fill'],
-      })
-      const ids = features.map((f) => f.properties.polygon_id)
-      setRegionsInView(ids)
-    }
-  }
-
-  const handleMoveEnd = () => {
-    handleRegionsInView()
-  }
-
-  // set regions in initial view
-  const onIdle = () => {
-    handleRegionsInView()
-    map.off('idle', onIdle)
   }
 
   useEffect(() => {
@@ -179,8 +160,6 @@ const Regions = () => {
         map.on('mousemove', 'regions-fill', handleMouseMove)
         map.on('mouseleave', 'regions-fill', handleMouseLeave)
         map.on('click', 'regions-fill', handleClick)
-        map.on('moveend', handleMoveEnd)
-        map.on('idle', onIdle)
       } catch (error) {
         console.error('Error fetching or adding regions:', error)
       }
@@ -193,8 +172,6 @@ const Regions = () => {
         map.off('mousemove', 'regions-fill', handleMouseMove)
         map.off('mouseleave', 'regions-fill', handleMouseLeave)
         map.off('click', 'regions-fill', handleClick)
-        map.off('moveend', handleMoveEnd)
-        map.off('idle', onIdle)
 
         map.removeFeatureState({
           source: 'regions',
@@ -275,6 +252,24 @@ const Regions = () => {
   }, [selectedRegion])
 
   useEffect(() => {
+    const handleRegionsInView = () => {
+      if (selectedRegion !== null) return
+      if (map.getLayer('regions-fill')) {
+        const features = map.queryRenderedFeatures({
+          layers: ['regions-fill'],
+        })
+        const ids = features.map((f) => f.properties.polygon_id)
+        setRegionsInView(ids)
+      }
+    }
+    map.on('moveend', handleRegionsInView)
+    map.once('idle', handleRegionsInView)
+    return () => {
+      map.off('moveend', handleRegionsInView)
+    }
+  }, [selectedRegion, map, setRegionsInView])
+
+  useEffect(() => {
     if (map && map.getSource('regions') && map.getLayer('regions-line')) {
       map.setPaintProperty('regions-line', 'line-color', lineColor)
       map.setPaintProperty('regions-hover', 'line-color', lineHighlightColor)
@@ -290,7 +285,7 @@ const Regions = () => {
     if (map && map.getSource('regions') && map.getLayer('regions-fill')) {
       map.setPaintProperty('regions-fill', 'fill-color', buildColorExpression())
     }
-  }, [map, colormap, injectionDate, timeHorizon])
+  }, [map, colormap, injectionDate, yearsElapsed])
 
   return null
 }
