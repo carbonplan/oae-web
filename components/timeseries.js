@@ -1,5 +1,5 @@
 import React, { useState, memo } from 'react'
-import { Box, Spinner, useThemeUI } from 'theme-ui'
+import { Box, Spinner } from 'theme-ui'
 import {
   AxisLabel,
   Chart,
@@ -14,6 +14,39 @@ import {
 } from '@carbonplan/charts'
 import useStore from '../store'
 import { Badge } from '@carbonplan/components'
+
+const renderPoint = (point) => {
+  const { x, y, color } = point
+  if (x === undefined || y === undefined || color === undefined) return null
+  return (
+    <Circle
+      x={x}
+      y={y}
+      size={10}
+      color={color}
+      sx={{ pointerEvents: 'none' }}
+    />
+  )
+}
+
+const renderDataBadge = (point) => {
+  if (!point || !point.text) return null
+  const { x, y, color, text } = point
+  return (
+    <Point x={x} y={y} align={'center'} width={2}>
+      <Badge
+        sx={{
+          fontSize: 1,
+          height: '20px',
+          mt: 2,
+          bg: color,
+        }}
+      >
+        {text}
+      </Badge>
+    </Point>
+  )
+}
 
 const RenderLines = memo(
   ({
@@ -49,12 +82,13 @@ const RenderLines = memo(
 
 const HoveredLine = () => {
   const hoveredLineData = useStore((s) => s.hoveredLineData)
-  if (!hoveredLineData) {
+  const elapsedTime = useStore((s) => s.elapsedTime)
+  if (!hoveredLineData || !hoveredLineData.data) {
     return null
   }
   const { hoveredColor, color } = hoveredLineData
-  const x = hoveredLineData.data.slice(-1)[0][0]
-  const y = hoveredLineData.data.slice(-1)[0][1]
+  const x = hoveredLineData.data[elapsedTime][0]
+  const y = hoveredLineData.data[elapsedTime][1]
   return (
     <>
       <Line
@@ -81,6 +115,20 @@ const HoveredLine = () => {
   )
 }
 
+const OverviewBadge = () => {
+  const hoveredLineData = useStore((s) => s.hoveredLineData)
+  const elapsedTime = useStore((s) => s.elapsedTime)
+  if (!hoveredLineData || !hoveredLineData.data) {
+    return null
+  }
+  const { hoveredColor } = hoveredLineData
+  const data = hoveredLineData.data[elapsedTime]
+  const x = data[0]
+  const y = data[1]
+  const point = { x, y, color: hoveredColor, text: data[1].toFixed(2) }
+  return renderDataBadge(point)
+}
+
 const Timeseries = ({
   endYear,
   xLimits,
@@ -98,8 +146,6 @@ const Timeseries = ({
   const [isHovering, setIsHovering] = useState(false)
   const [xSelectorValue, setXSelectorValue] = useState(null)
   const currentVariable = useStore((s) => s.currentVariable)
-
-  const { theme } = useThemeUI()
 
   const xYearsMonth = (x) => {
     const years = Math.floor(x)
@@ -150,39 +196,6 @@ const Timeseries = ({
         color={color}
         opacity={1}
       />
-    )
-  }
-
-  const renderPoint = (point) => {
-    const { x, y, color } = point
-    if (x === undefined || y === undefined || color === undefined) return null
-    return (
-      <Circle
-        x={x}
-        y={y}
-        size={10}
-        color={color}
-        sx={{ pointerEvents: 'none' }}
-      />
-    )
-  }
-
-  const renderDataBadge = () => {
-    if (!point || !point.text) return null
-    const { x, y, color, text } = point
-    return (
-      <Point x={x} y={y} align={'center'} width={2}>
-        <Badge
-          sx={{
-            fontSize: 1,
-            height: '20px',
-            mt: 2,
-            bg: color,
-          }}
-        >
-          {text}
-        </Badge>
-      </Point>
     )
   }
 
@@ -277,6 +290,7 @@ const Timeseries = ({
             : null}
         </Plot>
         {!xSelector && renderDataBadge()}
+        <OverviewBadge />
         {regionDataLoading && xSelector && (
           <Box
             sx={{
