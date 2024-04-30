@@ -121,11 +121,11 @@ const OverviewBadge = () => {
   if (!hoveredLineData || !hoveredLineData.data) {
     return null
   }
-  const { hoveredColor } = hoveredLineData
+  const { color } = hoveredLineData
   const data = hoveredLineData.data[elapsedTime]
   const x = data[0]
   const y = data[1]
-  const point = { x, y, color: hoveredColor, text: data[1].toFixed(2) }
+  const point = { x, y, color, text: data[1].toFixed(2) }
   return renderDataBadge(point)
 }
 
