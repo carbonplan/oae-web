@@ -96,7 +96,7 @@ const HoveredLine = () => {
         id={hoveredLineData.id + '-hovered'}
         sx={{
           stroke: hoveredColor ? hoveredColor : color,
-          strokeWidth: 4,
+          strokeWidth: 2,
           pointerEvents: 'none',
           '&:hover': {
             cursor: 'pointer',
