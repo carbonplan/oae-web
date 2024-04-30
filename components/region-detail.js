@@ -43,8 +43,6 @@ const getArrayData = (arr, lats, zoom) => {
     )
 }
 
-const hoveredLine = null
-
 const RegionDetail = ({ sx }) => {
   const currentVariable = useStore((s) => s.currentVariable)
   const setCurrentVariable = useStore((s) => s.setCurrentVariable)
@@ -141,13 +139,11 @@ const RegionDetail = ({ sx }) => {
     return [averages]
   }, [regionData, currentVariable])
 
-  const { selectedLines, unselectedLines } = useMemo(() => {
-    const selectedLines = []
-    const unselectedLines = []
-    toLineData.forEach((line, index) => {
+  const selectedLines = useMemo(() => {
+    const selected = {}
+    Object.entries(toLineData).forEach(([id, line]) => {
       const cutIndex = toMonthsIndex(timeHorizon, 0)
       const selectedSlice = line.slice(0, cutIndex + 1)
-      const unselectedSlice = line.slice(cutIndex)
       const avgValueForLine =
         selectedSlice.reduce((acc, curr) => acc + curr[1], 0) /
         selectedSlice.length
@@ -158,19 +154,21 @@ const RegionDetail = ({ sx }) => {
         currentVariable.colorLimits,
         50
       )
-      selectedLines.push({
-        id: index,
+      selected[id] = {
+        id: id,
         color,
+        strokeWidth: 2,
         data: selectedSlice,
-      })
-      unselectedLines.push({
-        id: index,
-        color: 'muted',
-        data: unselectedSlice,
-      })
+      }
     })
-    return { selectedLines, unselectedLines }
-  }, [toLineData, timeHorizon, toMonthsIndex])
+    return selected
+  }, [
+    toLineData,
+    toMonthsIndex,
+    timeHorizon,
+    colormap,
+    currentVariable.colorLimits,
+  ])
 
   const point = useMemo(() => {
     const y = selectedLines[0]?.data?.[toMonthsIndex(elapsedYears, 0)]?.[1]
@@ -226,7 +224,7 @@ const RegionDetail = ({ sx }) => {
 
   const handleCSVDownload = useCallback(() => {
     const data = selectedLines[0]?.data.map((d) => ({
-      month: toMonthsIndex(d[0], 0),
+      month: toMonthsIndex(d[0], 0) + 1,
       value: d[1],
     }))
     downloadCsv(
@@ -356,7 +354,6 @@ const RegionDetail = ({ sx }) => {
               }}
               selectedLines={selectedLines}
               handleClick={handleTimeseriesClick}
-              handleHover={() => {}}
               point={point}
               xSelector={true}
               handleXSelectorClick={handleTimeseriesClick}

@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useThemedColormap } from '@carbonplan/colormaps'
-import { Box, Flex } from 'theme-ui'
+import { Box, Flex, useThemeUI } from 'theme-ui'
 
 import useStore, { overviewVariable } from '../store'
 import Timeseries from './timeseries'
@@ -27,6 +27,8 @@ const OverviewChart = ({ sx }) => {
   const [timeData, setTimeData] = useState([])
   const startYear = 0
   const endYear = 15
+
+  const { theme } = useThemeUI()
 
   useEffect(() => {
     const fetchTimeSeriesData = async () => {
@@ -55,7 +57,9 @@ const OverviewChart = ({ sx }) => {
       )
       selected[i] = {
         id: i,
-        color,
+        color: theme.colors.primary,
+        hoveredColor: color,
+        strokeWidth: 1,
         data: regionData,
       }
     })
@@ -77,19 +81,19 @@ const OverviewChart = ({ sx }) => {
     [setHoveredRegion]
   )
 
-  // const handleCSVDownload = useCallback(() => {
-  //   const totalMonths = selectedLines[0].data.length
-  //   const csvData = Array.from({ length: totalMonths }, (_, index) => ({
-  //     month: index + 1,
-  //   }))
-  //   selectedLines.forEach((line, lineIndex) => {
-  //     line.data.forEach(([year, value]) => {
-  //       const monthIndex = toMonthsIndex(year, 0)
-  //       csvData[monthIndex][`region_${lineIndex}`] = value
-  //     })
-  //   })
-  //   downloadCsv(csvData, `oae-efficiency-timeseries.csv`)
-  // }, [selectedLines, toMonthsIndex])
+  const handleCSVDownload = useCallback(() => {
+    const totalMonths = timeData[0].length
+    const csvData = Array.from({ length: totalMonths }, (_, index) => ({
+      month: index + 1,
+    }))
+    timeData.forEach((line, lineIndex) => {
+      line.forEach(([year, value]) => {
+        const monthIndex = toMonthsIndex(year, 0)
+        csvData[monthIndex][`region_${lineIndex}`] = value
+      })
+    })
+    downloadCsv(csvData, `oae-efficiency-timeseries.csv`)
+  }, [timeData, toMonthsIndex])
 
   return (
     <>
@@ -104,7 +108,7 @@ const OverviewChart = ({ sx }) => {
             Object.keys(efficiencyLineData ? efficiencyLineData : {}).length ===
             0
           }
-          // onClick={handleCSVDownload}
+          onClick={handleCSVDownload}
           sx={{
             fontSize: 0,
             textTransform: 'uppercase',

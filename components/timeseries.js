@@ -18,32 +18,32 @@ import { Badge } from '@carbonplan/components'
 const RenderLines = memo(
   ({
     linesObject = {},
-    strokeWidth = 1,
     additionalStyles,
     handleClick = () => {},
     handleHover = () => {},
   }) => {
-    const { theme } = useThemeUI()
-    return Object.values(linesObject).map(({ id, data, color }) => (
-      <Line
-        key={id}
-        data={data}
-        id={id}
-        sx={{
-          stroke: theme.colors.primary, // 1 or less for perf
-          strokeWidth: strokeWidth,
-          pointerEvents: 'visiblePainted',
-          '&:hover': {
-            cursor: 'pointer',
-          },
-          transition: 'all 0.2s',
-          ...additionalStyles,
-        }}
-        onClick={handleClick}
-        onMouseOver={() => handleHover(id)}
-        onMouseLeave={() => handleHover(null)}
-      />
-    ))
+    return Object.values(linesObject).map(
+      ({ id, data, color, strokeWidth }) => (
+        <Line
+          key={id}
+          data={data}
+          id={id}
+          sx={{
+            stroke: color,
+            strokeWidth: strokeWidth, // 1 or less for perf
+            pointerEvents: 'visiblePainted',
+            '&:hover': {
+              cursor: 'pointer',
+            },
+            transition: 'all 0.2s',
+            ...additionalStyles,
+          }}
+          onClick={handleClick}
+          onMouseOver={() => handleHover(id)}
+          onMouseLeave={() => handleHover(null)}
+        />
+      )
+    )
   }
 )
 
@@ -52,7 +52,7 @@ const HoveredLine = () => {
   if (!hoveredLineData) {
     return null
   }
-  const { color } = hoveredLineData
+  const { hoveredColor, color } = hoveredLineData
   const x = hoveredLineData.data.slice(-1)[0][0]
   const y = hoveredLineData.data.slice(-1)[0][1]
   return (
@@ -61,7 +61,7 @@ const HoveredLine = () => {
         key={'-hovered'}
         id={hoveredLineData.id + '-hovered'}
         sx={{
-          stroke: color,
+          stroke: hoveredColor ? hoveredColor : color,
           strokeWidth: 4,
           pointerEvents: 'none',
           '&:hover': {
@@ -74,7 +74,7 @@ const HoveredLine = () => {
         x={x}
         y={y}
         size={10}
-        color={color}
+        color={hoveredColor ? hoveredColor : color}
         sx={{ pointerEvents: 'none' }}
       />
     </>
@@ -98,6 +98,8 @@ const Timeseries = ({
   const [isHovering, setIsHovering] = useState(false)
   const [xSelectorValue, setXSelectorValue] = useState(null)
   const currentVariable = useStore((s) => s.currentVariable)
+
+  const { theme } = useThemeUI()
 
   const xYearsMonth = (x) => {
     const years = Math.floor(x)
