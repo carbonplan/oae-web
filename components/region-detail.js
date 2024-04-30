@@ -328,7 +328,7 @@ const RegionDetail = ({ sx }) => {
                 title: currentVariable.label ?? '',
                 units: currentVariable.unit ?? '',
               }}
-              timeData={{ selectedLines, unselectedLines, hoveredLine }}
+              selectedLines={selectedLines}
               handleClick={handleTimeseriesClick}
               handleHover={() => {}}
               point={point}

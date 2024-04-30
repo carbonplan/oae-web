@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Box, Spinner } from 'theme-ui'
+import React, { useState, memo } from 'react'
+import { Box, Spinner, useThemeUI } from 'theme-ui'
 import {
   AxisLabel,
   Chart,
@@ -15,19 +15,84 @@ import {
 import useStore from '../store'
 import { Badge } from '@carbonplan/components'
 
+const RenderLines = memo(
+  ({
+    linesObject = {},
+    strokeWidth = 1,
+    additionalStyles,
+    handleClick = () => {},
+    handleHover = () => {},
+  }) => {
+    const { theme } = useThemeUI()
+    return Object.values(linesObject).map(({ id, data, color }) => (
+      <Line
+        key={id}
+        data={data}
+        id={id}
+        sx={{
+          stroke: theme.colors.primary, // 1 or less for perf
+          strokeWidth: strokeWidth,
+          pointerEvents: 'visiblePainted',
+          '&:hover': {
+            cursor: 'pointer',
+          },
+          transition: 'all 0.2s',
+          ...additionalStyles,
+        }}
+        onClick={handleClick}
+        onMouseOver={() => handleHover(id)}
+        onMouseLeave={() => handleHover(null)}
+      />
+    ))
+  }
+)
+
+const HoveredLine = () => {
+  const hoveredLineData = useStore((s) => s.hoveredLineData)
+  if (!hoveredLineData) {
+    return null
+  }
+  const { color } = hoveredLineData
+  const x = hoveredLineData.data.slice(-1)[0][0]
+  const y = hoveredLineData.data.slice(-1)[0][1]
+  return (
+    <>
+      <Line
+        key={'-hovered'}
+        id={hoveredLineData.id + '-hovered'}
+        sx={{
+          stroke: color,
+          strokeWidth: 4,
+          pointerEvents: 'none',
+          '&:hover': {
+            cursor: 'pointer',
+          },
+        }}
+        data={hoveredLineData.data}
+      />
+      <Circle
+        x={x}
+        y={y}
+        size={10}
+        color={color}
+        sx={{ pointerEvents: 'none' }}
+      />
+    </>
+  )
+}
+
 const Timeseries = ({
   endYear,
   xLimits,
   yLimits,
   yLabels,
-  timeData,
+  selectedLines,
   handleClick,
   handleHover,
   point,
   xSelector = false,
   handleXSelectorClick = () => {},
 }) => {
-  const { selectedLines, unselectedLines, hoveredLine } = timeData
   const regionDataLoading = useStore((s) => s.regionDataLoading)
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
@@ -82,28 +147,6 @@ const Timeseries = ({
         strokeWidth={1}
         color={color}
         opacity={1}
-      />
-    )
-  }
-
-  const renderHoveredLine = () => {
-    if (!hoveredLine) {
-      return null
-    }
-    const { color } = hoveredLine
-    return (
-      <Line
-        key={hoveredLine.id + '-hovered'}
-        onClick={() => handleClick(hoveredLine.id)}
-        sx={{
-          stroke: color,
-          strokeWidth: 4,
-          pointerEvents: 'none',
-          '&:hover': {
-            cursor: 'pointer',
-          },
-        }}
-        data={hoveredLine.data}
       />
     )
   }
@@ -208,38 +251,11 @@ const Timeseries = ({
           }}
           {...xSelectorHandlers}
         >
-          {selectedLines.map(({ data, id, color }) => (
-            <Line
-              key={id + '-selected'}
-              id={id + '-selected'}
-              onClick={handleClick}
-              onMouseOver={() => handleHover(id)}
-              onMouseLeave={() => handleHover(null)}
-              sx={{
-                stroke: 'primary',
-                strokeWidth: 1,
-                opacity: 0.5,
-                pointerEvents: 'visiblePainted',
-                '&:hover': {
-                  cursor: 'pointer',
-                },
-                transition: 'all 0.2s',
-              }}
-              data={data}
-            />
-          ))}
-          {unselectedLines.map(({ data, id, color }) => (
-            <Line
-              key={id + '-unselected'}
-              id={id + '-unselected'}
-              sx={{
-                stroke: color,
-                strokeWidth: 2,
-                transition: 'all 0.2s',
-              }}
-              data={data}
-            />
-          ))}
+          <RenderLines
+            linesObject={selectedLines}
+            handleHover={handleHover}
+            handleClick={handleClick}
+          />
           <Rect
             x={[endYear, 15]}
             y={[0, 1000000]}
@@ -247,7 +263,7 @@ const Timeseries = ({
             opacity={0.2}
             onClick={(e) => e.stopPropagation()}
           />
-          {renderHoveredLine()}
+          <HoveredLine />
           {xSelector && mousePosition && renderXSelector(mousePosition, false)}
           {point && renderPoint(point)}
           {xSelectorValue !== null

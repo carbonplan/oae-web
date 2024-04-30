@@ -2,7 +2,7 @@ import { create } from 'zustand'
 
 export const overviewVariable = {
   key: 'EFFICIENCY',
-  colorLimits: [0.15, 0.9],
+  colorLimits: [0, 1],
   colormap: 'warm',
   label: 'Efficiency',
   unit: '',
@@ -111,8 +111,23 @@ const useStore = create((set) => ({
   setShowDeltaOverBackground: (showDeltaOverBackground) =>
     set({ showDeltaOverBackground }),
 
+  efficiencyLineData: {},
+  setEfficiencyLineData: (efficiencyLineData) => set({ efficiencyLineData }),
+
   hoveredRegion: null,
-  setHoveredRegion: (hoveredRegion) => set({ hoveredRegion }),
+  setHoveredRegion: (hoveredRegion) =>
+    set((state) => {
+      if (state.efficiencyLineData) {
+        return {
+          hoveredRegion,
+          hoveredLineData: state.efficiencyLineData[hoveredRegion],
+        }
+      }
+      return { hoveredRegion }
+    }),
+
+  hoveredLineData: null,
+  setHoveredLineData: (hoveredLineData) => set({ hoveredLineData }),
 
   timeHorizon: 15,
   setTimeHorizon: (timeHorizon) => set({ timeHorizon }),
@@ -120,7 +135,7 @@ const useStore = create((set) => ({
   elapsedTime: 0,
   setElapsedTime: (elapsedTime) => set({ elapsedTime }),
 
-  regionsInView: undefined,
+  regionsInView: new Set(),
   setRegionsInView: (regionsInView) =>
     set({ regionsInView: new Set(regionsInView) }),
 

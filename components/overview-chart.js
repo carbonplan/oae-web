@@ -17,16 +17,16 @@ const toMonthsIndex = (year, startYear) => (year - startYear) * 12
 
 const OverviewChart = ({ sx }) => {
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
-  const hoveredRegion = useStore((state) => state.hoveredRegion)
   const setHoveredRegion = useStore((state) => state.setHoveredRegion)
-  const timeHorizon = useStore((state) => state.timeHorizon)
+  const efficiencyLineData = useStore((state) => state.efficiencyLineData)
+  const setEfficiencyLineData = useStore((state) => state.setEfficiencyLineData)
   const injectionSeason = useStore((state) => state.injectionSeason)
   const regionsInView = useStore((state) => state.regionsInView)
   const colormap = useThemedColormap(overviewVariable?.colormap)
   const colorLimits = overviewVariable.colorLimits
   const [timeData, setTimeData] = useState([])
   const startYear = 0
-  const endYear = startYear + timeHorizon
+  const endYear = 15
 
   useEffect(() => {
     const fetchTimeSeriesData = async () => {
@@ -44,62 +44,23 @@ const OverviewChart = ({ sx }) => {
     fetchTimeSeriesData()
   }, [injectionSeason])
 
-  const { selectedLines, unselectedLines } = useMemo(() => {
-    const selectedLines = []
-    const unselectedLines = []
-    timeData.forEach((line, index) => {
-      if (regionsInView?.has(index)) {
-        const cutIndex = toMonthsIndex(endYear, startYear)
-        const color = getColorForValue(
-          line[cutIndex - 1]?.[1],
-          colormap,
-          colorLimits
-        )
-        selectedLines.push({
-          id: index,
-          color,
-          data: line.slice(0, cutIndex + 1),
-        })
-        unselectedLines.push({
-          id: index,
-          color: 'muted',
-          data: line.slice(cutIndex),
-        })
+  useEffect(() => {
+    let selected = {}
+    timeData.forEach((regionData, i) => {
+      if (!regionsInView.has(i)) return
+      const color = getColorForValue(
+        regionData[regionData.length - 1][1],
+        colormap,
+        colorLimits
+      )
+      selected[i] = {
+        id: i,
+        color,
+        data: regionData,
       }
     })
-    return { selectedLines, unselectedLines }
-  }, [timeData, endYear, regionsInView, toMonthsIndex])
-
-  const hoveredLine = useMemo(() => {
-    if (hoveredRegion === null) {
-      return null
-    }
-    return selectedLines.find((line) => line.id === hoveredRegion)
-  }, [hoveredRegion, selectedLines])
-
-  const color = useMemo(() => {
-    if (!hoveredLine) {
-      return 'rgba(0,0,0,0)'
-    }
-    return getColorForValue(
-      hoveredLine.data.slice(-1)[0][1],
-      colormap,
-      colorLimits
-    )
-  }, [hoveredLine])
-
-  const point = useMemo(() => {
-    if (!hoveredLine) {
-      return null
-    }
-    const lastDataPoint = hoveredLine.data.slice(-1)[0]
-    return {
-      x: endYear,
-      y: lastDataPoint[1],
-      color,
-      text: lastDataPoint[1].toFixed(2),
-    }
-  }, [hoveredLine, endYear, color])
+    setEfficiencyLineData(selected)
+  }, [timeData, endYear, regionsInView])
 
   const handleClick = useCallback(
     (e) => {
@@ -116,19 +77,19 @@ const OverviewChart = ({ sx }) => {
     [setHoveredRegion]
   )
 
-  const handleCSVDownload = useCallback(() => {
-    const totalMonths = selectedLines[0].data.length
-    const csvData = Array.from({ length: totalMonths }, (_, index) => ({
-      month: index + 1,
-    }))
-    selectedLines.forEach((line, lineIndex) => {
-      line.data.forEach(([year, value]) => {
-        const monthIndex = toMonthsIndex(year, 0)
-        csvData[monthIndex][`region_${lineIndex}`] = value
-      })
-    })
-    downloadCsv(csvData, `oae-efficiency-timeseries.csv`)
-  }, [selectedLines, toMonthsIndex])
+  // const handleCSVDownload = useCallback(() => {
+  //   const totalMonths = selectedLines[0].data.length
+  //   const csvData = Array.from({ length: totalMonths }, (_, index) => ({
+  //     month: index + 1,
+  //   }))
+  //   selectedLines.forEach((line, lineIndex) => {
+  //     line.data.forEach(([year, value]) => {
+  //       const monthIndex = toMonthsIndex(year, 0)
+  //       csvData[monthIndex][`region_${lineIndex}`] = value
+  //     })
+  //   })
+  //   downloadCsv(csvData, `oae-efficiency-timeseries.csv`)
+  // }, [selectedLines, toMonthsIndex])
 
   return (
     <>
@@ -139,8 +100,11 @@ const OverviewChart = ({ sx }) => {
       <Flex sx={{ justifyContent: 'flex-end', height: 15 }}>
         <Button
           inverted
-          disabled={selectedLines.length === 0}
-          onClick={handleCSVDownload}
+          disabled={
+            Object.keys(efficiencyLineData ? efficiencyLineData : {}).length ===
+            0
+          }
+          // onClick={handleCSVDownload}
           sx={{
             fontSize: 0,
             textTransform: 'uppercase',
@@ -156,18 +120,13 @@ const OverviewChart = ({ sx }) => {
         </Button>
       </Flex>
       <Timeseries
-        endYear={timeHorizon}
+        endYear={endYear}
         xLimits={[startYear, 15]}
         yLimits={[0, 1]}
         yLabels={{ title: 'OAE efficiency', units: '' }}
-        timeData={{
-          selectedLines,
-          unselectedLines,
-          hoveredLine,
-        }}
+        selectedLines={efficiencyLineData}
         handleClick={handleClick}
         handleHover={handleHover}
-        point={point}
       />
     </>
   )
