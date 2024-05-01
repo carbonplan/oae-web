@@ -3,7 +3,7 @@ import { create } from 'zustand'
 export const overviewVariable = {
   key: 'EFFICIENCY',
   colorLimits: [0, 1],
-  colormap: 'warm',
+  colormap: 'water',
   label: 'Efficiency',
   unit: '',
   description: 'tk',
@@ -21,7 +21,7 @@ export const variables = {
         variable: 'ALK',
         delta: true,
         colorLimits: [0, 0.1],
-        colormap: 'warm',
+        colormap: 'cool',
         label: 'change',
         unit: 'mEq/m³',
         description:
@@ -31,7 +31,7 @@ export const variables = {
         variable: 'ALK',
         delta: false,
         colorLimits: [2000, 2800],
-        colormap: 'warm',
+        colormap: 'cool',
         label: 'Total',
         unit: 'mEq/m³',
         description:
@@ -50,7 +50,7 @@ export const variables = {
         variable: 'DIC',
         delta: true,
         colorLimits: [0, 0.1],
-        colormap: 'cool',
+        colormap: 'teal',
         label: 'change',
         unit: 'mmol/m³',
         description:
@@ -60,7 +60,7 @@ export const variables = {
         variable: 'DIC',
         delta: false,
         colorLimits: [1800, 2300],
-        colormap: 'cool',
+        colormap: 'teal',
         label: 'Total',
         unit: 'mmol/m³',
         description:
@@ -68,6 +68,22 @@ export const variables = {
       },
     ],
   },
+}
+
+const monthMap = {
+  JAN: 1,
+  APR: 4,
+  JUL: 7,
+  OCT: 10,
+}
+
+export const getInjectionMonth = (season) => {
+  for (const month in season) {
+    if (season[month]) {
+      return monthMap[month]
+    }
+  }
+  return null
 }
 
 const useStore = create((set) => ({
@@ -144,14 +160,8 @@ const useStore = create((set) => ({
     OCT: false,
   },
   setInjectionSeason: (injectionSeason) =>
-    set(() => {
-      if (injectionSeason.JAN) {
-        return { injectionSeason }
-      }
-      alert('only january is available at this time')
-      return {
-        injectionSeason: { JAN: true, APR: false, JUL: false, OCT: false },
-      }
+    set({
+      injectionSeason,
     }),
 
   showRegionPicker: false,

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
-import useStore, { overviewVariable } from '../store'
+import useStore, { overviewVariable, getInjectionMonth } from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
@@ -24,8 +24,7 @@ const Regions = () => {
   const { map } = useMapbox()
   const { theme } = useThemeUI()
   const hoveredRegionRef = useRef(hoveredRegion)
-  const injectionDate =
-    Object.values(injectionSeason).findIndex((value) => value) + 1
+  const injectionDate = getInjectionMonth(injectionSeason)
 
   //reused colors
   const transparent = 'rgba(0, 0, 0, 0)'
