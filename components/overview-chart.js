@@ -55,9 +55,10 @@ const OverviewChart = ({ sx }) => {
         colormap,
         colorLimits
       )
+      const alphaColor = color.replace('rgb', 'rgba').replace(')', ',0.15)') // only performant way to add opacity
       selected[i] = {
         id: i,
-        color: color,
+        color: alphaColor,
         hoveredColor: theme.colors?.primary,
         strokeWidth: 1,
         data: regionData,
