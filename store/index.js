@@ -106,8 +106,10 @@ const useStore = create((set) => ({
   setSelectedRegion: (selectedRegion) =>
     selectedRegion !== null
       ? set(() => {
-          if (selectedRegion !== 0) {
-            alert('only region 0 (near greenland!) is available at this time')
+          if (selectedRegion !== 301) {
+            alert(
+              'only region 301 (upper mid pacific) is available at this time'
+            )
             return { selectedRegion: null }
           }
           return { selectedRegion, currentVariable: variables.ALK.variables[0] }
