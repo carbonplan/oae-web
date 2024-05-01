@@ -55,6 +55,7 @@ const RenderLines = memo(
     handleClick = () => {},
     handleHover = () => {},
   }) => {
+    const lineCount = Object.keys(linesObject).length
     return Object.values(linesObject).map(
       ({ id, data, color, strokeWidth }) => (
         <Line
@@ -68,7 +69,7 @@ const RenderLines = memo(
             '&:hover': {
               cursor: 'pointer',
             },
-            shapeRendering: 'crispEdges',
+            shapeRendering: lineCount > 100 ? 'optimizeSpeed' : 'auto',
             ...additionalStyles,
           }}
           onClick={handleClick}
