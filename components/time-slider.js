@@ -3,6 +3,7 @@ import { Slider } from '@carbonplan/components'
 import { Box, Flex } from 'theme-ui'
 import { useCallback, useState } from 'react'
 import useStore from '../store'
+import FooterWrapper from './footer-wrapper'
 
 const sx = {
   label: {
@@ -64,7 +65,7 @@ const UnitSlider = ({
   }
 
   return (
-    <Box sx={{ flex: 1 }}>
+    <Box sx={{ flex: 1, my: -2 }}>
       <Slider
         value={sliderValue}
         min={range[0]}
@@ -114,7 +115,7 @@ const TimeSlider = () => {
   )
 
   return (
-    <Flex sx={{ gap: [2, 2, 2, 3] }}>
+    <FooterWrapper>
       <UnitSlider
         value={Math.floor(elapsedTime / 12)}
         range={[0, 14]}
@@ -122,7 +123,7 @@ const TimeSlider = () => {
         formatLabel={(d) => `Year ${d + 1}`}
         showValue
       />
-    </Flex>
+    </FooterWrapper>
   )
 }
 

@@ -10,6 +10,7 @@ import Filters from './filters'
 import OverviewChart from './overview-chart'
 import MobileSettings from './mobile-settings'
 import Intro from './intro'
+import TimeSlider from './time-slider'
 
 const sx = {
   heading: {
@@ -72,7 +73,12 @@ const Main = () => {
                 setExpanded={setExpanded}
                 side='left'
                 width={4}
-                footer={<RegionFooter sx={sx} />}
+                footer={
+                  <>
+                    <RegionFooter sx={sx} />
+                    <TimeSlider />
+                  </>
+                }
               >
                 <>
                   <Box
@@ -132,6 +138,7 @@ const Main = () => {
                 <OverviewChart sx={sx} />
               </MobileSettings>
               <RegionFooter sx={sx} />
+              <TimeSlider />
             </>
           )}
         </MapWrapper>

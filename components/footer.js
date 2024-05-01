@@ -1,14 +1,13 @@
 import React from 'react'
 import { Box, Flex } from 'theme-ui'
 import { Badge, Expander } from '@carbonplan/components'
-import { SidebarFooter } from '@carbonplan/layouts'
 import AnimateHeight from 'react-animate-height'
 
 import useStore from '../store'
 import RegionDetail from './region-detail'
-import TimeSlider from './time-slider'
 
 import { useBreakpointIndex } from '@theme-ui/match-media'
+import FooterWrapper from './footer-wrapper'
 
 const RegionFooter = ({ sx }) => {
   const hoveredRegion = useStore((state) => state.hoveredRegion)
@@ -21,44 +20,17 @@ const RegionFooter = ({ sx }) => {
     setSelectedRegion(null)
   }
 
-  const getMobileMarginFix = () => {
-    // !important breaks things when using standard array syntax
-    if (index <= 1) {
-      return '0 !important'
-    } else {
-      return 0
-    }
-  }
-
   return (
-    <SidebarFooter
-      sx={{
-        position: ['absolute', 'absolute', 'relative', 'relative'],
-        bottom: 0,
-        width: ['100%', '100%', 'auto', 'auto'],
-        mr: getMobileMarginFix(),
-        ml: getMobileMarginFix(),
-        zIndex: 2,
-        bg: 'background',
-        '&:hover': { bg: 'background' },
-        cursor: 'auto',
-        borderTop: [
-          '0.5px solid #393a3d',
-          '0.5px solid #393a3d',
-          'none',
-          'none',
-        ],
-      }}
-    >
+    <FooterWrapper bottom={index < 2 ? 72 : 0}>
       <AnimateHeight
         duration={250}
-        height={selectedRegion !== null ? 'auto' : 85}
+        height={selectedRegion !== null ? 'auto' : 30}
       >
         <Flex
           sx={{
             alignItems: 'center',
             justifyContent: 'space-between',
-            height: 25,
+            height: 30,
           }}
         >
           <Box
@@ -111,12 +83,9 @@ const RegionFooter = ({ sx }) => {
             )}
           </Box>
         </Flex>
-        <Box sx={{ mb: [-3, -3, -3, -2], mt: 4, mx: 1 }}>
-          <TimeSlider />
-        </Box>
         <RegionDetail sx={sx} />
       </AnimateHeight>
-    </SidebarFooter>
+    </FooterWrapper>
   )
 }
 
