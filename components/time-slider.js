@@ -94,17 +94,6 @@ const UnitSlider = ({
 const TimeSlider = () => {
   const elapsedTime = useStore((state) => state.elapsedTime)
   const setElapsedTime = useStore((state) => state.setElapsedTime)
-  const injectionSeason = useStore((state) =>
-    Object.keys(state.injectionSeason).find((k) => state.injectionSeason[k])
-  )
-
-  const handleMonthChange = useCallback(
-    (month) => {
-      const years = Math.floor(elapsedTime / 12)
-      setElapsedTime(years * 12 + month)
-    },
-    [elapsedTime]
-  )
 
   const handleYearChange = useCallback(
     (year) => {

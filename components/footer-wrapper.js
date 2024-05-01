@@ -2,7 +2,7 @@ import React from 'react'
 import { SidebarFooter } from '@carbonplan/layouts'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 
-const FooterWrapper = ({ children, bottom }) => {
+const FooterWrapper = ({ children, bottom = 0 }) => {
   const index = useBreakpointIndex({ defaultIndex: 2 })
 
   const getMobileMarginFix = () => {
@@ -17,7 +17,7 @@ const FooterWrapper = ({ children, bottom }) => {
     <SidebarFooter
       sx={{
         position: ['absolute', 'absolute', 'relative', 'relative'],
-        bottom: bottom ? bottom : 0,
+        bottom: bottom,
         width: ['100%', '100%', 'auto', 'auto'],
         mr: getMobileMarginFix(),
         ml: getMobileMarginFix(),
