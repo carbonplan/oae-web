@@ -3,7 +3,7 @@ import { create } from 'zustand'
 export const overviewVariable = {
   key: 'EFFICIENCY',
   colorLimits: [0, 1],
-  colormap: 'water',
+  colormap: 'blues',
   label: 'Efficiency',
   unit: '',
   description: 'tk',
@@ -21,7 +21,7 @@ export const variables = {
         variable: 'ALK',
         delta: true,
         colorLimits: [0, 0.1],
-        colormap: 'cool',
+        colormap: 'warm',
         label: 'change',
         unit: 'mEq/m³',
         description:
@@ -31,7 +31,7 @@ export const variables = {
         variable: 'ALK',
         delta: false,
         colorLimits: [2000, 2800],
-        colormap: 'cool',
+        colormap: 'warm',
         label: 'Total',
         unit: 'mEq/m³',
         description:
@@ -50,7 +50,7 @@ export const variables = {
         variable: 'DIC',
         delta: true,
         colorLimits: [0, 0.1],
-        colormap: 'teal',
+        colormap: 'cool',
         label: 'change',
         unit: 'mmol/m³',
         description:
@@ -60,7 +60,7 @@ export const variables = {
         variable: 'DIC',
         delta: false,
         colorLimits: [1800, 2300],
-        colormap: 'teal',
+        colormap: 'cool',
         label: 'Total',
         unit: 'mmol/m³',
         description:
