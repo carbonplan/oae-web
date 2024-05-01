@@ -3,7 +3,7 @@ import { create } from 'zustand'
 export const overviewVariable = {
   key: 'EFFICIENCY',
   colorLimits: [0, 1],
-  colormap: 'blues',
+  colormap: 'water',
   label: 'Efficiency',
   unit: '',
   description: 'tk',
