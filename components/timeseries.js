@@ -61,14 +61,14 @@ const RenderLines = memo(
           key={id}
           data={data}
           id={id}
+          width={strokeWidth}
+          color={color}
           sx={{
-            stroke: color,
-            strokeWidth: strokeWidth, // 1 or less for perf
             pointerEvents: 'visiblePainted',
             '&:hover': {
               cursor: 'pointer',
             },
-            transition: 'all 0.2s',
+            shapeRendering: 'crispEdges',
             ...additionalStyles,
           }}
           onClick={handleClick}
