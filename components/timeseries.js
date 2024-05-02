@@ -48,38 +48,34 @@ const renderDataBadge = (point) => {
   )
 }
 
-const RenderLines = memo(
-  ({
-    linesObject = {},
-    additionalStyles,
-    handleClick = () => {},
-    handleHover = () => {},
-  }) => {
-    const lineCount = Object.keys(linesObject).length
-    return Object.values(linesObject).map(
-      ({ id, data, color, strokeWidth }) => (
-        <Line
-          key={id}
-          data={data}
-          id={id}
-          width={strokeWidth}
-          color={color}
-          sx={{
-            pointerEvents: 'visiblePainted',
-            '&:hover': {
-              cursor: 'pointer',
-            },
-            shapeRendering: lineCount > 100 ? 'optimizeSpeed' : 'auto',
-            ...additionalStyles,
-          }}
-          onClick={handleClick}
-          onMouseOver={() => handleHover(id)}
-          onMouseLeave={() => handleHover(null)}
-        />
-      )
-    )
-  }
-)
+const RenderLines = ({
+  linesObject = {},
+  additionalStyles,
+  handleClick = () => {},
+  handleHover = () => {},
+}) => {
+  const lineCount = Object.keys(linesObject).length
+  return Object.values(linesObject).map(({ id, data, color, strokeWidth }) => (
+    <Line
+      key={id}
+      data={data}
+      id={id}
+      width={strokeWidth}
+      color={color}
+      sx={{
+        pointerEvents: 'visiblePainted',
+        '&:hover': {
+          cursor: 'pointer',
+        },
+        shapeRendering: lineCount > 100 ? 'optimizeSpeed' : 'auto',
+        ...additionalStyles,
+      }}
+      onClick={handleClick}
+      onMouseOver={() => handleHover(id)}
+      onMouseLeave={() => handleHover(null)}
+    />
+  ))
+}
 
 const HoveredLine = () => {
   const hoveredLineData = useStore((s) => s.hoveredLineData)
