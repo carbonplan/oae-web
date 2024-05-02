@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import { Box, Checkbox, Flex, Label, useThemeUI } from 'theme-ui'
+import { alpha } from '@theme-ui/color'
 
 import useStore, { overviewVariable } from '../store'
 import Timeseries from './timeseries'
@@ -63,7 +64,7 @@ const OverviewChart = ({ sx }) => {
           colormap,
           colorLimits
         )
-        const alphaColor = color.replace('rgb', 'rgba').replace(')', ',0.1)') // Adding opacity
+        const alphaColor = alpha(color, 0.1)(theme)
         selected[index] = {
           id: index,
           color: alphaColor,

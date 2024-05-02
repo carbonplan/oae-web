@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Box, Spinner } from 'theme-ui'
+import { alpha } from '@theme-ui/color'
 import {
   AxisLabel,
   Chart,
@@ -32,6 +33,7 @@ const renderPoint = (point) => {
 const renderDataBadge = (point) => {
   if (!point || !point.text) return null
   const { x, y, color, text } = point
+  const fullColor = alpha(color, 1)
   return (
     <Point x={x} y={y} align={'center'} width={2}>
       <Badge
@@ -39,7 +41,7 @@ const renderDataBadge = (point) => {
           fontSize: 1,
           height: '20px',
           mt: 2,
-          bg: color,
+          bg: fullColor,
         }}
       >
         {text}
