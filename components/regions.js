@@ -81,7 +81,12 @@ const Regions = () => {
     if (e.features.length > 0) {
       const feature = e.features[0]
       const polygonId = feature.properties.polygon_id
-      const center = centroid(feature.geometry).geometry.coordinates
+      let center // handle multipolygons on the dateline
+      if (feature.geometry.type === 'Polygon') {
+        center = centroid(feature.geometry).geometry.coordinates
+      } else {
+        center = [e.lngLat.lng, e.lngLat.lat]
+      }
       setSelectedRegion(polygonId)
       setSelectedRegionCenter(center)
     }
