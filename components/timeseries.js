@@ -1,4 +1,4 @@
-import React, { useState, memo } from 'react'
+import React, { useState } from 'react'
 import { Box, Spinner } from 'theme-ui'
 import {
   AxisLabel,
