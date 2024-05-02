@@ -225,7 +225,6 @@ const Regions = () => {
   }, [map, hoveredRegion])
 
   const handleRegionsInView = useCallback(() => {
-    console.log('handleRegionsInView')
     if (selectedRegion !== null) return
     if (
       map.getLayer('regions-fill') &&
