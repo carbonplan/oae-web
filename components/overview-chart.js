@@ -54,8 +54,8 @@ const OverviewChart = ({ sx }) => {
   useEffect(() => {
     let selected = {}
     const targetIndexes = filterToRegionsInView
-      ? regionsInView
-      : Object.keys(timeData)
+      ? regionsInView || []
+      : Object.keys(timeData) || []
     targetIndexes.forEach((index) => {
       const regionData = timeData[index]
       if (regionData) {

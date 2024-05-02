@@ -83,7 +83,8 @@ export const getInjectionMonth = (season) => {
       return monthMap[month]
     }
   }
-  return null
+  console.error('No injection month found, defaulting Jan')
+  return 1
 }
 
 const useStore = create((set) => ({
@@ -136,7 +137,7 @@ const useStore = create((set) => ({
   hoveredRegion: null,
   setHoveredRegion: (hoveredRegion) =>
     set((state) => {
-      if (state.efficiencyLineData) {
+      if (state.efficiencyLineData && state.efficiencyLineData[hoveredRegion]) {
         return {
           hoveredRegion,
           hoveredLineData: state.efficiencyLineData[hoveredRegion],
@@ -155,7 +156,7 @@ const useStore = create((set) => ({
   setFilterToRegionsInView: (filterToRegionsInView) =>
     set({ filterToRegionsInView }),
 
-  regionsInView: new Set(),
+  regionsInView: undefined,
   setRegionsInView: (regionsInView) =>
     set({ regionsInView: new Set(regionsInView) }),
 
