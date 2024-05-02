@@ -151,6 +151,10 @@ const useStore = create((set) => ({
   elapsedTime: 0,
   setElapsedTime: (elapsedTime) => set({ elapsedTime }),
 
+  filterToRegionsInView: false,
+  setFilterToRegionsInView: (filterToRegionsInView) =>
+    set({ filterToRegionsInView }),
+
   regionsInView: new Set(),
   setRegionsInView: (regionsInView) =>
     set({ regionsInView: new Set(regionsInView) }),

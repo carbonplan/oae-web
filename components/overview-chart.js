@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useThemedColormap } from '@carbonplan/colormaps'
-import { Box, Flex, useThemeUI } from 'theme-ui'
+import { Box, Checkbox, Flex, Label, useThemeUI } from 'theme-ui'
 
 import useStore, { overviewVariable } from '../store'
 import Timeseries from './timeseries'
@@ -21,6 +21,10 @@ const OverviewChart = ({ sx }) => {
   const efficiencyLineData = useStore((state) => state.efficiencyLineData)
   const setEfficiencyLineData = useStore((state) => state.setEfficiencyLineData)
   const injectionSeason = useStore((state) => state.injectionSeason)
+  const filterToRegionsInView = useStore((state) => state.filterToRegionsInView)
+  const setFilterToRegionsInView = useStore(
+    (state) => state.setFilterToRegionsInView
+  )
   const regionsInView = useStore((state) => state.regionsInView)
   const colormap = useThemedColormap(overviewVariable?.colormap)
   const colorLimits = overviewVariable.colorLimits
@@ -48,24 +52,29 @@ const OverviewChart = ({ sx }) => {
 
   useEffect(() => {
     let selected = {}
-    timeData.forEach((regionData, i) => {
-      if (!regionsInView.has(i)) return
-      const color = getColorForValue(
-        regionData[regionData.length - 1][1],
-        colormap,
-        colorLimits
-      )
-      const alphaColor = color.replace('rgb', 'rgba').replace(')', ',0.1)') // only performant way to add opacity
-      selected[i] = {
-        id: i,
-        color: alphaColor,
-        hoveredColor: theme.colors?.primary,
-        strokeWidth: 2,
-        data: regionData,
+    const targetIndexes = filterToRegionsInView
+      ? regionsInView
+      : Object.keys(timeData)
+    targetIndexes.forEach((index) => {
+      const regionData = timeData[index]
+      if (regionData) {
+        const color = getColorForValue(
+          regionData[regionData.length - 1][1],
+          colormap,
+          colorLimits
+        )
+        const alphaColor = color.replace('rgb', 'rgba').replace(')', ',0.1)') // Adding opacity
+        selected[index] = {
+          id: index,
+          color: alphaColor,
+          hoveredColor: theme.colors?.primary,
+          strokeWidth: 2,
+          data: regionData,
+        }
       }
     })
     setEfficiencyLineData(selected)
-  }, [timeData, endYear, regionsInView])
+  }, [timeData, endYear, regionsInView, filterToRegionsInView])
 
   const handleClick = useCallback(
     (e) => {
@@ -99,9 +108,26 @@ const OverviewChart = ({ sx }) => {
   return (
     <>
       <Box sx={sx.heading}>efficiency</Box>
-      <Box sx={{ fontSize: 0, color: 'secondary', my: 2 }}>
-        Graph filtered to regions in current map view
-      </Box>
+      <Label
+        sx={{
+          color: 'secondary',
+          cursor: 'pointer',
+          fontSize: 1,
+          fontFamily: 'mono',
+          py: 1,
+        }}
+      >
+        <Checkbox
+          checked={filterToRegionsInView}
+          onChange={(e) => setFilterToRegionsInView(e.target.checked)}
+          sx={{
+            width: 18,
+            mr: 1,
+            mt: '-3px',
+          }}
+        />
+        Filter to current map view
+      </Label>
       <Flex sx={{ justifyContent: 'flex-end', height: 15 }}>
         <Button
           inverted

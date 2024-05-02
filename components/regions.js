@@ -13,6 +13,7 @@ const Regions = () => {
   const setSelectedRegionCenter = useStore(
     (state) => state.setSelectedRegionCenter
   )
+  const filterToRegionsInView = useStore((state) => state.filterToRegionsInView)
   const setRegionsInView = useStore((state) => state.setRegionsInView)
   const injectionSeason = useStore((state) => state.injectionSeason)
   const elapsedTime = useStore((state) => state.elapsedTime)
@@ -261,12 +262,16 @@ const Regions = () => {
         setRegionsInView(ids)
       }
     }
+    if (!filterToRegionsInView) {
+      map.off('moveend', handleRegionsInView)
+      return
+    }
     map.on('moveend', handleRegionsInView)
-    map.once('idle', handleRegionsInView)
+    handleRegionsInView()
     return () => {
       map.off('moveend', handleRegionsInView)
     }
-  }, [selectedRegion, map, setRegionsInView])
+  }, [selectedRegion, map, setRegionsInView, filterToRegionsInView])
 
   useEffect(() => {
     if (map && map.getSource('regions') && map.getLayer('regions-line')) {
