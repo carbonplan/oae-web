@@ -126,7 +126,7 @@ const OverviewChart = ({ sx }) => {
             mt: '-3px',
           }}
         />
-        Filter to current map view
+        Filter to map view
       </Label>
       <Flex sx={{ justifyContent: 'flex-end', height: 15 }}>
         <Button
