@@ -137,13 +137,8 @@ const useStore = create((set) => ({
   hoveredRegion: null,
   setHoveredRegion: (hoveredRegion) =>
     set((state) => {
-      if (state.efficiencyLineData && state.efficiencyLineData[hoveredRegion]) {
-        return {
-          hoveredRegion,
-          hoveredLineData: state.efficiencyLineData[hoveredRegion],
-        }
-      }
-      return { hoveredRegion }
+      const hoveredLineData = state.efficiencyLineData[hoveredRegion]
+      return { hoveredRegion, hoveredLineData: hoveredLineData || null }
     }),
 
   hoveredLineData: null,
