@@ -68,7 +68,7 @@ const OverviewChart = ({ sx }) => {
         selected[index] = {
           id: index,
           color: alphaColor,
-          hoveredColor: theme.colors?.primary,
+          hoveredColor: theme.rawColors?.primary,
           strokeWidth: 2,
           data: regionData,
         }

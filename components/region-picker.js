@@ -18,7 +18,7 @@ const RegionPickerWrapper = () => {
 
   return (
     <RegionPicker
-      color={theme.colors.primary}
+      color={theme.rawColors.primary}
       backgroundColor={'#00000099'}
       fontFamily={theme.fonts.mono}
       fontSize={'14px'}
