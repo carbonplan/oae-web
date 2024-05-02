@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import useStore, { overviewVariable, getInjectionMonth } from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
@@ -224,12 +224,35 @@ const Regions = () => {
     }
   }, [map, hoveredRegion])
 
-  const toggleLayerVisibilities = (visible) => {
-    const visibility = visible ? 'visible' : 'none'
-    map.setLayoutProperty('regions-line', 'visibility', visibility)
-    map.setLayoutProperty('regions-hover', 'visibility', visibility)
-    map.setLayoutProperty('regions-fill', 'visibility', visibility)
-  }
+  const handleRegionsInView = useCallback(() => {
+    console.log('handleRegionsInView')
+    if (selectedRegion !== null) return
+    if (
+      map.getLayer('regions-fill') &&
+      map.getLayoutProperty('regions-fill', 'visibility') === 'visible'
+    ) {
+      const features = map.queryRenderedFeatures({
+        layers: ['regions-fill'],
+      })
+      const ids = features.map((f) => f.properties.polygon_id)
+      setRegionsInView(ids)
+    }
+  }, [map, selectedRegion, setRegionsInView])
+
+  const toggleLayerVisibilities = useCallback(
+    (visible) => {
+      if (!map) return
+      const visibility = visible ? 'visible' : 'none'
+      map.setLayoutProperty('regions-line', 'visibility', visibility)
+      map.setLayoutProperty('regions-hover', 'visibility', visibility)
+      map.setLayoutProperty('regions-fill', 'visibility', visibility)
+      if (visible && filterToRegionsInView) {
+        // fixes race when clearing selected region
+        map.once('idle', handleRegionsInView)
+      }
+    },
+    [map, handleRegionsInView, filterToRegionsInView]
+  )
 
   useEffect(() => {
     map.removeFeatureState({
@@ -249,29 +272,18 @@ const Regions = () => {
     } else {
       toggleLayerVisibilities(true)
     }
-  }, [selectedRegion])
+  }, [selectedRegion, map, toggleLayerVisibilities])
 
   useEffect(() => {
-    const handleRegionsInView = () => {
-      if (selectedRegion !== null) return
-      if (map.getLayer('regions-fill')) {
-        const features = map.queryRenderedFeatures({
-          layers: ['regions-fill'],
-        })
-        const ids = features.map((f) => f.properties.polygon_id)
-        setRegionsInView(ids)
-      }
-    }
     if (!filterToRegionsInView) {
       map.off('moveend', handleRegionsInView)
       return
     }
     map.on('moveend', handleRegionsInView)
-    handleRegionsInView()
     return () => {
       map.off('moveend', handleRegionsInView)
     }
-  }, [selectedRegion, map, setRegionsInView, filterToRegionsInView])
+  }, [map, handleRegionsInView, filterToRegionsInView])
 
   useEffect(() => {
     if (map && map.getSource('regions') && map.getLayer('regions-line')) {
