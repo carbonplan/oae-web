@@ -14,7 +14,7 @@ import { Down } from '@carbonplan/icons'
 const zarrUrl =
   'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr'
 
-const toMonthsIndex = (year, startYear) => (year - startYear) * 12
+const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 
 const OverviewChart = ({ sx }) => {
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)

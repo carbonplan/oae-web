@@ -14,7 +14,7 @@ import useStore, { variables } from '../store'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { Down } from '@carbonplan/icons'
 
-const toMonthsIndex = (year, startYear) => (year - startYear) * 12
+const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 const degToRad = (degrees) => {
   return degrees * (Math.PI / 180)
 }
