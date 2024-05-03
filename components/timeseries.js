@@ -245,7 +245,7 @@ const Timeseries = ({
         <TickLabels
           left
           format={(d) => {
-            if (Math.abs(d) < 0.001) {
+            if (Math.abs(d) < 0.001 && d !== 0) {
               return d.toExponential(0)
             }
             return d
