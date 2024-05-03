@@ -54,7 +54,7 @@ const RenderLines = ({
   linesObject = {},
   additionalStyles = {},
   handleClick = () => {},
-  handleHover = () => {},
+  handleHover = (id) => {},
 }) => {
   const lineCount = Object.keys(linesObject).length
   return Object.values(linesObject).map(({ id, data, color, strokeWidth }) => (
@@ -143,7 +143,7 @@ const Timeseries = ({
 }) => {
   const regionDataLoading = useStore((s) => s.regionDataLoading)
   const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
-  const elapsedYears = overviewElapsedTime / 12
+  const elapsedYears = (overviewElapsedTime + 1) / 12
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
   const [xSelectorValue, setXSelectorValue] = useState(null)
@@ -241,7 +241,8 @@ const Timeseries = ({
       {renderTimeAndData()}
       <Chart x={xLimits} y={yLimits} padding={{ top: 30 }}>
         <Grid vertical horizontal />
-        <Ticks left bottom />
+        <Ticks left />
+        <Ticks bottom values={Array.from({ length: 16 }, (_, i) => i)} />
         <TickLabels
           left
           format={(d) => {
@@ -251,7 +252,7 @@ const Timeseries = ({
             return d
           }}
         />
-        <TickLabels bottom />
+        <TickLabels bottom values={[0, 5, 10, 15]} />
         <AxisLabel units={yLabels.units} sx={{ fontSize: 0 }} left>
           {yLabels.title}
         </AxisLabel>

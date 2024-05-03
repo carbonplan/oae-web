@@ -55,7 +55,7 @@ export const getTimeSeriesData = (chunk, ids, startYear) => {
     const line = chunk.pick(null, idIndex, 0)
     const idLine = []
     for (let i = 0; i < line.shape[0]; i++) {
-      const toYear = startYear + i / 12
+      const toYear = startYear + (i + 1) / 12
       idLine.push([toYear, parseFloat(line.get(i).toFixed(3))])
     }
     timeData.push(idLine)
