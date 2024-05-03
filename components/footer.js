@@ -83,7 +83,7 @@ const RegionFooter = ({ sx }) => {
             )}
           </Box>
         </Flex>
-        <RegionDetail sx={sx} />
+        {selectedRegion !== null && <RegionDetail sx={sx} />}
       </AnimateHeight>
     </FooterWrapper>
   )
