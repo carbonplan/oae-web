@@ -52,7 +52,7 @@ const renderDataBadge = (point) => {
 
 const RenderLines = ({
   linesObject = {},
-  additionalStyles,
+  additionalStyles = {},
   handleClick = () => {},
   handleHover = () => {},
 }) => {
@@ -271,6 +271,7 @@ const Timeseries = ({
           {xValueHighlight && (
             <Line
               color='secondary'
+              sx={{ transition: 'all 0.2s ease-in-out' }}
               data={[
                 [elapsedYears, 0],
                 [elapsedYears, 1000000],
