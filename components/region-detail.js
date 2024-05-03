@@ -51,7 +51,7 @@ const RegionDetail = ({ sx }) => {
   const showRegionPicker = useStore((s) => s.showRegionPicker)
   const setShowRegionPicker = useStore((s) => s.setShowRegionPicker)
   const regionData = useStore((s) => s.regionData)
-  const elapsedYears = useStore((s) => s.detailElapsedTime / 12)
+  const elapsedYears = useStore((s) => (s.detailElapsedTime + 1) / 12)
   const setDetailElapsedTime = useStore((s) => s.setDetailElapsedTime)
   const showDeltaOverBackground = useStore((s) => s.showDeltaOverBackground)
   const setShowDeltaOverBackground = useStore(
@@ -105,7 +105,7 @@ const RegionDetail = ({ sx }) => {
                 regionData.coordinates.lat,
                 zoom
               )
-              const toYear = year - 1 + (month - 1) / 12
+              const toYear = year - 1 + month / 12
               averages.push([toYear, avg])
             })
         })
@@ -331,7 +331,6 @@ const RegionDetail = ({ sx }) => {
               </Button>
             </Flex>
             <Timeseries
-              endYear={15}
               xLimits={[0, 15]}
               yLimits={minMax}
               yLabels={{
@@ -339,6 +338,7 @@ const RegionDetail = ({ sx }) => {
                 units: currentVariable.unit ?? '',
               }}
               selectedLines={selectedLines}
+              elapsedYears={elapsedYears}
               handleClick={handleTimeseriesClick}
               point={point}
               xSelector={true}

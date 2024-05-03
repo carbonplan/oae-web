@@ -129,7 +129,6 @@ const OverviewBadge = () => {
 }
 
 const Timeseries = ({
-  endYear,
   xLimits,
   yLimits,
   yLabels,
@@ -137,13 +136,11 @@ const Timeseries = ({
   handleClick,
   handleHover,
   point,
-  xValueHighlight = false,
+  elapsedYears,
   xSelector = false,
   handleXSelectorClick = () => {},
 }) => {
   const regionDataLoading = useStore((s) => s.regionDataLoading)
-  const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
-  const elapsedYears = (overviewElapsedTime + 1) / 12
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
   const [xSelectorValue, setXSelectorValue] = useState(null)
@@ -262,33 +259,24 @@ const Timeseries = ({
         <Plot
           sx={{
             pointerEvents: 'auto',
-            cursor:
-              xSelector && mousePosition && mousePosition < endYear
-                ? 'pointer'
-                : 'auto',
+            cursor: xSelector && mousePosition ? 'pointer' : 'auto',
           }}
           {...xSelectorHandlers}
         >
-          {xValueHighlight && (
-            <Line
-              color='secondary'
-              sx={{ transition: 'all 0.2s ease-in-out' }}
-              data={[
-                [elapsedYears, 0],
-                [elapsedYears, 1000000],
-              ]}
-            />
-          )}
           <RenderLines
             linesObject={selectedLines}
             handleHover={handleHover}
             handleClick={handleClick}
           />
           <Rect
-            x={[endYear, 15]}
-            y={[0, 1000000]}
+            x={[elapsedYears, 15]}
+            y={[0, yLimits[1]]}
             color='muted'
-            opacity={0.2}
+            pointerEvents='none'
+            style={{
+              transition: 'all 0.2s ease-in-out',
+              opacity: 0.3,
+            }}
             onClick={(e) => e.stopPropagation()}
           />
           <HoveredLine />

@@ -33,7 +33,6 @@ const OverviewChart = ({ sx }) => {
   const colorLimits = overviewVariable.colorLimits
   const [timeData, setTimeData] = useState([])
   const startYear = 0
-  const endYear = 15
 
   const { theme } = useThemeUI()
 
@@ -77,13 +76,7 @@ const OverviewChart = ({ sx }) => {
       }
     })
     setEfficiencyLineData(selected)
-  }, [
-    timeData,
-    endYear,
-    regionsInView,
-    filterToRegionsInView,
-    overviewElapsedTime,
-  ])
+  }, [timeData, regionsInView, filterToRegionsInView, overviewElapsedTime])
 
   const handleClick = useCallback(
     (e) => {
@@ -160,14 +153,13 @@ const OverviewChart = ({ sx }) => {
         </Button>
       </Flex>
       <Timeseries
-        endYear={endYear}
         xLimits={[startYear, 15]}
         yLimits={[0, 1]}
         yLabels={{ title: 'OAE efficiency', units: '' }}
         selectedLines={efficiencyLineData}
+        elapsedYears={(overviewElapsedTime + 1) / 12}
         handleClick={handleClick}
         handleHover={handleHover}
-        xValueHighlight={true}
       />
     </>
   )
