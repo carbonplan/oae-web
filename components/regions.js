@@ -16,8 +16,8 @@ const Regions = () => {
   const filterToRegionsInView = useStore((state) => state.filterToRegionsInView)
   const setRegionsInView = useStore((state) => state.setRegionsInView)
   const injectionSeason = useStore((state) => state.injectionSeason)
-  const elapsedTime = useStore((state) => state.elapsedTime)
-  const yearsElapsed = Math.floor(elapsedTime / 12 + 1)
+  const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
+  const yearsElapsed = Math.floor(overviewElapsedTime / 12 + 1)
 
   const colormap = useThemedColormap(overviewVariable.colormap)
   const colorLimits = overviewVariable.colorLimits

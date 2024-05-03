@@ -144,8 +144,11 @@ const useStore = create((set) => ({
   hoveredLineData: null,
   setHoveredLineData: (hoveredLineData) => set({ hoveredLineData }),
 
-  elapsedTime: 0,
-  setElapsedTime: (elapsedTime) => set({ elapsedTime }),
+  overviewElapsedTime: 179,
+  setOverviewElapsedTime: (overviewElapsedTime) => set({ overviewElapsedTime }),
+
+  detailElapsedTime: 0,
+  setDetailElapsedTime: (detailElapsedTime) => set({ detailElapsedTime }),
 
   filterToRegionsInView: false,
   setFilterToRegionsInView: (filterToRegionsInView) =>

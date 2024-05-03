@@ -51,8 +51,8 @@ const RegionDetail = ({ sx }) => {
   const showRegionPicker = useStore((s) => s.showRegionPicker)
   const setShowRegionPicker = useStore((s) => s.setShowRegionPicker)
   const regionData = useStore((s) => s.regionData)
-  const elapsedYears = useStore((s) => s.elapsedTime / 12)
-  const setElapsedTime = useStore((s) => s.setElapsedTime)
+  const elapsedYears = useStore((s) => s.detailElapsedTime / 12)
+  const setDetailElapsedTime = useStore((s) => s.setDetailElapsedTime)
   const showDeltaOverBackground = useStore((s) => s.showDeltaOverBackground)
   const setShowDeltaOverBackground = useStore(
     (s) => s.setShowDeltaOverBackground
@@ -207,9 +207,9 @@ const RegionDetail = ({ sx }) => {
       const { left, width } = e.currentTarget.getBoundingClientRect()
       const clickX = e.clientX - left
       const months = Math.round((clickX / width) * 179)
-      setElapsedTime(months)
+      setDetailElapsedTime(months)
     },
-    [setElapsedTime]
+    [setDetailElapsedTime]
   )
 
   const handleCSVDownload = useCallback(() => {

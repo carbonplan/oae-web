@@ -92,8 +92,17 @@ const UnitSlider = ({
 }
 
 const TimeSlider = () => {
-  const elapsedTime = useStore((state) => state.elapsedTime)
-  const setElapsedTime = useStore((state) => state.setElapsedTime)
+  const { elapsedTime, setElapsedTime } = useStore((state) => ({
+    elapsedTime:
+      state.currentVariable.key === 'EFFICIENCY'
+        ? state.overviewElapsedTime
+        : state.detailElapsedTime,
+    setElapsedTime:
+      state.currentVariable.key === 'EFFICIENCY'
+        ? state.setOverviewElapsedTime
+        : state.setDetailElapsedTime,
+  }))
+
   const injectionSeason = useStore((state) =>
     Object.keys(state.injectionSeason).find((k) => state.injectionSeason[k])
   )

@@ -76,7 +76,7 @@ const MapWrapper = ({ children }) => {
   const setLoading = useStore((s) => s.setLoading)
   const setRegionDataLoading = useStore((s) => s.setRegionDataLoading)
   const selectedRegion = useStore((s) => s.selectedRegion)
-  const elapsedTime = useStore((s) => s.elapsedTime)
+  const detailElapsedTime = useStore((s) => s.detailElapsedTime)
   const injectionSeason = useStore((s) => s.injectionSeason)
   const currentVariable = useStore((s) => s.currentVariable)
   const variableFamily = useStore((s) => s.variableFamily)
@@ -126,8 +126,8 @@ const MapWrapper = ({ children }) => {
               band: bands,
               polygon_id: 301, // TODO: remove hardcoded ID when all polygons become available in data
               injection_date: injectionDate,
-              year: Math.floor(elapsedTime / 12) + 1,
-              month: (elapsedTime % 12) + 1,
+              year: Math.floor(detailElapsedTime / 12) + 1,
+              month: (detailElapsedTime % 12) + 1,
             }}
             uniforms={{
               delta: currentVariable.delta ? 1.0 : 0.0,

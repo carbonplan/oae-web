@@ -81,13 +81,13 @@ const RenderLines = ({
 
 const HoveredLine = () => {
   const hoveredLineData = useStore((s) => s.hoveredLineData)
-  const elapsedTime = useStore((s) => s.elapsedTime)
+  const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
   if (!hoveredLineData || !hoveredLineData.data) {
     return null
   }
   const { hoveredColor, color } = hoveredLineData
-  const x = hoveredLineData.data[elapsedTime][0]
-  const y = hoveredLineData.data[elapsedTime][1]
+  const x = hoveredLineData.data[overviewElapsedTime][0]
+  const y = hoveredLineData.data[overviewElapsedTime][1]
   return (
     <>
       <Line
@@ -116,12 +116,12 @@ const HoveredLine = () => {
 
 const OverviewBadge = () => {
   const hoveredLineData = useStore((s) => s.hoveredLineData)
-  const elapsedTime = useStore((s) => s.elapsedTime)
+  const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
   if (!hoveredLineData || !hoveredLineData.data) {
     return null
   }
   const { color } = hoveredLineData
-  const data = hoveredLineData.data[elapsedTime]
+  const data = hoveredLineData.data[overviewElapsedTime]
   const x = data[0]
   const y = data[1]
   const point = { x, y, color, text: data[1].toFixed(2) }
@@ -142,8 +142,8 @@ const Timeseries = ({
   handleXSelectorClick = () => {},
 }) => {
   const regionDataLoading = useStore((s) => s.regionDataLoading)
-  const elapsedTime = useStore((s) => s.elapsedTime)
-  const elapsedYears = elapsedTime / 12
+  const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
+  const elapsedYears = overviewElapsedTime / 12
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
   const [xSelectorValue, setXSelectorValue] = useState(null)

@@ -27,7 +27,7 @@ const OverviewChart = ({ sx }) => {
     (state) => state.setFilterToRegionsInView
   )
   const regionsInView = useStore((state) => state.regionsInView)
-  const elapsedTime = useStore((state) => state.elapsedTime)
+  const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
 
   const colormap = useThemedColormap(overviewVariable?.colormap)
   const colorLimits = overviewVariable.colorLimits
@@ -62,7 +62,7 @@ const OverviewChart = ({ sx }) => {
       const regionData = timeData[index]
       if (regionData) {
         const color = getColorForValue(
-          regionData[elapsedTime][1],
+          regionData[overviewElapsedTime][1],
           colormap,
           colorLimits
         )
@@ -77,7 +77,13 @@ const OverviewChart = ({ sx }) => {
       }
     })
     setEfficiencyLineData(selected)
-  }, [timeData, endYear, regionsInView, filterToRegionsInView, elapsedTime])
+  }, [
+    timeData,
+    endYear,
+    regionsInView,
+    filterToRegionsInView,
+    overviewElapsedTime,
+  ])
 
   const handleClick = useCallback(
     (e) => {
