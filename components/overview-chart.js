@@ -126,6 +126,19 @@ const OverviewChart = ({ sx }) => {
             width: 18,
             mr: 1,
             mt: '-3px',
+            cursor: 'pointer',
+            color: 'muted',
+            transition: 'color 0.15s',
+            'input:active ~ &': { bg: 'background', color: 'primary' },
+            'input:focus ~ &': {
+              bg: 'background',
+              color: filterToRegionsInView ? 'primary' : 'muted',
+            },
+            'input:hover ~ &': { bg: 'background', color: 'primary' },
+            'input:focus-visible ~ &': {
+              outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
+              background: 'rgb(110, 110, 110, 0.625)',
+            },
           }}
         />
         Filter to map view
