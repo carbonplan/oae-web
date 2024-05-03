@@ -84,7 +84,7 @@ const Main = () => {
                   <Box
                     sx={{
                       // overlay
-                      width: '100%',
+                      width: 'calc(100% - 1px)', // make sure border stays visible
                       height: '100%',
                       backgroundColor:
                         selectedRegion !== null
