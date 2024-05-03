@@ -1,8 +1,9 @@
 import { create } from 'zustand'
 
 export const overviewVariable = {
-  colorLimits: [0.65, 0.85],
-  colormap: 'warm',
+  key: 'EFFICIENCY',
+  colorLimits: [0, 1],
+  colormap: 'water',
   label: 'Efficiency',
   unit: '',
   description: 'tk',
@@ -69,6 +70,23 @@ export const variables = {
   },
 }
 
+const monthMap = {
+  JAN: 1,
+  APR: 4,
+  JUL: 7,
+  OCT: 10,
+}
+
+export const getInjectionMonth = (season) => {
+  for (const month in season) {
+    if (season[month]) {
+      return monthMap[month]
+    }
+  }
+  console.error('No injection month found, defaulting Jan')
+  return 1
+}
+
 const useStore = create((set) => ({
   loading: false,
   setLoading: (loading) => set({ loading }),
@@ -89,8 +107,10 @@ const useStore = create((set) => ({
   setSelectedRegion: (selectedRegion) =>
     selectedRegion !== null
       ? set(() => {
-          if (selectedRegion !== 0) {
-            alert('only region 0 (near greenland!) is available at this time')
+          if (selectedRegion !== 301) {
+            alert(
+              'only region 301 (upper mid pacific) is available at this time'
+            )
             return { selectedRegion: null }
           }
           return { selectedRegion, currentVariable: variables.ALK.variables[0] }
@@ -101,7 +121,6 @@ const useStore = create((set) => ({
           showRegionPicker: false,
           regionData: null,
           hoveredRegion: null,
-          elapsedTime: 0,
         }),
 
   selectedRegionCenter: null,
@@ -112,14 +131,28 @@ const useStore = create((set) => ({
   setShowDeltaOverBackground: (showDeltaOverBackground) =>
     set({ showDeltaOverBackground }),
 
+  efficiencyLineData: {},
+  setEfficiencyLineData: (efficiencyLineData) => set({ efficiencyLineData }),
+
   hoveredRegion: null,
-  setHoveredRegion: (hoveredRegion) => set({ hoveredRegion }),
+  setHoveredRegion: (hoveredRegion) =>
+    set((state) => {
+      const hoveredLineData = state.efficiencyLineData[hoveredRegion]
+      return { hoveredRegion, hoveredLineData: hoveredLineData || null }
+    }),
 
-  timeHorizon: 15,
-  setTimeHorizon: (timeHorizon) => set({ timeHorizon }),
+  hoveredLineData: null,
+  setHoveredLineData: (hoveredLineData) => set({ hoveredLineData }),
 
-  elapsedTime: 0,
-  setElapsedTime: (elapsedTime) => set({ elapsedTime }),
+  overviewElapsedTime: 179,
+  setOverviewElapsedTime: (overviewElapsedTime) => set({ overviewElapsedTime }),
+
+  detailElapsedTime: 0,
+  setDetailElapsedTime: (detailElapsedTime) => set({ detailElapsedTime }),
+
+  filterToRegionsInView: false,
+  setFilterToRegionsInView: (filterToRegionsInView) =>
+    set({ filterToRegionsInView }),
 
   regionsInView: undefined,
   setRegionsInView: (regionsInView) =>
@@ -132,14 +165,8 @@ const useStore = create((set) => ({
     OCT: false,
   },
   setInjectionSeason: (injectionSeason) =>
-    set(() => {
-      if (injectionSeason.JAN) {
-        return { injectionSeason }
-      }
-      alert('only january is available at this time')
-      return {
-        injectionSeason: { JAN: true, APR: false, JUL: false, OCT: false },
-      }
+    set({
+      injectionSeason,
     }),
 
   showRegionPicker: false,

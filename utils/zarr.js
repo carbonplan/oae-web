@@ -51,28 +51,14 @@ export const getChunk = async (get, chunk) => {
 
 export const getTimeSeriesData = (chunk, ids, startYear) => {
   const timeData = []
-  ids.forEach((id) => {
-    const line = chunk.pick(id, null, null)
-    const sliceStart = line.offset
-    const sliceEnd = line.offset + line.stride[0] * line.shape[0]
-    if (
-      sliceEnd > sliceStart &&
-      sliceStart >= 0 &&
-      sliceEnd <= chunk.data.length
-    ) {
-      const timeSeriesLength = sliceEnd - sliceStart
-      const transformed = new Array(timeSeriesLength)
-      for (let i = 0; i < timeSeriesLength; i++) {
-        const toYear = startYear + i / 12
-        transformed[i] = [
-          toYear,
-          parseFloat(chunk.data[sliceStart + i].toFixed(3)),
-        ]
-      }
-      timeData.push(transformed)
-    } else {
-      console.warn('Invalid slice bounds:', sliceStart, sliceEnd)
+  ids.forEach((id, idIndex) => {
+    const line = chunk.pick(null, idIndex, 0)
+    const idLine = []
+    for (let i = 0; i < line.shape[0]; i++) {
+      const toYear = startYear + (i + 1) / 12
+      idLine.push([toYear, parseFloat(line.get(i).toFixed(3))])
     }
+    timeData.push(idLine)
   })
   return timeData
 }

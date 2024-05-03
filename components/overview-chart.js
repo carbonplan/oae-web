@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useThemedColormap } from '@carbonplan/colormaps'
-import { Box, Flex } from 'theme-ui'
+import { Box, Checkbox, Flex, Label, useThemeUI } from 'theme-ui'
+import { alpha } from '@theme-ui/color'
 
 import useStore, { overviewVariable } from '../store'
 import Timeseries from './timeseries'
@@ -11,22 +12,29 @@ import { Button } from '@carbonplan/components'
 import { Down } from '@carbonplan/icons'
 
 const zarrUrl =
-  'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b_subset.zarr'
+  'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr'
 
-const toMonthsIndex = (year, startYear) => (year - startYear) * 12
+const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 
 const OverviewChart = ({ sx }) => {
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
-  const hoveredRegion = useStore((state) => state.hoveredRegion)
   const setHoveredRegion = useStore((state) => state.setHoveredRegion)
-  const timeHorizon = useStore((state) => state.timeHorizon)
+  const efficiencyLineData = useStore((state) => state.efficiencyLineData)
+  const setEfficiencyLineData = useStore((state) => state.setEfficiencyLineData)
   const injectionSeason = useStore((state) => state.injectionSeason)
+  const filterToRegionsInView = useStore((state) => state.filterToRegionsInView)
+  const setFilterToRegionsInView = useStore(
+    (state) => state.setFilterToRegionsInView
+  )
   const regionsInView = useStore((state) => state.regionsInView)
+  const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
+
   const colormap = useThemedColormap(overviewVariable?.colormap)
   const colorLimits = overviewVariable.colorLimits
   const [timeData, setTimeData] = useState([])
   const startYear = 0
-  const endYear = startYear + timeHorizon
+
+  const { theme } = useThemeUI()
 
   useEffect(() => {
     const fetchTimeSeriesData = async () => {
@@ -37,103 +45,111 @@ const OverviewChart = ({ sx }) => {
       const injectionDate =
         Object.values(injectionSeason).findIndex((value) => value) + 1
       const injectionChunkIndex = injectionDate - 1
-      const raw = await getChunk(getter, [0, injectionChunkIndex, 0])
+      const raw = await getChunk(getter, [0, 0, injectionChunkIndex])
       const timeSeriesData = getTimeSeriesData(raw, ids, startYear)
       setTimeData(timeSeriesData)
     }
     fetchTimeSeriesData()
   }, [injectionSeason])
 
-  const { selectedLines, unselectedLines } = useMemo(() => {
-    const selectedLines = []
-    const unselectedLines = []
-    timeData.forEach((line, index) => {
-      if (regionsInView?.has(index)) {
-        const cutIndex = toMonthsIndex(endYear, startYear)
+  useEffect(() => {
+    let selected = {}
+    const targetIndexes = filterToRegionsInView
+      ? regionsInView || []
+      : Object.keys(timeData) || []
+    targetIndexes.forEach((index) => {
+      const regionData = timeData[index]
+      if (regionData) {
         const color = getColorForValue(
-          line[cutIndex - 1][1],
+          regionData[overviewElapsedTime][1],
           colormap,
           colorLimits
         )
-        selectedLines.push({
+        const alphaColor = alpha(color, 0.1)(theme)
+        selected[index] = {
           id: index,
-          color,
-          data: line.slice(0, cutIndex + 1),
-        })
-        unselectedLines.push({
-          id: index,
-          color: 'muted',
-          data: line.slice(cutIndex),
-        })
+          color: alphaColor,
+          hoveredColor: theme.rawColors?.primary,
+          strokeWidth: 2,
+          data: regionData,
+        }
       }
     })
-    return { selectedLines, unselectedLines }
-  }, [timeData, endYear, regionsInView, toMonthsIndex])
+    setEfficiencyLineData(selected)
+  }, [timeData, regionsInView, filterToRegionsInView, overviewElapsedTime])
 
-  const hoveredLine = useMemo(() => {
-    if (hoveredRegion === null) {
-      return null
-    }
-    return selectedLines.find((line) => line.id === hoveredRegion)
-  }, [hoveredRegion, selectedLines])
+  const handleClick = useCallback(
+    (e) => {
+      const id = parseInt(e.target.id)
+      setSelectedRegion(id)
+    },
+    [setSelectedRegion]
+  )
 
-  const color = useMemo(() => {
-    if (!hoveredLine) {
-      return 'rgba(0,0,0,0)'
-    }
-    return getColorForValue(
-      hoveredLine.data.slice(-1)[0][1],
-      colormap,
-      colorLimits
-    )
-  }, [hoveredLine])
-
-  const point = useMemo(() => {
-    if (!hoveredLine) {
-      return null
-    }
-    const lastDataPoint = hoveredLine.data.slice(-1)[0]
-    return {
-      x: endYear,
-      y: lastDataPoint[1],
-      color,
-      text: lastDataPoint[1].toFixed(2),
-    }
-  }, [hoveredLine, endYear, color])
-
-  const handleClick = (e) => {
-    const id = parseInt(e.target.id)
-    setSelectedRegion(id)
-  }
-
-  const handleHover = (region) => {
-    setHoveredRegion(region)
-  }
+  const handleHover = useCallback(
+    (region) => {
+      setHoveredRegion(region)
+    },
+    [setHoveredRegion]
+  )
 
   const handleCSVDownload = useCallback(() => {
-    const totalMonths = selectedLines[0].data.length
+    const totalMonths = timeData[0].length
     const csvData = Array.from({ length: totalMonths }, (_, index) => ({
       month: index + 1,
     }))
-    selectedLines.forEach((line, lineIndex) => {
-      line.data.forEach(([year, value]) => {
+    timeData.forEach((line, lineIndex) => {
+      line.forEach(([year, value]) => {
         const monthIndex = toMonthsIndex(year, 0)
         csvData[monthIndex][`region_${lineIndex}`] = value
       })
     })
     downloadCsv(csvData, `oae-efficiency-timeseries.csv`)
-  }, [selectedLines, toMonthsIndex])
+  }, [timeData, toMonthsIndex])
 
   return (
     <>
       <Box sx={sx.heading}>efficiency</Box>
-      <Box sx={{ fontSize: 0, color: 'secondary', my: 2 }}>
-        Graph filtered to regions in current map view
-      </Box>
+      <Label
+        sx={{
+          color: 'secondary',
+          cursor: 'pointer',
+          fontSize: 1,
+          fontFamily: 'mono',
+          py: 1,
+        }}
+      >
+        <Checkbox
+          checked={filterToRegionsInView}
+          onChange={(e) => setFilterToRegionsInView(e.target.checked)}
+          sx={{
+            width: 18,
+            mr: 1,
+            mt: '-3px',
+            cursor: 'pointer',
+            color: 'muted',
+            transition: 'color 0.15s',
+            'input:active ~ &': { bg: 'background', color: 'primary' },
+            'input:focus ~ &': {
+              bg: 'background',
+              color: filterToRegionsInView ? 'primary' : 'muted',
+            },
+            'input:hover ~ &': { bg: 'background', color: 'primary' },
+            'input:focus-visible ~ &': {
+              outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
+              background: 'rgb(110, 110, 110, 0.625)',
+            },
+          }}
+        />
+        Filter to map view
+      </Label>
       <Flex sx={{ justifyContent: 'flex-end', height: 15 }}>
         <Button
           inverted
-          disabled={selectedLines.length === 0}
+          disabled={
+            Object.keys(efficiencyLineData ? efficiencyLineData : {}).length ===
+            0
+          }
           onClick={handleCSVDownload}
           sx={{
             fontSize: 0,
@@ -150,18 +166,13 @@ const OverviewChart = ({ sx }) => {
         </Button>
       </Flex>
       <Timeseries
-        endYear={timeHorizon}
         xLimits={[startYear, 15]}
         yLimits={[0, 1]}
         yLabels={{ title: 'OAE efficiency', units: '' }}
-        timeData={{
-          selectedLines,
-          unselectedLines,
-          hoveredLine,
-        }}
+        selectedLines={efficiencyLineData}
+        elapsedYears={(overviewElapsedTime + 1) / 12}
         handleClick={handleClick}
         handleHover={handleHover}
-        point={point}
       />
     </>
   )

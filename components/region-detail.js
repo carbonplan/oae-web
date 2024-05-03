@@ -14,7 +14,7 @@ import useStore, { variables } from '../store'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { Down } from '@carbonplan/icons'
 
-const toMonthsIndex = (year, startYear) => (year - startYear) * 12
+const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 const degToRad = (degrees) => {
   return degrees * (Math.PI / 180)
 }
@@ -43,8 +43,6 @@ const getArrayData = (arr, lats, zoom) => {
     )
 }
 
-const hoveredLine = null
-
 const RegionDetail = ({ sx }) => {
   const currentVariable = useStore((s) => s.currentVariable)
   const setCurrentVariable = useStore((s) => s.setCurrentVariable)
@@ -53,9 +51,8 @@ const RegionDetail = ({ sx }) => {
   const showRegionPicker = useStore((s) => s.showRegionPicker)
   const setShowRegionPicker = useStore((s) => s.setShowRegionPicker)
   const regionData = useStore((s) => s.regionData)
-  const timeHorizon = useStore((s) => s.timeHorizon)
-  const elapsedYears = useStore((s) => s.elapsedTime / 12)
-  const setElapsedTime = useStore((s) => s.setElapsedTime)
+  const elapsedYears = useStore((s) => (s.detailElapsedTime + 1) / 12)
+  const setDetailElapsedTime = useStore((s) => s.setDetailElapsedTime)
   const showDeltaOverBackground = useStore((s) => s.showDeltaOverBackground)
   const setShowDeltaOverBackground = useStore(
     (s) => s.setShowDeltaOverBackground
@@ -108,7 +105,7 @@ const RegionDetail = ({ sx }) => {
                 regionData.coordinates.lat,
                 zoom
               )
-              const toYear = year - 1 + (month - 1) / 12
+              const toYear = year - 1 + month / 12
               averages.push([toYear, avg])
             })
         })
@@ -141,16 +138,11 @@ const RegionDetail = ({ sx }) => {
     return [averages]
   }, [regionData, currentVariable])
 
-  const { selectedLines, unselectedLines } = useMemo(() => {
-    const selectedLines = []
-    const unselectedLines = []
-    toLineData.forEach((line, index) => {
-      const cutIndex = toMonthsIndex(timeHorizon, 0)
-      const selectedSlice = line.slice(0, cutIndex + 1)
-      const unselectedSlice = line.slice(cutIndex)
+  const selectedLines = useMemo(() => {
+    const selected = {}
+    Object.entries(toLineData).forEach(([id, line]) => {
       const avgValueForLine =
-        selectedSlice.reduce((acc, curr) => acc + curr[1], 0) /
-        selectedSlice.length
+        line.reduce((acc, curr) => acc + curr[1], 0) / line.length
       setLineAverageValue(avgValueForLine)
       const color = getColorForValue(
         avgValueForLine,
@@ -158,19 +150,15 @@ const RegionDetail = ({ sx }) => {
         currentVariable.colorLimits,
         50
       )
-      selectedLines.push({
-        id: index,
+      selected[id] = {
+        id: id,
         color,
-        data: selectedSlice,
-      })
-      unselectedLines.push({
-        id: index,
-        color: 'muted',
-        data: unselectedSlice,
-      })
+        strokeWidth: 2,
+        data: line,
+      }
     })
-    return { selectedLines, unselectedLines }
-  }, [toLineData, timeHorizon, toMonthsIndex])
+    return selected
+  }, [toLineData, toMonthsIndex, colormap, currentVariable.colorLimits])
 
   const point = useMemo(() => {
     const y = selectedLines[0]?.data?.[toMonthsIndex(elapsedYears, 0)]?.[1]
@@ -219,14 +207,14 @@ const RegionDetail = ({ sx }) => {
       const { left, width } = e.currentTarget.getBoundingClientRect()
       const clickX = e.clientX - left
       const months = Math.round((clickX / width) * 179)
-      setElapsedTime(months)
+      setDetailElapsedTime(months)
     },
-    [setElapsedTime]
+    [setDetailElapsedTime]
   )
 
   const handleCSVDownload = useCallback(() => {
     const data = selectedLines[0]?.data.map((d) => ({
-      month: toMonthsIndex(d[0], 0),
+      month: toMonthsIndex(d[0], 0) + 1,
       value: d[1],
     }))
     downloadCsv(
@@ -295,16 +283,25 @@ const RegionDetail = ({ sx }) => {
               width: 18,
               mr: 1,
               mt: '-3px',
+              cursor: 'pointer',
+              color: 'muted',
+              transition: 'color 0.15s',
+              'input:active ~ &': { bg: 'background', color: 'primary' },
+              'input:focus ~ &': {
+                bg: 'background',
+                color: showDeltaOverBackground ? 'primary' : 'muted',
+              },
+              'input:hover ~ &': { bg: 'background', color: 'primary' },
+              'input:focus-visible ~ &': {
+                outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
+                background: 'rgb(110, 110, 110, 0.625)',
+              },
             }}
           />
           show change footprint
         </Label>
       </Box>
 
-      <Box sx={{ ...sx.heading, mt: 4 }}>Time</Box>
-      <Box sx={{ mb: [-3, -3, -3, -2], mt: 4 }}>
-        <TimeSlider />
-      </Box>
       {index >= 2 && (
         <>
           <Divider sx={{ mt: 4, mb: 5 }} />
@@ -347,16 +344,15 @@ const RegionDetail = ({ sx }) => {
               </Button>
             </Flex>
             <Timeseries
-              endYear={timeHorizon}
               xLimits={[0, 15]}
               yLimits={minMax}
               yLabels={{
                 title: currentVariable.label ?? '',
                 units: currentVariable.unit ?? '',
               }}
-              timeData={{ selectedLines, unselectedLines, hoveredLine }}
+              selectedLines={selectedLines}
+              elapsedYears={elapsedYears}
               handleClick={handleTimeseriesClick}
-              handleHover={() => {}}
               point={point}
               xSelector={true}
               handleXSelectorClick={handleTimeseriesClick}

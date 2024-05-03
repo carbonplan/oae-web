@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Box, Spinner } from 'theme-ui'
+import { alpha } from '@theme-ui/color'
 import {
   AxisLabel,
   Chart,
@@ -15,19 +16,130 @@ import {
 import useStore from '../store'
 import { Badge } from '@carbonplan/components'
 
+const renderPoint = (point) => {
+  const { x, y, color } = point
+  if (x === undefined || y === undefined || color === undefined) return null
+  return (
+    <Circle
+      x={x}
+      y={y}
+      size={10}
+      color={color}
+      sx={{ pointerEvents: 'none' }}
+    />
+  )
+}
+
+const renderDataBadge = (point) => {
+  if (!point || !point.text) return null
+  const { x, y, color, text } = point
+  const fullColor = alpha(color, 1)
+  return (
+    <Point x={x} y={y} align={'center'} width={2}>
+      <Badge
+        sx={{
+          fontSize: 1,
+          height: '20px',
+          mt: 2,
+          bg: fullColor,
+        }}
+      >
+        {text}
+      </Badge>
+    </Point>
+  )
+}
+
+const RenderLines = ({
+  linesObject = {},
+  additionalStyles = {},
+  handleClick = () => {},
+  handleHover = (id) => {},
+}) => {
+  const lineCount = Object.keys(linesObject).length
+  return Object.values(linesObject).map(({ id, data, color, strokeWidth }) => (
+    <Line
+      key={id}
+      data={data}
+      id={id}
+      width={strokeWidth}
+      color={color}
+      sx={{
+        pointerEvents: 'visiblePainted',
+        '&:hover': {
+          cursor: 'pointer',
+        },
+        shapeRendering: lineCount > 100 ? 'optimizeSpeed' : 'auto',
+        ...additionalStyles,
+      }}
+      onClick={handleClick}
+      onMouseOver={() => handleHover(id)}
+      onMouseLeave={() => handleHover(null)}
+    />
+  ))
+}
+
+const HoveredLine = () => {
+  const hoveredLineData = useStore((s) => s.hoveredLineData)
+  const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
+  if (!hoveredLineData || !hoveredLineData.data) {
+    return null
+  }
+  const { hoveredColor, color } = hoveredLineData
+  const x = hoveredLineData.data[overviewElapsedTime][0]
+  const y = hoveredLineData.data[overviewElapsedTime][1]
+  return (
+    <>
+      <Line
+        key={'-hovered'}
+        id={hoveredLineData.id + '-hovered'}
+        sx={{
+          stroke: hoveredColor ? hoveredColor : color,
+          strokeWidth: 2,
+          pointerEvents: 'none',
+          '&:hover': {
+            cursor: 'pointer',
+          },
+        }}
+        data={hoveredLineData.data}
+      />
+      <Circle
+        x={x}
+        y={y}
+        size={10}
+        color={hoveredColor ? hoveredColor : color}
+        sx={{ pointerEvents: 'none' }}
+      />
+    </>
+  )
+}
+
+const OverviewBadge = () => {
+  const hoveredLineData = useStore((s) => s.hoveredLineData)
+  const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
+  if (!hoveredLineData || !hoveredLineData.data) {
+    return null
+  }
+  const { color } = hoveredLineData
+  const data = hoveredLineData.data[overviewElapsedTime]
+  const x = data[0]
+  const y = data[1]
+  const point = { x, y, color, text: data[1].toFixed(2) }
+  return renderDataBadge(point)
+}
+
 const Timeseries = ({
-  endYear,
   xLimits,
   yLimits,
   yLabels,
-  timeData,
+  selectedLines,
   handleClick,
   handleHover,
   point,
+  elapsedYears,
   xSelector = false,
   handleXSelectorClick = () => {},
 }) => {
-  const { selectedLines, unselectedLines, hoveredLine } = timeData
   const regionDataLoading = useStore((s) => s.regionDataLoading)
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
@@ -86,61 +198,6 @@ const Timeseries = ({
     )
   }
 
-  const renderHoveredLine = () => {
-    if (!hoveredLine) {
-      return null
-    }
-    const { color } = hoveredLine
-    return (
-      <Line
-        key={hoveredLine.id + '-hovered'}
-        onClick={() => handleClick(hoveredLine.id)}
-        sx={{
-          stroke: color,
-          strokeWidth: 4,
-          pointerEvents: 'none',
-          '&:hover': {
-            cursor: 'pointer',
-          },
-        }}
-        data={hoveredLine.data}
-      />
-    )
-  }
-
-  const renderPoint = (point) => {
-    const { x, y, color } = point
-    if (x === undefined || y === undefined || color === undefined) return null
-    return (
-      <Circle
-        x={x}
-        y={y}
-        size={10}
-        color={color}
-        sx={{ pointerEvents: 'none' }}
-      />
-    )
-  }
-
-  const renderDataBadge = () => {
-    if (!point || !point.text) return null
-    const { x, y, color, text } = point
-    return (
-      <Point x={x} y={y} align={'center'} width={2}>
-        <Badge
-          sx={{
-            fontSize: 1,
-            height: '20px',
-            mt: 2,
-            bg: color,
-          }}
-        >
-          {text}
-        </Badge>
-      </Point>
-    )
-  }
-
   const renderTimeAndData = () => {
     if (!xSelector) return null
     const yValue = xSelectorValue ?? point?.y
@@ -181,17 +238,18 @@ const Timeseries = ({
       {renderTimeAndData()}
       <Chart x={xLimits} y={yLimits} padding={{ top: 30 }}>
         <Grid vertical horizontal />
-        <Ticks left bottom />
+        <Ticks left />
+        <Ticks bottom values={Array.from({ length: 16 }, (_, i) => i)} />
         <TickLabels
           left
           format={(d) => {
-            if (Math.abs(d) < 0.001) {
+            if (Math.abs(d) < 0.001 && d !== 0) {
               return d.toExponential(0)
             }
             return d
           }}
         />
-        <TickLabels bottom />
+        <TickLabels bottom values={[0, 5, 10, 15]} />
         <AxisLabel units={yLabels.units} sx={{ fontSize: 0 }} left>
           {yLabels.title}
         </AxisLabel>
@@ -201,52 +259,27 @@ const Timeseries = ({
         <Plot
           sx={{
             pointerEvents: 'auto',
-            cursor:
-              xSelector && mousePosition && mousePosition < endYear
-                ? 'pointer'
-                : 'auto',
+            cursor: xSelector && mousePosition ? 'pointer' : 'auto',
           }}
           {...xSelectorHandlers}
         >
-          {selectedLines.map(({ data, id, color }) => (
-            <Line
-              key={id + '-selected'}
-              id={id + '-selected'}
-              onClick={handleClick}
-              onMouseOver={() => handleHover(id)}
-              onMouseLeave={() => handleHover(null)}
-              sx={{
-                stroke: color,
-                strokeWidth: 2,
-                pointerEvents: 'visiblePainted',
-                '&:hover': {
-                  cursor: 'pointer',
-                },
-                transition: 'all 0.2s',
-              }}
-              data={data}
-            />
-          ))}
-          {unselectedLines.map(({ data, id, color }) => (
-            <Line
-              key={id + '-unselected'}
-              id={id + '-unselected'}
-              sx={{
-                stroke: color,
-                strokeWidth: 2,
-                transition: 'all 0.2s',
-              }}
-              data={data}
-            />
-          ))}
+          <RenderLines
+            linesObject={selectedLines}
+            handleHover={handleHover}
+            handleClick={handleClick}
+          />
           <Rect
-            x={[endYear, 15]}
-            y={[0, 1000000]}
+            x={[elapsedYears, 15]}
+            y={[0, yLimits[1]]}
             color='muted'
-            opacity={0.2}
+            pointerEvents='none'
+            style={{
+              transition: 'all 0.2s ease-in-out',
+              opacity: 0.3,
+            }}
             onClick={(e) => e.stopPropagation()}
           />
-          {renderHoveredLine()}
+          <HoveredLine />
           {xSelector && mousePosition && renderXSelector(mousePosition, false)}
           {point && renderPoint(point)}
           {xSelectorValue !== null
@@ -258,6 +291,7 @@ const Timeseries = ({
             : null}
         </Plot>
         {!xSelector && renderDataBadge()}
+        <OverviewBadge />
         {regionDataLoading && xSelector && (
           <Box
             sx={{

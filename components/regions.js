@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef } from 'react'
-import useStore, { overviewVariable } from '../store'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
+import useStore, { overviewVariable, getInjectionMonth } from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
@@ -13,9 +13,11 @@ const Regions = () => {
   const setSelectedRegionCenter = useStore(
     (state) => state.setSelectedRegionCenter
   )
+  const filterToRegionsInView = useStore((state) => state.filterToRegionsInView)
   const setRegionsInView = useStore((state) => state.setRegionsInView)
-  const timeHorizon = useStore((state) => state.timeHorizon)
   const injectionSeason = useStore((state) => state.injectionSeason)
+  const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
+  const yearsElapsed = Math.floor(overviewElapsedTime / 12 + 1)
 
   const colormap = useThemedColormap(overviewVariable.colormap)
   const colorLimits = overviewVariable.colorLimits
@@ -23,8 +25,7 @@ const Regions = () => {
   const { map } = useMapbox()
   const { theme } = useThemeUI()
   const hoveredRegionRef = useRef(hoveredRegion)
-  const injectionDate =
-    Object.values(injectionSeason).findIndex((value) => value) + 1
+  const injectionDate = getInjectionMonth(injectionSeason)
 
   //reused colors
   const transparent = 'rgba(0, 0, 0, 0)'
@@ -43,7 +44,7 @@ const Regions = () => {
   }, [colormap])
 
   const buildColorExpression = () => {
-    const dataField = `eff_inj_${injectionDate}_year_${timeHorizon}`
+    const dataField = `eff_inj_${injectionDate}_year_${yearsElapsed}`
 
     const fillColorExpression = [
       'case',
@@ -80,30 +81,15 @@ const Regions = () => {
     if (e.features.length > 0) {
       const feature = e.features[0]
       const polygonId = feature.properties.polygon_id
-      const center = centroid(feature.geometry).geometry.coordinates
+      let center // handle multipolygons on the dateline
+      if (feature.geometry.type === 'Polygon') {
+        center = centroid(feature.geometry).geometry.coordinates
+      } else {
+        center = [e.lngLat.lng, e.lngLat.lat]
+      }
       setSelectedRegion(polygonId)
       setSelectedRegionCenter(center)
     }
-  }
-
-  const handleRegionsInView = () => {
-    if (map.getLayer('regions-fill')) {
-      const features = map.queryRenderedFeatures({
-        layers: ['regions-fill'],
-      })
-      const ids = features.map((f) => f.properties.polygon_id)
-      setRegionsInView(ids)
-    }
-  }
-
-  const handleMoveEnd = () => {
-    handleRegionsInView()
-  }
-
-  // set regions in initial view
-  const onIdle = () => {
-    handleRegionsInView()
-    map.off('idle', onIdle)
   }
 
   useEffect(() => {
@@ -117,7 +103,7 @@ const Regions = () => {
             promoteId: 'polygon_id',
             maxzoom: 0,
             tiles: [
-              'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/allPoly/swap2/{z}/{x}/{y}.pbf',
+              'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/allPoly/tiles/{z}/{x}/{y}.pbf',
             ],
           })
         }
@@ -179,8 +165,6 @@ const Regions = () => {
         map.on('mousemove', 'regions-fill', handleMouseMove)
         map.on('mouseleave', 'regions-fill', handleMouseLeave)
         map.on('click', 'regions-fill', handleClick)
-        map.on('moveend', handleMoveEnd)
-        map.on('idle', onIdle)
       } catch (error) {
         console.error('Error fetching or adding regions:', error)
       }
@@ -193,8 +177,6 @@ const Regions = () => {
         map.off('mousemove', 'regions-fill', handleMouseMove)
         map.off('mouseleave', 'regions-fill', handleMouseLeave)
         map.off('click', 'regions-fill', handleClick)
-        map.off('moveend', handleMoveEnd)
-        map.off('idle', onIdle)
 
         map.removeFeatureState({
           source: 'regions',
@@ -247,12 +229,34 @@ const Regions = () => {
     }
   }, [map, hoveredRegion])
 
-  const toggleLayerVisibilities = (visible) => {
-    const visibility = visible ? 'visible' : 'none'
-    map.setLayoutProperty('regions-line', 'visibility', visibility)
-    map.setLayoutProperty('regions-hover', 'visibility', visibility)
-    map.setLayoutProperty('regions-fill', 'visibility', visibility)
-  }
+  const handleRegionsInView = useCallback(() => {
+    if (selectedRegion !== null) return
+    if (
+      map.getLayer('regions-fill') &&
+      map.getLayoutProperty('regions-fill', 'visibility') === 'visible'
+    ) {
+      const features = map.queryRenderedFeatures({
+        layers: ['regions-fill'],
+      })
+      const ids = features.map((f) => f.properties.polygon_id)
+      setRegionsInView(ids)
+    }
+  }, [map, selectedRegion, setRegionsInView])
+
+  const toggleLayerVisibilities = useCallback(
+    (visible) => {
+      if (!map) return
+      const visibility = visible ? 'visible' : 'none'
+      map.setLayoutProperty('regions-line', 'visibility', visibility)
+      map.setLayoutProperty('regions-hover', 'visibility', visibility)
+      map.setLayoutProperty('regions-fill', 'visibility', visibility)
+      if (visible && filterToRegionsInView) {
+        // fixes race when clearing selected region
+        map.once('idle', handleRegionsInView)
+      }
+    },
+    [map, handleRegionsInView, filterToRegionsInView]
+  )
 
   useEffect(() => {
     map.removeFeatureState({
@@ -272,7 +276,18 @@ const Regions = () => {
     } else {
       toggleLayerVisibilities(true)
     }
-  }, [selectedRegion])
+  }, [selectedRegion, map, toggleLayerVisibilities])
+
+  useEffect(() => {
+    if (!filterToRegionsInView) {
+      map.off('moveend', handleRegionsInView)
+      return
+    }
+    map.on('moveend', handleRegionsInView)
+    return () => {
+      map.off('moveend', handleRegionsInView)
+    }
+  }, [map, handleRegionsInView, filterToRegionsInView])
 
   useEffect(() => {
     if (map && map.getSource('regions') && map.getLayer('regions-line')) {
@@ -290,7 +305,7 @@ const Regions = () => {
     if (map && map.getSource('regions') && map.getLayer('regions-fill')) {
       map.setPaintProperty('regions-fill', 'fill-color', buildColorExpression())
     }
-  }, [map, colormap, injectionDate, timeHorizon])
+  }, [map, colormap, injectionDate, yearsElapsed])
 
   return null
 }

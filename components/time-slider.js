@@ -3,6 +3,7 @@ import { Slider } from '@carbonplan/components'
 import { Box, Flex } from 'theme-ui'
 import { useCallback, useState } from 'react'
 import useStore from '../store'
+import FooterWrapper from './footer-wrapper'
 
 const sx = {
   label: {
@@ -64,7 +65,7 @@ const UnitSlider = ({
   }
 
   return (
-    <Box sx={{ flex: 1 }}>
+    <Box sx={{ flex: 1, mt: -2, mb: -3 }}>
       <Slider
         value={sliderValue}
         min={range[0]}
@@ -91,12 +92,24 @@ const UnitSlider = ({
 }
 
 const TimeSlider = () => {
-  const elapsedTime = useStore((state) => state.elapsedTime)
-  const setElapsedTime = useStore((state) => state.setElapsedTime)
+  const { currentVariable, elapsedTime, setElapsedTime } = useStore(
+    (state) => ({
+      currentVariable: state.currentVariable,
+      elapsedTime:
+        state.currentVariable.key === 'EFFICIENCY'
+          ? state.overviewElapsedTime
+          : state.detailElapsedTime,
+      setElapsedTime:
+        state.currentVariable.key === 'EFFICIENCY'
+          ? state.setOverviewElapsedTime
+          : state.setDetailElapsedTime,
+    })
+  )
+  const showMonthSlider = currentVariable.key !== 'EFFICIENCY'
+
   const injectionSeason = useStore((state) =>
     Object.keys(state.injectionSeason).find((k) => state.injectionSeason[k])
   )
-  const timeHorizon = useStore((state) => state.timeHorizon)
 
   const handleMonthChange = useCallback(
     (month) => {
@@ -115,30 +128,34 @@ const TimeSlider = () => {
   )
 
   return (
-    <Flex sx={{ gap: [2, 2, 2, 3] }}>
-      <UnitSlider
-        value={Math.floor(elapsedTime / 12)}
-        range={[0, timeHorizon - 1]}
-        onChange={handleYearChange}
-        formatLabel={(d) => `Year ${d + 1}`}
-        showValue
-      />
-      <UnitSlider
-        value={elapsedTime % 12}
-        range={[0, 11]}
-        onChange={handleMonthChange}
-        formatLabel={(d) =>
-          new Date(2024, d + OFFSETS[injectionSeason], 1).toLocaleString(
-            'default',
-            {
-              month: 'short',
+    <FooterWrapper>
+      <Flex sx={{ gap: [2, 2, 2, 3] }}>
+        <UnitSlider
+          value={Math.floor(elapsedTime / 12)}
+          range={[0, 14]}
+          onChange={handleYearChange}
+          formatLabel={(d) => `Year ${d + 1}`}
+          showValue
+        />
+        {showMonthSlider && (
+          <UnitSlider
+            value={elapsedTime % 12}
+            range={[0, 11]}
+            onChange={handleMonthChange}
+            formatLabel={(d) =>
+              new Date(2024, d + OFFSETS[injectionSeason], 1).toLocaleString(
+                'default',
+                {
+                  month: 'short',
+                }
+              )
             }
-          )
-        }
-        debounce
-        showValue
-      />
-    </Flex>
+            debounce
+            showValue
+          />
+        )}
+      </Flex>
+    </FooterWrapper>
   )
 }
 
