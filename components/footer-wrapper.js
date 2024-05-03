@@ -25,12 +25,7 @@ const FooterWrapper = ({ children, bottom = 0 }) => {
         bg: 'background',
         '&:hover': { bg: 'background' },
         cursor: 'auto',
-        borderTop: [
-          '0.5px solid #393a3d',
-          '0.5px solid #393a3d',
-          'none',
-          'none',
-        ],
+        borderTop: '0.5px solid #393a3d',
       }}
     >
       {children}
