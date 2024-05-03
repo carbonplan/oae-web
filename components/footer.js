@@ -21,7 +21,7 @@ const RegionFooter = ({ sx }) => {
   }
 
   return (
-    <FooterWrapper bottom={index < 2 ? 70 : 0}>
+    <FooterWrapper bottom={index < 2 ? 64 : 0}>
       <AnimateHeight
         duration={250}
         height={selectedRegion !== null ? 'auto' : 30}

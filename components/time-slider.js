@@ -65,7 +65,7 @@ const UnitSlider = ({
   }
 
   return (
-    <Box sx={{ flex: 1, my: -2 }}>
+    <Box sx={{ flex: 1, mt: -2, mb: -3 }}>
       <Slider
         value={sliderValue}
         min={range[0]}
