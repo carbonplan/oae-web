@@ -137,10 +137,13 @@ const Timeseries = ({
   handleClick,
   handleHover,
   point,
+  xValueHighlight = false,
   xSelector = false,
   handleXSelectorClick = () => {},
 }) => {
   const regionDataLoading = useStore((s) => s.regionDataLoading)
+  const elapsedTime = useStore((s) => s.elapsedTime)
+  const elapsedYears = elapsedTime / 12
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
   const [xSelectorValue, setXSelectorValue] = useState(null)
@@ -265,6 +268,15 @@ const Timeseries = ({
           }}
           {...xSelectorHandlers}
         >
+          {xValueHighlight && (
+            <Line
+              color='secondary'
+              data={[
+                [elapsedYears, 0],
+                [elapsedYears, 1000000],
+              ]}
+            />
+          )}
           <RenderLines
             linesObject={selectedLines}
             handleHover={handleHover}
