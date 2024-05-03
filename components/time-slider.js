@@ -92,16 +92,20 @@ const UnitSlider = ({
 }
 
 const TimeSlider = () => {
-  const { elapsedTime, setElapsedTime } = useStore((state) => ({
-    elapsedTime:
-      state.currentVariable.key === 'EFFICIENCY'
-        ? state.overviewElapsedTime
-        : state.detailElapsedTime,
-    setElapsedTime:
-      state.currentVariable.key === 'EFFICIENCY'
-        ? state.setOverviewElapsedTime
-        : state.setDetailElapsedTime,
-  }))
+  const { currentVariable, elapsedTime, setElapsedTime } = useStore(
+    (state) => ({
+      currentVariable: state.currentVariable,
+      elapsedTime:
+        state.currentVariable.key === 'EFFICIENCY'
+          ? state.overviewElapsedTime
+          : state.detailElapsedTime,
+      setElapsedTime:
+        state.currentVariable.key === 'EFFICIENCY'
+          ? state.setOverviewElapsedTime
+          : state.setDetailElapsedTime,
+    })
+  )
+  const showMonthSlider = currentVariable.key !== 'EFFICIENCY'
 
   const injectionSeason = useStore((state) =>
     Object.keys(state.injectionSeason).find((k) => state.injectionSeason[k])
@@ -133,21 +137,23 @@ const TimeSlider = () => {
           formatLabel={(d) => `Year ${d + 1}`}
           showValue
         />
-        <UnitSlider
-          value={elapsedTime % 12}
-          range={[0, 11]}
-          onChange={handleMonthChange}
-          formatLabel={(d) =>
-            new Date(2024, d + OFFSETS[injectionSeason], 1).toLocaleString(
-              'default',
-              {
-                month: 'short',
-              }
-            )
-          }
-          debounce
-          showValue
-        />
+        {showMonthSlider && (
+          <UnitSlider
+            value={elapsedTime % 12}
+            range={[0, 11]}
+            onChange={handleMonthChange}
+            formatLabel={(d) =>
+              new Date(2024, d + OFFSETS[injectionSeason], 1).toLocaleString(
+                'default',
+                {
+                  month: 'short',
+                }
+              )
+            }
+            debounce
+            showValue
+          />
+        )}
       </Flex>
     </FooterWrapper>
   )
