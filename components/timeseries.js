@@ -50,11 +50,39 @@ const renderDataBadge = (point) => {
   )
 }
 
+const ColormapGradient = ({ colormap, opacity = 1 }) => {
+  return (
+    <defs>
+      <linearGradient
+        id='colormapGradient'
+        x1='0%'
+        y1='100%'
+        x2='0%'
+        y2='0%'
+        gradientUnits='userSpaceOnUse'
+      >
+        {colormap.map((rgb, index) => {
+          const offset = index / (colormap.length - 1)
+          return (
+            <stop
+              key={index}
+              offset={`${offset * 100}%`}
+              stopColor={`rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`}
+              stopOpacity={opacity}
+            />
+          )
+        })}
+      </linearGradient>
+    </defs>
+  )
+}
+
 const RenderLines = ({
   linesObject = {},
   additionalStyles = {},
   handleClick = () => {},
   handleHover = (id) => {},
+  gradient = false,
 }) => {
   const lineCount = Object.keys(linesObject).length
   return Object.values(linesObject).map(({ id, data, color, strokeWidth }) => (
@@ -63,7 +91,7 @@ const RenderLines = ({
       data={data}
       id={id}
       width={strokeWidth}
-      color={color}
+      color={gradient ? 'url(#colormapGradient)' : color}
       sx={{
         pointerEvents: 'visiblePainted',
         '&:hover': {
@@ -137,6 +165,8 @@ const Timeseries = ({
   handleHover,
   point,
   elapsedYears,
+  colormap,
+  opacity,
   xSelector = false,
   handleXSelectorClick = () => {},
 }) => {
@@ -263,10 +293,14 @@ const Timeseries = ({
           }}
           {...xSelectorHandlers}
         >
+          {colormap && (
+            <ColormapGradient colormap={colormap} opacity={opacity} />
+          )}
           <RenderLines
             linesObject={selectedLines}
             handleHover={handleHover}
             handleClick={handleClick}
+            gradient={colormap ? true : false}
           />
           <Rect
             x={[elapsedYears, 15]}
