@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { Slider } from '@carbonplan/components'
+import React, { useEffect, useMemo } from 'react'
+import { Select, Slider } from '@carbonplan/components'
 import { Box, Flex } from 'theme-ui'
 import { useCallback, useState } from 'react'
 import useStore from '../store'
@@ -20,6 +20,7 @@ const OFFSETS = {
   JUL: 6,
   OCT: 9,
 }
+
 const UnitSlider = ({
   value,
   range,
@@ -111,6 +112,18 @@ const TimeSlider = () => {
     Object.keys(state.injectionSeason).find((k) => state.injectionSeason[k])
   )
 
+  const months = useMemo(() => {
+    const months = Array.from({ length: 12 }, (_, index) => {
+      const monthIndex = (index + OFFSETS[injectionSeason]) % 12
+      const date = new Date(2024, monthIndex, 1)
+      return {
+        value: index, // keep the actual month index
+        label: date.toLocaleString('default', { month: 'short' }),
+      }
+    })
+    return months
+  }, [injectionSeason])
+
   const handleMonthChange = useCallback(
     (month) => {
       const years = Math.floor(elapsedTime / 12)
@@ -137,23 +150,32 @@ const TimeSlider = () => {
           formatLabel={(d) => `Year ${d + 1}`}
           showValue
         />
-        {showMonthSlider && (
-          <UnitSlider
-            value={elapsedTime % 12}
-            range={[0, 11]}
-            onChange={handleMonthChange}
-            formatLabel={(d) =>
-              new Date(2024, d + OFFSETS[injectionSeason], 1).toLocaleString(
-                'default',
-                {
-                  month: 'short',
-                }
-              )
-            }
-            debounce
-            showValue
-          />
-        )}
+        <Select
+          value={elapsedTime % 12}
+          size='xs'
+          sx={{
+            color: 'secondary',
+            ml: 4,
+            mt: -2,
+          }}
+          sxSelect={{
+            fontFamily: 'mono',
+            borderBottomColor: 'secondary',
+            transition: 'color 0.2s, border-color 0.2s',
+            textTransform: 'uppercase',
+            '&:hover': {
+              color: 'primary',
+              borderBottomColor: 'primary',
+            },
+          }}
+          onChange={(e) => handleMonthChange(parseInt(e.target.value))}
+        >
+          {months.map((m) => (
+            <option key={m.value} value={m.value}>
+              {m.label}
+            </option>
+          ))}
+        </Select>
       </Flex>
     </FooterWrapper>
   )
