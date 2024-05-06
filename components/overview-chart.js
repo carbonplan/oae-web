@@ -76,7 +76,13 @@ const OverviewChart = ({ sx }) => {
       }
     })
     setEfficiencyLineData(selected)
-  }, [timeData, regionsInView, filterToRegionsInView, overviewElapsedTime])
+  }, [
+    timeData,
+    regionsInView,
+    filterToRegionsInView,
+    overviewElapsedTime,
+    theme,
+  ])
 
   const handleClick = useCallback(
     (e) => {
