@@ -150,32 +150,35 @@ const TimeSlider = () => {
           formatLabel={(d) => `Year ${d + 1}`}
           showValue
         />
-        <Select
-          value={elapsedTime % 12}
-          size='xs'
-          sx={{
-            color: 'secondary',
-            ml: 4,
-            mt: -2,
-          }}
-          sxSelect={{
-            fontFamily: 'mono',
-            borderBottomColor: 'secondary',
-            transition: 'color 0.2s, border-color 0.2s',
-            textTransform: 'uppercase',
-            '&:hover': {
-              color: 'primary',
-              borderBottomColor: 'primary',
-            },
-          }}
-          onChange={(e) => handleMonthChange(parseInt(e.target.value))}
-        >
-          {months.map((m) => (
-            <option key={m.value} value={m.value}>
-              {m.label}
-            </option>
-          ))}
-        </Select>
+        {showMonthSlider && (
+          <Select
+            value={elapsedTime % 12}
+            size='xs'
+            sx={{
+              color: 'secondary',
+              ml: 4,
+              mt: -2,
+            }}
+            sxSelect={{
+              fontSize: 1,
+              fontFamily: 'mono',
+              borderBottomColor: 'secondary',
+              transition: 'color 0.2s, border-color 0.2s',
+              textTransform: 'uppercase',
+              '&:hover': {
+                color: 'primary',
+                borderBottomColor: 'primary',
+              },
+            }}
+            onChange={(e) => handleMonthChange(parseInt(e.target.value))}
+          >
+            {months.map((m) => (
+              <option key={m.value} value={m.value}>
+                {m.label}
+              </option>
+            ))}
+          </Select>
+        )}
       </Flex>
     </FooterWrapper>
   )
