@@ -287,7 +287,7 @@ const Timeseries = ({
           {point && renderPoint(point)}
           {xSelectorValue !== null
             ? renderPoint({
-                x: mousePosition + 1 / 179,
+                x: mousePosition,
                 y: xSelectorValue,
                 color: 'secondary',
               })
