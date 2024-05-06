@@ -173,6 +173,7 @@ const OverviewChart = ({ sx }) => {
         elapsedYears={(overviewElapsedTime + 1) / 12}
         handleClick={handleClick}
         handleHover={handleHover}
+        shadeHorizon={true}
       />
     </>
   )

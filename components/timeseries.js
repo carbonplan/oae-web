@@ -137,6 +137,7 @@ const Timeseries = ({
   handleHover,
   point,
   elapsedYears,
+  shadeHorizon = false,
   xSelector = false,
   handleXSelectorClick = () => {},
 }) => {
@@ -267,7 +268,7 @@ const Timeseries = ({
             handleHover={handleHover}
             handleClick={handleClick}
           />
-          {!xSelector && (
+          {shadeHorizon && (
             <Rect
               x={[elapsedYears, 15]}
               y={[0, yLimits[1]]}
