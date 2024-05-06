@@ -117,7 +117,7 @@ const TimeSlider = () => {
       const monthIndex = (index + OFFSETS[injectionSeason]) % 12
       const date = new Date(2024, monthIndex, 1)
       return {
-        value: index, // keep the actual month index
+        value: index,
         label: date.toLocaleString('default', { month: 'short' }),
       }
     })

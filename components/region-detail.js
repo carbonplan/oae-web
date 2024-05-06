@@ -206,10 +206,11 @@ const RegionDetail = ({ sx }) => {
     (e) => {
       const { left, width } = e.currentTarget.getBoundingClientRect()
       const clickX = e.clientX - left
-      const months = Math.round((clickX / width) * 179)
-      setDetailElapsedTime(months)
+      const years = Math.floor((clickX / width) * 15)
+      const months = years * 12 + (((elapsedYears * 12) % 12) - 1)
+      setDetailElapsedTime(Math.min(Math.max(0, months), 179))
     },
-    [setDetailElapsedTime]
+    [setDetailElapsedTime, elapsedYears]
   )
 
   const handleCSVDownload = useCallback(() => {
