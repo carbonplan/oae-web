@@ -29,7 +29,7 @@ const OverviewChart = ({ sx }) => {
   const regionsInView = useStore((state) => state.regionsInView)
   const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
 
-  const colormap = useThemedColormap(overviewVariable?.colormap)
+  const colormap = useThemedColormap(overviewVariable?.colormap, { count: 20 }) // low count prevents banding in gradient
   const colorLimits = overviewVariable.colorLimits
   const [timeData, setTimeData] = useState([])
   const startYear = 0
@@ -76,7 +76,13 @@ const OverviewChart = ({ sx }) => {
       }
     })
     setEfficiencyLineData(selected)
-  }, [timeData, regionsInView, filterToRegionsInView, overviewElapsedTime])
+  }, [
+    timeData,
+    regionsInView,
+    filterToRegionsInView,
+    overviewElapsedTime,
+    theme,
+  ])
 
   const handleClick = useCallback(
     (e) => {
@@ -171,6 +177,8 @@ const OverviewChart = ({ sx }) => {
         yLabels={{ title: 'OAE efficiency', units: '' }}
         selectedLines={efficiencyLineData}
         elapsedYears={(overviewElapsedTime + 1) / 12}
+        colormap={colormap}
+        opacity={0.1}
         handleClick={handleClick}
         handleHover={handleHover}
         shadeHorizon={true}
