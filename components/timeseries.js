@@ -319,13 +319,6 @@ const Timeseries = ({
           <HoveredLine />
           {xSelector && mousePosition && renderXSelector(mousePosition, false)}
           {point && renderPoint(point)}
-          {xSelectorValue !== null
-            ? renderPoint({
-                x: mousePosition,
-                y: xSelectorValue,
-                color: 'secondary',
-              })
-            : null}
         </Plot>
         {!xSelector && renderDataBadge()}
         <OverviewBadge />
