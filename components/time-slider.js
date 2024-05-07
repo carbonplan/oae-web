@@ -106,7 +106,7 @@ const TimeSlider = () => {
           : state.setDetailElapsedTime,
     })
   )
-  const showMonthSlider = currentVariable.key !== 'EFFICIENCY'
+  const disableMonthSelect = currentVariable.key === 'EFFICIENCY'
 
   const injectionSeason = useStore((state) =>
     Object.keys(state.injectionSeason).find((k) => state.injectionSeason[k])
@@ -150,35 +150,39 @@ const TimeSlider = () => {
           formatLabel={(d) => `Year ${d + 1}`}
           showValue
         />
-        {showMonthSlider && (
-          <Select
-            value={elapsedTime % 12}
-            size='xs'
-            sx={{
-              color: 'secondary',
-              ml: 4,
-              mt: -2,
-            }}
-            sxSelect={{
-              fontSize: 1,
-              fontFamily: 'mono',
-              borderBottomColor: 'secondary',
-              transition: 'color 0.2s, border-color 0.2s',
-              textTransform: 'uppercase',
-              '&:hover': {
-                color: 'primary',
-                borderBottomColor: 'primary',
-              },
-            }}
-            onChange={(e) => handleMonthChange(parseInt(e.target.value))}
-          >
-            {months.map((m) => (
-              <option key={m.value} value={m.value}>
-                {m.label}
-              </option>
-            ))}
-          </Select>
-        )}
+        <Select
+          value={elapsedTime % 12}
+          size='xs'
+          disabled={disableMonthSelect}
+          sx={{
+            color: disableMonthSelect ? 'muted' : 'secondary',
+            ml: 4,
+            mt: -2,
+            svg: {
+              fill: disableMonthSelect ? 'muted' : 'secondary',
+            },
+          }}
+          sxSelect={{
+            fontSize: 1,
+            fontFamily: 'mono',
+            borderBottomColor: disableMonthSelect ? 'muted' : 'secondary',
+            transition: 'color 0.2s, border-color 0.2s',
+            textTransform: 'uppercase',
+            '&:hover': !disableMonthSelect
+              ? {
+                  color: 'primary',
+                  borderBottomColor: 'primary',
+                }
+              : { cursor: 'not-allowed' },
+          }}
+          onChange={(e) => handleMonthChange(parseInt(e.target.value))}
+        >
+          {months.map((m) => (
+            <option key={m.value} value={m.value}>
+              {m.label}
+            </option>
+          ))}
+        </Select>
       </Flex>
     </FooterWrapper>
   )
