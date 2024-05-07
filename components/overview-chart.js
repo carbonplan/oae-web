@@ -181,6 +181,7 @@ const OverviewChart = ({ sx }) => {
         opacity={0.1}
         handleClick={handleClick}
         handleHover={handleHover}
+        shadeHorizon={true}
       />
     </>
   )

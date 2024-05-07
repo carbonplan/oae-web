@@ -167,6 +167,7 @@ const Timeseries = ({
   elapsedYears,
   colormap,
   opacity,
+  shadeHorizon = false,
   xSelector = false,
   handleXSelectorClick = () => {},
 }) => {
@@ -215,15 +216,14 @@ const Timeseries = ({
   const renderXSelector = (x, selected) => {
     if ((!selected && !isHovering) || !xSelector) return null
     const color = selected ? 'primary' : 'secondary'
+    const year = Math.floor(x)
     return (
-      <Line
-        data={[
-          [x, 0],
-          [x, yLimits[1]],
-        ]}
-        strokeWidth={1}
+      <Rect
+        id='x-selector'
+        x={[year, year + 1]}
+        y={[0, yLimits[1]]}
         color={color}
-        opacity={1}
+        opacity={0.1}
       />
     )
   }
@@ -302,27 +302,23 @@ const Timeseries = ({
             handleClick={handleClick}
             gradient={colormap ? true : false}
           />
-          <Rect
-            x={[elapsedYears, 15]}
-            y={[0, yLimits[1]]}
-            color='muted'
-            pointerEvents='none'
-            style={{
-              transition: 'all 0.2s ease-in-out',
-              opacity: 0.3,
-            }}
-            onClick={(e) => e.stopPropagation()}
-          />
+          {shadeHorizon && (
+            <Rect
+              x={[elapsedYears, 15]}
+              y={[0, yLimits[1]]}
+              color='muted'
+              pointerEvents='none'
+              style={{
+                transition: 'all 0.2s ease-in-out',
+                opacity: 0.3,
+              }}
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
+
           <HoveredLine />
           {xSelector && mousePosition && renderXSelector(mousePosition, false)}
           {point && renderPoint(point)}
-          {xSelectorValue !== null
-            ? renderPoint({
-                x: mousePosition,
-                y: xSelectorValue,
-                color: 'secondary',
-              })
-            : null}
         </Plot>
         {!xSelector && renderDataBadge()}
         <OverviewBadge />
