@@ -1,17 +1,17 @@
 import React, { useCallback, useMemo, useState } from 'react'
-import { Box, Checkbox, Divider, Flex, Label } from 'theme-ui'
-import { Button, Expander, Filter, Select } from '@carbonplan/components'
+import { Box, Divider, Flex } from 'theme-ui'
+import { Button, Expander } from '@carbonplan/components'
 import AnimateHeight from 'react-animate-height'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import { useRegion } from '@carbonplan/maps'
-
-import Timeseries from './timeseries'
-import TooltipWrapper from './tooltip'
-import { getColorForValue } from '../utils/color'
-import { downloadCsv } from '../utils/csv'
-import useStore, { variables } from '../store'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { Down } from '@carbonplan/icons'
+
+import Timeseries from './timeseries'
+import { getColorForValue } from '../utils/color'
+import { downloadCsv } from '../utils/csv'
+import useStore from '../store'
+import DisplaySection from './region/display'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 const degToRad = (degrees) => {
@@ -44,18 +44,11 @@ const getArrayData = (arr, lats, zoom) => {
 
 const RegionDetail = ({ sx }) => {
   const currentVariable = useStore((s) => s.currentVariable)
-  const setCurrentVariable = useStore((s) => s.setCurrentVariable)
-  const variableFamily = useStore((s) => s.variableFamily)
-  const setVariableFamily = useStore((s) => s.setVariableFamily)
   const showRegionPicker = useStore((s) => s.showRegionPicker)
   const setShowRegionPicker = useStore((s) => s.setShowRegionPicker)
   const regionData = useStore((s) => s.regionData)
   const elapsedYears = useStore((s) => (s.detailElapsedTime + 1) / 12)
   const setDetailElapsedTime = useStore((s) => s.setDetailElapsedTime)
-  const showDeltaOverBackground = useStore((s) => s.showDeltaOverBackground)
-  const setShowDeltaOverBackground = useStore(
-    (s) => s.setShowDeltaOverBackground
-  )
   const selectedRegion = useStore((s) => s.selectedRegion)
   const regionDataLoading = useStore((s) => s.regionDataLoading)
 
@@ -66,17 +59,6 @@ const RegionDetail = ({ sx }) => {
 
   const [minMax, setMinMax] = useState([0, 0])
   const [lineAverageValue, setLineAverageValue] = useState(0)
-  const disableBGControl = currentVariable.delta
-
-  const filterValues = useMemo(() => {
-    return variables[variableFamily].variables.reduce(
-      (acc, variable, index) => ({
-        ...acc,
-        [variable.label]: currentVariable.label === variable.label,
-      }),
-      {}
-    )
-  }, [variableFamily, currentVariable])
 
   const toLineData = useMemo(() => {
     if (!regionData) return []
@@ -176,31 +158,6 @@ const RegionDetail = ({ sx }) => {
     }
   }, [elapsedYears, selectedLines, lineAverageValue, colormap, currentVariable])
 
-  const handleFamilySelection = useCallback(
-    (e) => {
-      setVariableFamily(e.target.value)
-      setCurrentVariable(variables[e.target.value].variables[0])
-    },
-    [setVariableFamily, setCurrentVariable, variables]
-  )
-
-  const handleVariableSelection = useCallback(
-    (updatedValues) => {
-      const selectedLabel = Object.keys(updatedValues).find(
-        (label) => updatedValues[label]
-      )
-      if (selectedLabel) {
-        const selectedVariable = variables[variableFamily].variables.find(
-          (variable) => variable.label === selectedLabel
-        )
-        if (selectedVariable) {
-          setCurrentVariable(selectedVariable)
-        }
-      }
-    },
-    [variableFamily, setCurrentVariable]
-  )
-
   const handleTimeseriesClick = useCallback(
     (e) => {
       const { left, width } = e.currentTarget.getBoundingClientRect()
@@ -228,79 +185,7 @@ const RegionDetail = ({ sx }) => {
   return (
     <>
       <Divider sx={{ mt: 4, mb: 5 }} />
-      <Box sx={sx.heading}>Variable</Box>
-      <Box sx={{ mt: 4 }}>
-        <Select
-          onChange={handleFamilySelection}
-          value={variableFamily}
-          size='xs'
-          sx={{
-            width: '100%',
-            mr: 2,
-            mb: 1,
-          }}
-          sxSelect={{
-            fontFamily: 'mono',
-            width: '100%',
-          }}
-        >
-          {Object.keys(variables).map((variable) => (
-            <option key={variable} value={variable}>
-              {variables[variable].meta.label}
-            </option>
-          ))}
-        </Select>
-        <Box sx={{ fontSize: 0, color: 'secondary' }}>
-          {variables[variableFamily]?.meta?.description}
-        </Box>
-      </Box>
-      <Box sx={{ mt: 3, mb: 2 }}>
-        <TooltipWrapper tooltip='Toggle between a view of the shift in the selected variable and its total values.'>
-          {Object.keys(filterValues).length && (
-            <Filter
-              key={variableFamily}
-              values={filterValues}
-              setValues={handleVariableSelection}
-            />
-          )}
-        </TooltipWrapper>
-        <Label
-          sx={{
-            opacity: disableBGControl ? 0.2 : 1,
-            color: 'secondary',
-            cursor: 'pointer',
-            fontSize: 1,
-            fontFamily: 'mono',
-            pt: 2,
-          }}
-        >
-          <Checkbox
-            disabled={disableBGControl}
-            checked={showDeltaOverBackground}
-            onChange={(e) => setShowDeltaOverBackground(e.target.checked)}
-            sx={{
-              opacity: disableBGControl ? 0.2 : 1,
-              width: 18,
-              mr: 1,
-              mt: '-3px',
-              cursor: 'pointer',
-              color: 'muted',
-              transition: 'color 0.15s',
-              'input:active ~ &': { bg: 'background', color: 'primary' },
-              'input:focus ~ &': {
-                bg: 'background',
-                color: showDeltaOverBackground ? 'primary' : 'muted',
-              },
-              'input:hover ~ &': { bg: 'background', color: 'primary' },
-              'input:focus-visible ~ &': {
-                outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
-                background: 'rgb(110, 110, 110, 0.625)',
-              },
-            }}
-          />
-          show change footprint
-        </Label>
-      </Box>
+      <DisplaySection sx={sx} />
 
       {index >= 2 && (
         <>

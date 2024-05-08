@@ -20,6 +20,19 @@ const sx = {
     fontSize: [2, 2, 2, 3],
     mb: [2],
   },
+  subHeading: {
+    fontFamily: 'faux',
+    letterSpacing: 'faux',
+    fontSize: [2, 2, 2, 3],
+    mb: [2],
+  },
+  label: {
+    fontFamily: 'mono',
+    letterSpacing: 'mono',
+    textTransform: 'uppercase',
+    color: 'secondary',
+    fontSize: [1],
+  },
   description: {
     fontSize: [1, 1, 1, 2],
   },
