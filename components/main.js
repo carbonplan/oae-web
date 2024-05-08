@@ -10,6 +10,7 @@ import Footer from './footer'
 import OverviewChart from './overview-chart'
 import MobileSettings from './mobile-settings'
 import Intro from './intro'
+import RegionInfo from './region-info'
 
 const sx = {
   heading: {
@@ -28,7 +29,6 @@ const Main = () => {
   const loading = useStore((state) => state.loading)
   const expanded = useStore((state) => state.expanded)
   const setExpanded = useStore((state) => state.setExpanded)
-  const selectedRegion = useStore((state) => state.selectedRegion)
   const setShowRegionPicker = useStore((state) => state.setShowRegionPicker)
   const index = useBreakpointIndex({ defaultIndex: 2 })
 
@@ -68,24 +68,10 @@ const Main = () => {
                 footer={<Footer />}
               >
                 <>
-                  <Box
-                    sx={{
-                      // overlay
-                      width: 'calc(100% - 1px)', // make sure border stays visible
-                      height: '100%',
-                      backgroundColor:
-                        selectedRegion !== null
-                          ? 'rgba(0,0,0,0.65)'
-                          : 'rgba(0,0,0,0)',
-                      pointerEvents: selectedRegion !== null ? 'auto' : 'none',
-                      transition: 'background-color 0.5s ease',
-                      position: 'absolute',
-                      left: 0,
-                      top: 0,
-                      zIndex: 1,
-                    }}
-                  />
                   <Intro />
+                  <Divider sx={{ mt: 4, mb: 5 }} />
+                  <RegionInfo sx={sx} />
+                  <Divider sx={{ mt: 4, mb: 5 }} />
                   <OverviewChart sx={sx} />
                 </>
               </Sidebar>

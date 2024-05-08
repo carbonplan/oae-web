@@ -5,7 +5,6 @@ import AnimateHeight from 'react-animate-height'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import { useRegion } from '@carbonplan/maps'
 
-import TimeSlider from './time-slider'
 import Timeseries from './timeseries'
 import TooltipWrapper from './tooltip'
 import { getColorForValue } from '../utils/color'

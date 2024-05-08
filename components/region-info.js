@@ -8,7 +8,7 @@ import RegionDetail from './region-detail'
 
 import { useBreakpointIndex } from '@theme-ui/match-media'
 
-const RegionFooter = ({ sx }) => {
+const RegionInfo = ({ sx }) => {
   const hoveredRegion = useStore((state) => state.hoveredRegion)
   const selectedRegion = useStore((state) => state.selectedRegion)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
@@ -20,60 +20,40 @@ const RegionFooter = ({ sx }) => {
   }
 
   return (
-    <AnimateHeight
-      duration={250}
-      height={selectedRegion !== null ? 'auto' : 30}
-    >
+    <>
       <Flex
         sx={{
           alignItems: 'center',
           justifyContent: 'space-between',
+          color: 'primary',
           height: 30,
         }}
       >
-        <Box
-          sx={{
-            textTransform: 'uppercase',
-            fontSize: 3,
-            color: 'secondary',
-            height: 25,
-          }}
-        >
-          Region
-          <Box as={'span'} sx={{ ml: 2, color: 'primary', height: 25 }}>
-            {selectedRegion !== null || hoveredRegion !== null ? (
-              <Badge>
-                {selectedRegion !== null ? selectedRegion : hoveredRegion}
-              </Badge>
-            ) : (
-              <Box as={'span'}>{' - '}</Box>
-            )}
-          </Box>
-        </Box>
+        <Flex sx={{ gap: 2, alignItems: 'flex-start' }}>
+          <Box sx={{ ...sx.heading }}>Region</Box>
+          {selectedRegion !== null || hoveredRegion !== null ? (
+            <Badge sx={{ mt: '-1px' }}>
+              {String(selectedRegion ?? hoveredRegion).padStart(3, '0')}
+            </Badge>
+          ) : (
+            <Box as={'span'}>{' - '}</Box>
+          )}
+        </Flex>
         <Box sx={{ fontSize: [0, 0, 0, 1], color: 'primary' }}>
           {selectedRegion !== null ? (
-            <Box
+            <Expander
+              value={true}
+              sx={{ width: 24, ml: 1 }}
               onClick={handleClear}
-              sx={{
-                height: 25,
-                textTransform: 'uppercase',
-                fontSize: 3,
-                cursor: 'pointer',
-                '&:hover #clear': {
-                  stroke: 'primary',
-                },
-              }}
-            >
-              Clear
-              <Expander id='clear' value={true} sx={{ width: 20, ml: 1 }} />
-            </Box>
+            />
           ) : (
             <Box
               sx={{
-                color: 'primary',
+                color: 'secondary',
                 overflowX: 'visible',
                 wordWrap: 'normal',
                 height: '100%',
+                mt: -1,
               }}
             >
               Select a model run on the map{index > 1 ? '/graph' : ''}
@@ -81,9 +61,15 @@ const RegionFooter = ({ sx }) => {
           )}
         </Box>
       </Flex>
-      {selectedRegion !== null && <RegionDetail sx={sx} />}
-    </AnimateHeight>
+
+      <AnimateHeight
+        duration={250}
+        height={selectedRegion !== null ? 'auto' : 0}
+      >
+        {selectedRegion !== null && <RegionDetail sx={sx} />}
+      </AnimateHeight>
+    </>
   )
 }
 
-export default RegionFooter
+export default RegionInfo

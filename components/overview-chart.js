@@ -115,7 +115,7 @@ const OverviewChart = ({ sx }) => {
 
   return (
     <>
-      <Box sx={sx.heading}>efficiency</Box>
+      <Box sx={sx.heading}>Efficiency</Box>
       <Label
         sx={{
           color: 'secondary',
