@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react'
-import useStore from '../store'
 import { Sidebar, SidebarAttachment } from '@carbonplan/layouts'
 import { Box, Divider, Spinner } from 'theme-ui'
 import { useBreakpointIndex } from '@theme-ui/match-media'
+
+import useStore from '../store'
 import Header from './header'
 import MapWrapper from './map'
 import Footer from './footer'
@@ -120,8 +121,7 @@ const Main = () => {
                 <Divider sx={{ mt: 4, mb: 5 }} />
                 <OverviewChart sx={sx} />
               </MobileSettings>
-              <RegionFooter sx={sx} />
-              <TimeSlider />
+              <Footer />
             </>
           )}
         </MapWrapper>

@@ -1,8 +1,6 @@
 import { Column, Filter, Row } from '@carbonplan/components'
-import { Flex } from 'theme-ui'
 
 import useStore from '../../store'
-import TooltipWrapper from '../tooltip'
 
 const sx = {
   label: {
@@ -20,10 +18,10 @@ const InjectionMonth = () => {
 
   return (
     <Row columns={[6, 4, 4, 4]}>
-      <Column start={1} width={[2, 1, 2, 2]} sx={{ ...sx.label, pt: '2px' }}>
+      <Column start={1} width={[3, 1, 2, 1]} sx={{ ...sx.label, pt: '2px' }}>
         Injection month
       </Column>
-      <Column start={[3, 2, 3, 3]} width={[4, 4, 2, 2]}>
+      <Column start={[4, 2, 3, 2]} width={[3, 4, 2, 2]}>
         <Filter
           values={injectionSeason}
           setValues={(val) => setInjectionSeason(val)}
