@@ -21,11 +21,6 @@ const FooterWrapper = ({ children, bottom = 0 }) => {
         width: ['100%', '100%', 'auto', 'auto'],
         mr: getMobileMarginFix(),
         ml: getMobileMarginFix(),
-        zIndex: 2,
-        bg: 'background',
-        '&:hover': { bg: 'background' },
-        cursor: 'auto',
-        borderTop: '0.5px solid #393a3d',
       }}
     >
       {children}

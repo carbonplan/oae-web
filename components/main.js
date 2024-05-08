@@ -5,12 +5,10 @@ import { Box, Divider, Spinner } from 'theme-ui'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import Header from './header'
 import MapWrapper from './map'
-import RegionFooter from './footer'
-import Filters from './filters'
+import Footer from './footer'
 import OverviewChart from './overview-chart'
 import MobileSettings from './mobile-settings'
 import Intro from './intro'
-import TimeSlider from './time-slider'
 
 const sx = {
   heading: {
@@ -22,13 +20,6 @@ const sx = {
   },
   description: {
     fontSize: [1, 1, 1, 2],
-  },
-  label: {
-    color: 'secondary',
-    fontFamily: 'mono',
-    letterSpacing: 'mono',
-    fontSize: [1, 1, 1, 2],
-    textTransform: 'uppercase',
   },
 }
 
@@ -73,12 +64,7 @@ const Main = () => {
                 setExpanded={setExpanded}
                 side='left'
                 width={4}
-                footer={
-                  <>
-                    <RegionFooter sx={sx} />
-                    <TimeSlider />
-                  </>
-                }
+                footer={<Footer />}
               >
                 <>
                   <Box
@@ -99,8 +85,6 @@ const Main = () => {
                     }}
                   />
                   <Intro />
-                  <Filters sx={sx} />
-                  <Divider sx={{ mt: 4, mb: 5 }} />
                   <OverviewChart sx={sx} />
                 </>
               </Sidebar>
@@ -133,7 +117,6 @@ const Main = () => {
               )}
               <MobileSettings expanded={expanded}>
                 <Intro />
-                <Filters sx={sx} />
                 <Divider sx={{ mt: 4, mb: 5 }} />
                 <OverviewChart sx={sx} />
               </MobileSettings>

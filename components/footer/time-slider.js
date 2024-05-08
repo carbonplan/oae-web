@@ -2,8 +2,8 @@ import React, { useEffect, useMemo } from 'react'
 import { Select, Slider } from '@carbonplan/components'
 import { Box, Flex } from 'theme-ui'
 import { useCallback, useState } from 'react'
-import useStore from '../store'
-import FooterWrapper from './footer-wrapper'
+
+import useStore from '../../store'
 
 const sx = {
   label: {
@@ -141,50 +141,48 @@ const TimeSlider = () => {
   )
 
   return (
-    <FooterWrapper>
-      <Flex sx={{ gap: [2, 2, 2, 3] }}>
-        <UnitSlider
-          value={Math.floor(elapsedTime / 12)}
-          range={[0, 14]}
-          onChange={handleYearChange}
-          formatLabel={(d) => `Year ${d + 1}`}
-          showValue
-        />
-        <Select
-          value={elapsedTime % 12}
-          size='xs'
-          disabled={disableMonthSelect}
-          sx={{
-            color: disableMonthSelect ? 'muted' : 'secondary',
-            ml: 4,
-            mt: -2,
-            svg: {
-              fill: disableMonthSelect ? 'muted' : 'secondary',
-            },
-          }}
-          sxSelect={{
-            fontSize: 1,
-            fontFamily: 'mono',
-            borderBottomColor: disableMonthSelect ? 'muted' : 'secondary',
-            transition: 'color 0.2s, border-color 0.2s',
-            textTransform: 'uppercase',
-            '&:hover': !disableMonthSelect
-              ? {
-                  color: 'primary',
-                  borderBottomColor: 'primary',
-                }
-              : { cursor: 'not-allowed' },
-          }}
-          onChange={(e) => handleMonthChange(parseInt(e.target.value))}
-        >
-          {months.map((m) => (
-            <option key={m.value} value={m.value}>
-              {m.label}
-            </option>
-          ))}
-        </Select>
-      </Flex>
-    </FooterWrapper>
+    <Flex sx={{ gap: [2, 2, 2, 3] }}>
+      <UnitSlider
+        value={Math.floor(elapsedTime / 12)}
+        range={[0, 14]}
+        onChange={handleYearChange}
+        formatLabel={(d) => `Year ${d + 1}`}
+        showValue
+      />
+      <Select
+        value={elapsedTime % 12}
+        size='xs'
+        disabled={disableMonthSelect}
+        sx={{
+          color: disableMonthSelect ? 'muted' : 'secondary',
+          ml: 4,
+          mt: -2,
+          svg: {
+            fill: disableMonthSelect ? 'muted' : 'secondary',
+          },
+        }}
+        sxSelect={{
+          fontSize: 1,
+          fontFamily: 'mono',
+          borderBottomColor: disableMonthSelect ? 'muted' : 'secondary',
+          transition: 'color 0.2s, border-color 0.2s',
+          textTransform: 'uppercase',
+          '&:hover': !disableMonthSelect
+            ? {
+                color: 'primary',
+                borderBottomColor: 'primary',
+              }
+            : { cursor: 'not-allowed' },
+        }}
+        onChange={(e) => handleMonthChange(parseInt(e.target.value))}
+      >
+        {months.map((m) => (
+          <option key={m.value} value={m.value}>
+            {m.label}
+          </option>
+        ))}
+      </Select>
+    </Flex>
   )
 }
 
