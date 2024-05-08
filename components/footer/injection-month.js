@@ -1,4 +1,5 @@
-import { Column, Filter, Row } from '@carbonplan/components'
+import { Filter } from '@carbonplan/components'
+import { Box, Flex } from 'theme-ui'
 
 import useStore from '../../store'
 
@@ -17,17 +18,14 @@ const InjectionMonth = () => {
   const setInjectionSeason = useStore((state) => state.setInjectionSeason)
 
   return (
-    <Row columns={[6, 4, 4, 4]}>
-      <Column start={1} width={[3, 1, 2, 1]} sx={{ ...sx.label, pt: '2px' }}>
-        Injection month
-      </Column>
-      <Column start={[4, 2, 3, 2]} width={[3, 4, 2, 2]}>
-        <Filter
-          values={injectionSeason}
-          setValues={(val) => setInjectionSeason(val)}
-        />
-      </Column>
-    </Row>
+    <Flex sx={{ gap: [4, 5, 5, 6], mt: -1, mb: -1 }}>
+      <Box sx={{ ...sx.label, pt: '2px' }}>Injection month</Box>
+
+      <Filter
+        values={injectionSeason}
+        setValues={(val) => setInjectionSeason(val)}
+      />
+    </Flex>
   )
 }
 

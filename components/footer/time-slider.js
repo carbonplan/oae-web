@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from 'react'
-import { Select, Slider } from '@carbonplan/components'
+import React, { useEffect } from 'react'
+import { Slider } from '@carbonplan/components'
 import { Box, Flex } from 'theme-ui'
 import { useCallback, useState } from 'react'
 
@@ -10,15 +10,9 @@ const sx = {
     fontFamily: 'mono',
     letterSpacing: 'mono',
     textTransform: 'uppercase',
+    color: 'secondary',
     fontSize: [1],
   },
-}
-
-const OFFSETS = {
-  JAN: 0,
-  APR: 3,
-  JUL: 6,
-  OCT: 9,
 }
 
 const UnitSlider = ({
@@ -93,45 +87,16 @@ const UnitSlider = ({
 }
 
 const TimeSlider = () => {
-  const { currentVariable, elapsedTime, setElapsedTime } = useStore(
-    (state) => ({
-      currentVariable: state.currentVariable,
-      elapsedTime:
-        state.currentVariable.key === 'EFFICIENCY'
-          ? state.overviewElapsedTime
-          : state.detailElapsedTime,
-      setElapsedTime:
-        state.currentVariable.key === 'EFFICIENCY'
-          ? state.setOverviewElapsedTime
-          : state.setDetailElapsedTime,
-    })
-  )
-  const disableMonthSelect = currentVariable.key === 'EFFICIENCY'
-
-  const injectionSeason = useStore((state) =>
-    Object.keys(state.injectionSeason).find((k) => state.injectionSeason[k])
-  )
-
-  const months = useMemo(() => {
-    const months = Array.from({ length: 12 }, (_, index) => {
-      const monthIndex = (index + OFFSETS[injectionSeason]) % 12
-      const date = new Date(2024, monthIndex, 1)
-      return {
-        value: index,
-        label: date.toLocaleString('default', { month: 'short' }),
-      }
-    })
-    return months
-  }, [injectionSeason])
-
-  const handleMonthChange = useCallback(
-    (month) => {
-      const years = Math.floor(elapsedTime / 12)
-      setElapsedTime(years * 12 + month)
-    },
-    [elapsedTime]
-  )
-
+  const { elapsedTime, setElapsedTime } = useStore((state) => ({
+    elapsedTime:
+      state.currentVariable.key === 'EFFICIENCY'
+        ? state.overviewElapsedTime
+        : state.detailElapsedTime,
+    setElapsedTime:
+      state.currentVariable.key === 'EFFICIENCY'
+        ? state.setOverviewElapsedTime
+        : state.setDetailElapsedTime,
+  }))
   const handleYearChange = useCallback(
     (year) => {
       const months = elapsedTime % 12
@@ -141,7 +106,8 @@ const TimeSlider = () => {
   )
 
   return (
-    <Flex sx={{ gap: [2, 2, 2, 3] }}>
+    <Flex sx={{ gap: [4, 5, 5, 6], alignItems: 'center' }}>
+      <Box sx={{ ...sx.label, mt: -2 }}>Time</Box>
       <UnitSlider
         value={Math.floor(elapsedTime / 12)}
         range={[0, 14]}
@@ -149,39 +115,6 @@ const TimeSlider = () => {
         formatLabel={(d) => `Year ${d + 1}`}
         showValue
       />
-      <Select
-        value={elapsedTime % 12}
-        size='xs'
-        disabled={disableMonthSelect}
-        sx={{
-          color: disableMonthSelect ? 'muted' : 'secondary',
-          ml: 4,
-          mt: -2,
-          svg: {
-            fill: disableMonthSelect ? 'muted' : 'secondary',
-          },
-        }}
-        sxSelect={{
-          fontSize: 1,
-          fontFamily: 'mono',
-          borderBottomColor: disableMonthSelect ? 'muted' : 'secondary',
-          transition: 'color 0.2s, border-color 0.2s',
-          textTransform: 'uppercase',
-          '&:hover': !disableMonthSelect
-            ? {
-                color: 'primary',
-                borderBottomColor: 'primary',
-              }
-            : { cursor: 'not-allowed' },
-        }}
-        onChange={(e) => handleMonthChange(parseInt(e.target.value))}
-      >
-        {months.map((m) => (
-          <option key={m.value} value={m.value}>
-            {m.label}
-          </option>
-        ))}
-      </Select>
     </Flex>
   )
 }
