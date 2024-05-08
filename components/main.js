@@ -32,6 +32,7 @@ const sx = {
     textTransform: 'uppercase',
     color: 'secondary',
     fontSize: [1],
+    whiteSpace: 'nowrap',
   },
   description: {
     fontSize: [1, 1, 1, 2],

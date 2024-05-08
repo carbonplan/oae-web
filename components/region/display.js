@@ -1,9 +1,11 @@
 import React, { useCallback, useMemo } from 'react'
-import { Box, Checkbox, Divider, Label } from 'theme-ui'
-import { Column, Filter, Select, Row } from '@carbonplan/components'
+import { Box, Checkbox, Label } from 'theme-ui'
+import { Column, Filter, Select, Row, Colorbar } from '@carbonplan/components'
+import { useThemedColormap } from '@carbonplan/colormaps'
 
 import TooltipWrapper from '../tooltip'
 import useStore, { variables } from '../../store'
+import MonthPicker from '../month-picker'
 
 const DisplaySection = ({ sx }) => {
   const currentVariable = useStore((s) => s.currentVariable)
@@ -14,6 +16,7 @@ const DisplaySection = ({ sx }) => {
   const setShowDeltaOverBackground = useStore(
     (s) => s.setShowDeltaOverBackground
   )
+  const colormap = useThemedColormap(currentVariable.colormap)
 
   const disableBGControl = currentVariable.delta
 
@@ -134,6 +137,28 @@ const DisplaySection = ({ sx }) => {
               show change footprint
             </Label>
           </Box>
+        </Column>
+        <Column start={1} width={[2, 2, 1, 1]} sx={sx.label}>
+          Month
+        </Column>
+        <Column start={[3, 3, 2, 2]} width={[4, 6, 3, 3]} sx={{ mb: 4 }}>
+          <MonthPicker />
+        </Column>
+        <Column start={1} width={[6, 8, 4, 4]} sx={sx.label}>
+          Color range (
+          <Box as='span' sx={{ textTransform: 'none' }}>
+            {currentVariable.unit}
+          </Box>
+          )
+        </Column>
+        <Column start={[1]} width={[6, 8, 4, 4]}>
+          <Colorbar
+            colormap={colormap}
+            clim={currentVariable.colorLimits}
+            horizontal
+            width={'100%'}
+            sx={{ mt: 2 }}
+          />
         </Column>
       </Row>
     </>

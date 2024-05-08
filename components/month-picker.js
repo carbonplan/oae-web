@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { Select } from '@carbonplan/components'
 import { useCallback } from 'react'
 
-import useStore from '../../store'
+import useStore from '../store'
 
 const OFFSETS = {
   JAN: 0,
@@ -57,17 +57,15 @@ const MonthPicker = () => {
       size='xs'
       disabled={disableMonthSelect}
       sx={{
-        color: disableMonthSelect ? 'muted' : 'secondary',
-        ml: 4,
-        mt: -2,
+        color: disableMonthSelect ? 'muted' : 'primary',
         svg: {
-          fill: disableMonthSelect ? 'muted' : 'secondary',
+          fill: disableMonthSelect ? 'muted' : 'primary',
         },
       }}
       sxSelect={{
         fontSize: 1,
         fontFamily: 'mono',
-        borderBottomColor: disableMonthSelect ? 'muted' : 'secondary',
+        borderBottomColor: disableMonthSelect ? 'muted' : 'primary',
         transition: 'color 0.2s, border-color 0.2s',
         textTransform: 'uppercase',
         '&:hover': !disableMonthSelect
