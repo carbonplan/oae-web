@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { Sidebar, SidebarAttachment } from '@carbonplan/layouts'
+import { Sidebar, SidebarAttachment, SidebarDivider } from '@carbonplan/layouts'
 import { Box, Divider, Spinner } from 'theme-ui'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 
@@ -83,9 +83,9 @@ const Main = () => {
               >
                 <>
                   <Intro />
-                  <Divider sx={{ mt: 4, mb: 5 }} />
+                  <SidebarDivider sx={{ mb: 4 }} />
                   <RegionInfo sx={sx} />
-                  <Divider sx={{ mt: 4, mb: 5 }} />
+                  <SidebarDivider sx={{ mt: 3, mb: 4 }} />
                   <OverviewChart sx={sx} />
                 </>
               </Sidebar>

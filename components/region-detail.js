@@ -193,14 +193,14 @@ const RegionDetail = ({ sx }) => {
           <Box
             onClick={() => setShowRegionPicker(!showRegionPicker)}
             sx={{
-              ...sx.heading,
+              ...sx.subHeading,
               cursor: 'pointer',
               '&:hover #expander': {
                 stroke: 'primary',
               },
             }}
           >
-            Time Series
+            Time series
             <Expander
               id='expander'
               value={showRegionPicker}
