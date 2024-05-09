@@ -183,8 +183,7 @@ const RegionDetail = ({ sx }) => {
   }, [selectedLines])
 
   return (
-    <>
-      <Divider sx={{ mt: 4, mb: 5 }} />
+    <Box sx={{ mb: 4 }}>
       <DisplaySection sx={sx} />
 
       {index >= 2 && (
@@ -245,7 +244,7 @@ const RegionDetail = ({ sx }) => {
           </AnimateHeight>
         </>
       )}
-    </>
+    </Box>
   )
 }
 

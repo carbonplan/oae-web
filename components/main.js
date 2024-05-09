@@ -90,9 +90,7 @@ const Main = () => {
               >
                 <>
                   <Intro />
-                  <SidebarDivider sx={{ mb: 4 }} />
                   <RegionInfo sx={sx} />
-                  <SidebarDivider sx={{ mt: 3, mb: 4 }} />
                   <OverviewChart sx={sx} />
                 </>
               </Sidebar>
@@ -125,9 +123,7 @@ const Main = () => {
               )}
               <MobileSettings expanded={expanded}>
                 <Intro />
-                <SidebarDivider sx={{ mb: 4 }} />
                 <RegionInfo sx={sx} />
-                <SidebarDivider sx={{ mt: 5, mb: 4 }} />
                 <OverviewChart sx={sx} />
               </MobileSettings>
               <Footer />
