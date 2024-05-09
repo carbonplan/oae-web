@@ -11,6 +11,7 @@ import OverviewChart from './overview-chart'
 import MobileSettings from './mobile-settings'
 import Intro from './intro'
 import RegionInfo from './region-info'
+import About from './about'
 
 const sx = {
   heading: {
@@ -92,6 +93,7 @@ const Main = () => {
                   <Intro />
                   <RegionInfo sx={sx} />
                   <OverviewChart sx={sx} />
+                  <About sx={sx} />
                 </>
               </Sidebar>
               {loading && (
@@ -125,6 +127,7 @@ const Main = () => {
                 <Intro />
                 <RegionInfo sx={sx} />
                 <OverviewChart sx={sx} />
+                <About sx={sx} />
               </MobileSettings>
               <Footer />
             </>

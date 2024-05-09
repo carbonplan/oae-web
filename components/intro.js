@@ -1,6 +1,5 @@
 import React from 'react'
-import { Box, Divider } from 'theme-ui'
-import CWorthyLogo from './cworthy-logo'
+import { Box } from 'theme-ui'
 
 const Intro = () => {
   return (
