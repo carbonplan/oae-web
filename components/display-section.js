@@ -8,6 +8,7 @@ import useStore, { variables } from '../store'
 import MonthPicker from './month-picker'
 
 const DisplaySection = ({ sx }) => {
+  const selectedRegion = useStore((state) => state.selectedRegion)
   const currentVariable = useStore((s) => s.currentVariable)
   const setCurrentVariable = useStore((s) => s.setCurrentVariable)
   const variableFamily = useStore((s) => s.variableFamily)
@@ -59,6 +60,7 @@ const DisplaySection = ({ sx }) => {
         <Column start={[3, 3, 2, 2]} width={[4, 6, 3, 3]}>
           <Box>
             <Select
+              disabled={!selectedRegion}
               onChange={handleFamilySelection}
               value={variableFamily}
               size='xs'

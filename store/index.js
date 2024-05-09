@@ -105,7 +105,7 @@ const useStore = create((set) => ({
   expanded: true,
   setExpanded: (expanded) => set({ expanded }),
 
-  variableFamily: 'ALK',
+  variableFamily: 'EFFICIENCY',
   setVariableFamily: (variableFamily) => set({ variableFamily }),
 
   currentVariable: overviewVariable,
@@ -121,11 +121,16 @@ const useStore = create((set) => ({
             )
             return { selectedRegion: null }
           }
-          return { selectedRegion, currentVariable: variables.ALK.variables[0] }
+          return {
+            selectedRegion,
+            currentVariable: variables.ALK.variables[0],
+            variableFamily: 'ALK',
+          }
         })
       : set({
           selectedRegion,
           currentVariable: overviewVariable,
+          variableFamily: 'EFFICIENCY',
           showRegionPicker: false,
           regionData: null,
           hoveredRegion: null,
