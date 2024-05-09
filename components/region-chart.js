@@ -11,7 +11,6 @@ import Timeseries from './timeseries'
 import { getColorForValue } from '../utils/color'
 import { downloadCsv } from '../utils/csv'
 import useStore from '../store'
-import DisplaySection from './display'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 const degToRad = (degrees) => {
@@ -42,7 +41,7 @@ const getArrayData = (arr, lats, zoom) => {
     )
 }
 
-const RegionDetail = ({ sx }) => {
+const RegionChart = ({ sx }) => {
   const currentVariable = useStore((s) => s.currentVariable)
   const showRegionPicker = useStore((s) => s.showRegionPicker)
   const setShowRegionPicker = useStore((s) => s.setShowRegionPicker)
@@ -184,8 +183,6 @@ const RegionDetail = ({ sx }) => {
 
   return (
     <Box sx={{ mb: 4 }}>
-      <DisplaySection sx={sx} />
-
       {index >= 2 && (
         <>
           <Divider sx={{ mt: 4, mb: 5 }} />
@@ -195,7 +192,7 @@ const RegionDetail = ({ sx }) => {
             size='sm'
             onClick={() => setShowRegionPicker(!showRegionPicker)}
           >
-            Inspect region
+            Time series
           </Button>
 
           <AnimateHeight duration={250} height={showRegionPicker ? 'auto' : 0}>
@@ -239,4 +236,4 @@ const RegionDetail = ({ sx }) => {
   )
 }
 
-export default RegionDetail
+export default RegionChart

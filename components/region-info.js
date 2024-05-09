@@ -2,10 +2,8 @@ import React from 'react'
 import { Box, Flex } from 'theme-ui'
 import { Badge, Expander } from '@carbonplan/components'
 import { alpha } from '@theme-ui/color'
-import AnimateHeight from 'react-animate-height'
 
 import useStore from '../store'
-import RegionDetail from './region-detail'
 
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { SidebarDivider } from '@carbonplan/layouts'
@@ -107,14 +105,6 @@ const RegionInfo = ({ sx }) => {
         </Flex>
         <SidebarDivider sx={{ mt: 0, mb: 4 }} />
       </Box>
-
-      <AnimateHeight
-        duration={250}
-        height={selectedRegion !== null ? 'auto' : 0}
-      >
-        {selectedRegion !== null && <RegionDetail sx={sx} />}
-        {selectedRegion !== null && <SidebarDivider sx={{ mt: 0, mb: 4 }} />}
-      </AnimateHeight>
     </>
   )
 }

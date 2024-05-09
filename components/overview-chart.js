@@ -1,16 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useThemedColormap } from '@carbonplan/colormaps'
-import { Box, Checkbox, Flex, Label, useThemeUI } from 'theme-ui'
+import { Box, Checkbox, Divider, Flex, Label, useThemeUI } from 'theme-ui'
 import { alpha } from '@theme-ui/color'
+import { useThemedColormap } from '@carbonplan/colormaps'
+import { Button } from '@carbonplan/components'
+import { Down } from '@carbonplan/icons'
 
 import useStore, { overviewVariable } from '../store'
 import Timeseries from './timeseries'
 import { openZarr, getChunk, getTimeSeriesData, loadZarr } from '../utils/zarr'
 import { downloadCsv } from '../utils/csv'
 import { getColorForValue } from '../utils/color'
-import { Button } from '@carbonplan/components'
-import { Down } from '@carbonplan/icons'
-
 const zarrUrl =
   'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr'
 
@@ -29,7 +28,7 @@ const OverviewChart = ({ sx }) => {
   const regionsInView = useStore((state) => state.regionsInView)
   const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
 
-  const colormap = useThemedColormap(overviewVariable?.colormap, { count: 20 }) // low count prevents banding in gradient
+  const colormap = useThemedColormap(overviewVariable.colormap, { count: 20 }) // low count prevents banding in gradient
   const colorLimits = overviewVariable.colorLimits
   const [timeData, setTimeData] = useState([])
   const startYear = 0
@@ -115,7 +114,8 @@ const OverviewChart = ({ sx }) => {
 
   return (
     <>
-      <Box sx={sx.heading}>Efficiency</Box>
+      <Divider sx={{ mt: 4, mb: 5 }} />
+      <Box sx={sx.subHeading}>Time series</Box>
       <Label
         sx={{
           color: 'secondary',

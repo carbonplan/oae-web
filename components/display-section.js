@@ -57,49 +57,53 @@ const DisplaySection = ({ sx }) => {
           Variable
         </Column>
         <Column start={[3, 3, 2, 2]} width={[4, 6, 3, 3]}>
-          <Select
-            onChange={handleFamilySelection}
-            value={variableFamily}
-            size='xs'
-            sx={{
-              width: '100%',
-              mr: 2,
-              mb: 1,
-            }}
-            sxSelect={{
-              fontFamily: 'mono',
-              width: '100%',
-            }}
-          >
-            {Object.keys(variables).map((variable) => (
-              <option key={variable} value={variable}>
-                {variables[variable].meta.label}
-              </option>
-            ))}
-          </Select>
-          <Box sx={{ fontSize: 0, color: 'secondary' }}>
-            {variables[variableFamily]?.meta?.description}
+          <Box>
+            <Select
+              onChange={handleFamilySelection}
+              value={variableFamily}
+              size='xs'
+              sx={{
+                width: '100%',
+                mr: 2,
+                mb: 1,
+              }}
+              sxSelect={{
+                fontFamily: 'mono',
+                width: '100%',
+              }}
+            >
+              {Object.keys(variables).map((variable) => (
+                <option key={variable} value={variable}>
+                  {variables[variable].meta.label}
+                </option>
+              ))}
+            </Select>
+            <Box sx={{ fontSize: 0, color: 'secondary' }}>
+              {variables[variableFamily]?.meta?.description}
+            </Box>
           </Box>
 
-          <Box sx={{ mt: 3, mb: 2 }}>
-            <TooltipWrapper
-              sx={{ justifyContent: 'flex-start', gap: 2 }}
-              tooltip='Toggle between a view of the shift in the selected variable and its total values.'
-            >
-              {Object.keys(filterValues).length && (
-                <Filter
-                  key={variableFamily}
-                  values={filterValues}
-                  setValues={handleVariableSelection}
-                />
-              )}
-            </TooltipWrapper>
-          </Box>
+          {currentVariable.key !== 'EFFICIENCY' && (
+            <Box sx={{ mt: 3 }}>
+              <TooltipWrapper
+                sx={{ justifyContent: 'flex-start', gap: 2 }}
+                tooltip='Toggle between a view of the shift in the selected variable and its total values.'
+              >
+                {Object.keys(filterValues).length && (
+                  <Filter
+                    key={variableFamily}
+                    values={filterValues}
+                    setValues={handleVariableSelection}
+                  />
+                )}
+              </TooltipWrapper>
+            </Box>
+          )}
         </Column>
-        <Column start={1} width={[2, 2, 1, 1]} sx={sx.label}>
+        <Column start={1} width={[2, 2, 1, 1]} sx={{ ...sx.label, my: 4 }}>
           Month
         </Column>
-        <Column start={[3, 3, 2, 2]} width={[4, 6, 3, 3]} sx={{ mb: 4 }}>
+        <Column start={[3, 3, 2, 2]} width={[4, 6, 3, 3]} sx={{ my: 4 }}>
           <MonthPicker />
         </Column>
         <Column start={1} width={[6, 8, 4, 4]} sx={sx.label}>

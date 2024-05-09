@@ -12,6 +12,8 @@ import MobileSettings from './mobile-settings'
 import Intro from './intro'
 import RegionInfo from './region-info'
 import About from './about'
+import DisplaySection from './display-section'
+import ChartSection from './chart-section'
 
 const sx = {
   heading: {
@@ -92,7 +94,8 @@ const Main = () => {
                 <>
                   <Intro />
                   <RegionInfo sx={sx} />
-                  <OverviewChart sx={sx} />
+                  <DisplaySection sx={sx} />
+                  <ChartSection sx={sx} />
                   <About sx={sx} />
                 </>
               </Sidebar>
@@ -126,7 +129,8 @@ const Main = () => {
               <MobileSettings expanded={expanded}>
                 <Intro />
                 <RegionInfo sx={sx} />
-                <OverviewChart sx={sx} />
+                <DisplaySection sx={sx} />
+                <ChartSection sx={sx} />
                 <About sx={sx} />
               </MobileSettings>
               <Footer />

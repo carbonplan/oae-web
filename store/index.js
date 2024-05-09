@@ -5,11 +5,19 @@ export const overviewVariable = {
   colorLimits: [0, 1],
   colormap: 'water',
   label: 'Efficiency',
-  unit: '',
-  description: 'tk',
+  unit: 'mole CO₂ / mole alkalinity',
+  // description: 'tk',
 }
 
 export const variables = {
+  EFFICIENCY: {
+    meta: {
+      label: 'Efficiency',
+      description: `Overall efficiency of release. Select a region to view other experimental values.`,
+      threshold: 0.001,
+    },
+    variables: [overviewVariable],
+  },
   ALK: {
     meta: {
       label: 'Alkalinity',
