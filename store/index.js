@@ -114,17 +114,20 @@ const useStore = create((set) => ({
   selectedRegion: null,
   setSelectedRegion: (selectedRegion) =>
     selectedRegion !== null
-      ? set(() => {
+      ? set((state) => {
           if (selectedRegion !== 301) {
             alert(
               'only region 301 (upper mid pacific) is available at this time'
             )
             return { selectedRegion: null }
           }
+
+          const activeLineData = state.efficiencyLineData[selectedRegion]
           return {
             selectedRegion,
             currentVariable: variables.ALK.variables[0],
             variableFamily: 'ALK',
+            activeLineData,
           }
         })
       : set({
@@ -134,6 +137,7 @@ const useStore = create((set) => ({
           showRegionPicker: false,
           regionData: null,
           hoveredRegion: null,
+          activeLineData: null,
         }),
 
   selectedRegionCenter: null,
@@ -150,12 +154,16 @@ const useStore = create((set) => ({
   hoveredRegion: null,
   setHoveredRegion: (hoveredRegion) =>
     set((state) => {
-      const hoveredLineData = state.efficiencyLineData[hoveredRegion]
-      return { hoveredRegion, hoveredLineData: hoveredLineData || null }
+      if (state.selectedRegion) {
+        return {}
+      }
+
+      const activeLineData = state.efficiencyLineData[hoveredRegion]
+      return { hoveredRegion, activeLineData: activeLineData || null }
     }),
 
-  hoveredLineData: null,
-  setHoveredLineData: (hoveredLineData) => set({ hoveredLineData }),
+  activeLineData: null,
+  setActiveLineData: (activeLineData) => set({ activeLineData }),
 
   overviewElapsedTime: 179,
   setOverviewElapsedTime: (overviewElapsedTime) => set({ overviewElapsedTime }),

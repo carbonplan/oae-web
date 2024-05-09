@@ -71,7 +71,7 @@ const OverviewChart = ({ sx }) => {
         selected[index] = {
           id: index,
           color: alphaColor,
-          hoveredColor: theme.rawColors?.primary,
+          activeColor: theme.rawColors?.primary,
           strokeWidth: 2,
           data: regionData,
         }
@@ -188,7 +188,8 @@ const OverviewChart = ({ sx }) => {
         opacity={0.1}
         handleClick={selectedRegion ? undefined : handleClick}
         handleHover={selectedRegion ? undefined : handleHover}
-        shadeHorizon={true}
+        shadeHorizon
+        showActive
       />
     </>
   )
