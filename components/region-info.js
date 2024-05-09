@@ -1,6 +1,7 @@
 import React from 'react'
 import { Box, Flex } from 'theme-ui'
 import { Badge, Expander } from '@carbonplan/components'
+import { alpha } from '@theme-ui/color'
 import AnimateHeight from 'react-animate-height'
 
 import useStore from '../store'
@@ -27,8 +28,22 @@ const RegionInfo = ({ sx }) => {
           position: 'sticky',
           top: -25,
           background: 'background',
+          cursor: 'pointer',
+          transition: 'background-color 0.15s',
           zIndex: 1,
+          mx: [-4, -5, -5, -6],
+          px: [4, 5, 5, 6],
+          '&:hover': {
+            background: alpha('muted', 0.25),
+          },
+          '&:hover #guide': {
+            color: 'primary',
+          },
+          '&:hover #expander': {
+            stroke: 'primary',
+          },
         }}
+        onClick={selectedRegion ? handleClear : null}
       >
         <SidebarDivider sx={{ mb: 0 }} />
 
@@ -52,23 +67,36 @@ const RegionInfo = ({ sx }) => {
           </Flex>
           <Box sx={{ fontSize: [0, 0, 0, 1], color: 'primary' }}>
             {selectedRegion !== null ? (
-              <Expander
-                value={true}
-                sx={{
-                  width: 24,
-                  ml: 1,
-                  stroke: 'primary',
-                  '&:hover': { stroke: 'secondary' },
-                }}
-                onClick={handleClear}
-              />
+              <Flex sx={{ alignItems: 'center' }}>
+                <Box
+                  id='guide'
+                  sx={{
+                    transition: 'color .2s',
+                    color: 'secondary',
+                    overflowX: 'visible',
+                    wordWrap: 'normal',
+                  }}
+                >
+                  Clear
+                </Box>
+                <Expander
+                  id='expander'
+                  value={true}
+                  sx={{
+                    width: 24,
+                    ml: 1,
+                  }}
+                  onClick={handleClear}
+                />
+              </Flex>
             ) : (
               <Box
+                id='guide'
                 sx={{
+                  transition: 'color .2s',
                   color: 'secondary',
                   overflowX: 'visible',
                   wordWrap: 'normal',
-                  height: '100%',
                   mt: -1,
                 }}
               >
