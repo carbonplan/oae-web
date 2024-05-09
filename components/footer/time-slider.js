@@ -107,7 +107,7 @@ const TimeSlider = () => {
 
   return (
     <Flex sx={{ gap: [4, 5, 5, 6], alignItems: 'center' }}>
-      <Box sx={{ ...sx.label, mt: -2 }}>Time</Box>
+      <Box sx={{ ...sx.label, mt: -2 }}>Elapsed time</Box>
       <UnitSlider
         value={Math.floor(elapsedTime / 12)}
         range={[0, 14]}
