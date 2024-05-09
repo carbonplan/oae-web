@@ -16,6 +16,7 @@ const zarrUrl =
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 
 const OverviewChart = ({ sx }) => {
+  const selectedRegion = useStore((state) => state.selectedRegion)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
   const setHoveredRegion = useStore((state) => state.setHoveredRegion)
   const efficiencyLineData = useStore((state) => state.efficiencyLineData)
@@ -34,6 +35,8 @@ const OverviewChart = ({ sx }) => {
   const startYear = 0
 
   const { theme } = useThemeUI()
+
+  const disableFilter = !!selectedRegion
 
   useEffect(() => {
     const fetchTimeSeriesData = async () => {
@@ -118,7 +121,7 @@ const OverviewChart = ({ sx }) => {
       <Box sx={sx.subHeading}>Time series</Box>
       <Label
         sx={{
-          color: 'secondary',
+          color: disableFilter ? 'muted' : 'secondary',
           cursor: 'pointer',
           fontSize: 1,
           fontFamily: 'mono',
@@ -126,6 +129,7 @@ const OverviewChart = ({ sx }) => {
         }}
       >
         <Checkbox
+          disabled={disableFilter}
           checked={filterToRegionsInView}
           onChange={(e) => setFilterToRegionsInView(e.target.checked)}
           sx={{
@@ -140,7 +144,10 @@ const OverviewChart = ({ sx }) => {
               bg: 'background',
               color: filterToRegionsInView ? 'primary' : 'muted',
             },
-            'input:hover ~ &': { bg: 'background', color: 'primary' },
+            'input:hover ~ &': {
+              bg: 'background',
+              color: disableFilter ? 'muted' : 'primary',
+            },
             'input:focus-visible ~ &': {
               outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
               background: 'rgb(110, 110, 110, 0.625)',
@@ -179,8 +186,8 @@ const OverviewChart = ({ sx }) => {
         elapsedYears={(overviewElapsedTime + 1) / 12}
         colormap={colormap}
         opacity={0.1}
-        handleClick={handleClick}
-        handleHover={handleHover}
+        handleClick={selectedRegion ? undefined : handleClick}
+        handleHover={selectedRegion ? undefined : handleHover}
         shadeHorizon={true}
       />
     </>

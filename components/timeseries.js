@@ -80,11 +80,12 @@ const ColormapGradient = ({ colormap, opacity = 1 }) => {
 const RenderLines = ({
   linesObject = {},
   additionalStyles = {},
-  handleClick = () => {},
-  handleHover = (id) => {},
+  handleClick,
+  handleHover,
   gradient = false,
 }) => {
   const lineCount = Object.keys(linesObject).length
+  const interactive = handleClick || handleHover
   return Object.values(linesObject).map(({ id, data, color, strokeWidth }) => (
     <Line
       key={id}
@@ -95,14 +96,14 @@ const RenderLines = ({
       sx={{
         pointerEvents: 'visiblePainted',
         '&:hover': {
-          cursor: 'pointer',
+          cursor: interactive ? 'pointer' : 'default',
         },
         shapeRendering: lineCount > 100 ? 'optimizeSpeed' : 'auto',
         ...additionalStyles,
       }}
       onClick={handleClick}
-      onMouseOver={() => handleHover(id)}
-      onMouseLeave={() => handleHover(null)}
+      onMouseOver={handleHover ? () => handleHover(id) : undefined}
+      onMouseLeave={handleHover ? () => handleHover(null) : undefined}
     />
   ))
 }
@@ -289,7 +290,10 @@ const Timeseries = ({
         <Plot
           sx={{
             pointerEvents: 'auto',
-            cursor: xSelector && mousePosition ? 'pointer' : 'auto',
+            cursor:
+              (handleClick || handleHover) && xSelector && mousePosition
+                ? 'pointer'
+                : 'auto',
           }}
           {...xSelectorHandlers}
         >
