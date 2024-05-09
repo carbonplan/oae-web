@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { Sidebar, SidebarAttachment, SidebarDivider } from '@carbonplan/layouts'
-import { Box, Divider, Spinner } from 'theme-ui'
+import { Box, Spinner } from 'theme-ui'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 
 import useStore from '../store'
@@ -41,6 +41,7 @@ const sx = {
 
 const Main = () => {
   const loading = useStore((state) => state.loading)
+  const selectedRegion = useStore((state) => state.selectedRegion)
   const expanded = useStore((state) => state.expanded)
   const setExpanded = useStore((state) => state.setExpanded)
   const setShowRegionPicker = useStore((state) => state.setShowRegionPicker)
@@ -59,6 +60,12 @@ const Main = () => {
       setShowRegionPicker(false)
     }
   }, [index])
+
+  useEffect(() => {
+    if (index < 2 && selectedRegion) {
+      setExpanded(true)
+    }
+  }, [index, selectedRegion])
 
   return (
     <>
@@ -118,7 +125,9 @@ const Main = () => {
               )}
               <MobileSettings expanded={expanded}>
                 <Intro />
-                <Divider sx={{ mt: 4, mb: 5 }} />
+                <SidebarDivider sx={{ mb: 4 }} />
+                <RegionInfo sx={sx} />
+                <SidebarDivider sx={{ mt: 5, mb: 4 }} />
                 <OverviewChart sx={sx} />
               </MobileSettings>
               <Footer />
