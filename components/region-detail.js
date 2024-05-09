@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { Box, Divider, Flex } from 'theme-ui'
-import { Button, Expander } from '@carbonplan/components'
+import { Button } from '@carbonplan/components'
 import AnimateHeight from 'react-animate-height'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import { useRegion } from '@carbonplan/maps'
 import { useBreakpointIndex } from '@theme-ui/match-media'
-import { Down } from '@carbonplan/icons'
+import { Down, Search, X } from '@carbonplan/icons'
 
 import Timeseries from './timeseries'
 import { getColorForValue } from '../utils/color'
@@ -189,23 +189,14 @@ const RegionDetail = ({ sx }) => {
       {index >= 2 && (
         <>
           <Divider sx={{ mt: 4, mb: 5 }} />
-          <Box
+          <Button
+            suffix={showRegionPicker ? <X /> : <Search />}
+            sx={sx.subHeading}
+            size='sm'
             onClick={() => setShowRegionPicker(!showRegionPicker)}
-            sx={{
-              ...sx.subHeading,
-              cursor: 'pointer',
-              '&:hover #expander': {
-                stroke: 'primary',
-              },
-            }}
           >
-            Time series
-            <Expander
-              id='expander'
-              value={showRegionPicker}
-              sx={{ width: 20, ml: 1 }}
-            />
-          </Box>
+            Inspect region
+          </Button>
 
           <AnimateHeight duration={250} height={showRegionPicker ? 'auto' : 0}>
             <Flex sx={{ justifyContent: 'flex-end', mb: 2, height: 15 }}>
