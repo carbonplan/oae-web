@@ -11,7 +11,7 @@ import Timeseries from './timeseries'
 import { getColorForValue } from '../utils/color'
 import { downloadCsv } from '../utils/csv'
 import useStore from '../store'
-import DisplaySection from './region/display'
+import DisplaySection from './display'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 const degToRad = (degrees) => {
