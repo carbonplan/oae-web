@@ -91,9 +91,10 @@ const Main = () => {
               >
                 <>
                   <Intro />
-                  <RegionInfo sx={sx} />
+                  <SidebarDivider />
                   <OverviewChart sx={sx} />
-                  <About sx={sx} />
+                  <RegionInfo sx={sx} />
+                  {/* <About sx={sx} /> */}
                 </>
               </Sidebar>
               {loading && (

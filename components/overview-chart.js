@@ -8,7 +8,7 @@ import Timeseries from './timeseries'
 import { openZarr, getChunk, getTimeSeriesData, loadZarr } from '../utils/zarr'
 import { downloadCsv } from '../utils/csv'
 import { getColorForValue } from '../utils/color'
-import { Button } from '@carbonplan/components'
+import { Button, Colorbar, Column } from '@carbonplan/components'
 import { Down } from '@carbonplan/icons'
 
 const zarrUrl =
@@ -17,6 +17,7 @@ const zarrUrl =
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 
 const OverviewChart = ({ sx }) => {
+  const selectedRegion = useStore((state) => state.selectedRegion)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
   const setHoveredRegion = useStore((state) => state.setHoveredRegion)
   const efficiencyLineData = useStore((state) => state.efficiencyLineData)
@@ -35,6 +36,8 @@ const OverviewChart = ({ sx }) => {
   const startYear = 0
 
   const { theme } = useThemeUI()
+
+  const disableFilter = !!selectedRegion
 
   useEffect(() => {
     const fetchTimeSeriesData = async () => {
@@ -69,7 +72,7 @@ const OverviewChart = ({ sx }) => {
         selected[index] = {
           id: index,
           color: alphaColor,
-          hoveredColor: theme.rawColors?.primary,
+          activeColor: theme.rawColors?.primary,
           strokeWidth: 2,
           data: regionData,
         }
@@ -115,10 +118,10 @@ const OverviewChart = ({ sx }) => {
 
   return (
     <>
-      <Box sx={sx.heading}>Efficiency</Box>
+      <Box sx={{ ...sx.heading, mt: 4 }}>Efficiency</Box>
       <Label
         sx={{
-          color: 'secondary',
+          color: disableFilter ? 'muted' : 'secondary',
           cursor: 'pointer',
           fontSize: 1,
           fontFamily: 'mono',
@@ -128,6 +131,7 @@ const OverviewChart = ({ sx }) => {
         <Checkbox
           checked={filterToRegionsInView}
           onChange={(e) => setFilterToRegionsInView(e.target.checked)}
+          disabled={disableFilter}
           sx={{
             width: 18,
             mr: 1,
@@ -140,7 +144,10 @@ const OverviewChart = ({ sx }) => {
               bg: 'background',
               color: filterToRegionsInView ? 'primary' : 'muted',
             },
-            'input:hover ~ &': { bg: 'background', color: 'primary' },
+            'input:hover ~ &': {
+              bg: 'background',
+              color: disableFilter ? 'muted' : 'primary',
+            },
             'input:focus-visible ~ &': {
               outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
               background: 'rgb(110, 110, 110, 0.625)',
@@ -179,10 +186,20 @@ const OverviewChart = ({ sx }) => {
         elapsedYears={(overviewElapsedTime + 1) / 12}
         colormap={colormap}
         opacity={0.1}
-        handleClick={handleClick}
-        handleHover={handleHover}
-        shadeHorizon={true}
+        handleClick={selectedRegion ? undefined : handleClick}
+        handleHover={selectedRegion ? undefined : handleHover}
+        shadeHorizon
+        showActive
       />
+      <Column start={[1]} width={[6, 8, 4, 4]} sx={{ my: 4 }}>
+        <Colorbar
+          colormap={colormap}
+          clim={[0, 1]}
+          horizontal
+          width={'100%'}
+          sx={{ mt: 2 }}
+        />
+      </Column>
     </>
   )
 }

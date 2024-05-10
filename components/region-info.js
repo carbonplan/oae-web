@@ -33,6 +33,7 @@ const RegionInfo = ({ sx }) => {
           zIndex: 1,
           mx: [-4, -5, -5, -6],
           px: [4, 5, 5, 6],
+          mb: 2,
           '&:hover': {
             background: alpha('muted', 0.25),
           },
@@ -56,13 +57,13 @@ const RegionInfo = ({ sx }) => {
           }}
         >
           <Flex sx={{ gap: 2, alignItems: 'flex-start' }}>
-            <Box sx={{ ...sx.heading }}>Region</Box>
+            <Box sx={{ ...sx.heading, mt: 2 }}>Region</Box>
             {selectedRegion !== null || hoveredRegion !== null ? (
-              <Badge sx={{ mt: '-1px' }}>
+              <Badge sx={{ mt: 2 }}>
                 {String(selectedRegion ?? hoveredRegion).padStart(3, '0')}
               </Badge>
             ) : (
-              <Box as={'span'}>{' - '}</Box>
+              <Badge sx={{ mt: 2 }}>{' - '}</Badge>
             )}
           </Flex>
           <Box sx={{ fontSize: [0, 0, 0, 1], color: 'primary' }}>
@@ -105,16 +106,17 @@ const RegionInfo = ({ sx }) => {
             )}
           </Box>
         </Flex>
-        <SidebarDivider sx={{ mt: 0, mb: 4 }} />
+        {/* <SidebarDivider sx={{ mt: 0, mb: 4 }} /> */}
       </Box>
+      <RegionDetail sx={sx} />
 
-      <AnimateHeight
+      {/* <AnimateHeight
         duration={250}
         height={selectedRegion !== null ? 'auto' : 0}
       >
         {selectedRegion !== null && <RegionDetail sx={sx} />}
         {selectedRegion !== null && <SidebarDivider sx={{ mt: 0, mb: 4 }} />}
-      </AnimateHeight>
+      </AnimateHeight> */}
     </>
   )
 }

@@ -1,12 +1,13 @@
 import React, { useMemo } from 'react'
 import { Map, Line, Raster, Fill } from '@carbonplan/maps'
-import { Box, useThemeUI } from 'theme-ui'
-import { Colorbar } from '@carbonplan/components'
+import { Box, Flex, useThemeUI } from 'theme-ui'
+import { Button, Colorbar } from '@carbonplan/components'
 import { useThemedColormap } from '@carbonplan/colormaps'
 
 import useStore, { variables } from '../store'
 import Regions from './regions'
 import RegionPickerWrapper from './region-picker'
+import { X } from '@carbonplan/icons'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
@@ -76,6 +77,7 @@ const MapWrapper = ({ children }) => {
   const setLoading = useStore((s) => s.setLoading)
   const setRegionDataLoading = useStore((s) => s.setRegionDataLoading)
   const selectedRegion = useStore((s) => s.selectedRegion)
+  const setSelectedRegion = useStore((s) => s.setSelectedRegion)
   const detailElapsedTime = useStore((s) => s.detailElapsedTime)
   const injectionSeason = useStore((s) => s.injectionSeason)
   const currentVariable = useStore((s) => s.currentVariable)
@@ -140,6 +142,33 @@ const MapWrapper = ({ children }) => {
           {showRegionPicker && <RegionPickerWrapper />}
         </>
       )}
+      {selectedRegion !== null && (
+        <Box
+          sx={{
+            position: 'absolute',
+            left: '66%',
+            top: 50,
+            background: 'muted',
+            py: 2,
+            px: 3,
+            borderRadius: 40,
+          }}
+        >
+          <Flex sx={{ alignItems: 'center', zIndex: 1000000 }}>
+            <Box>Region {selectedRegion}</Box>
+            <Button
+              onClick={() => setSelectedRegion(null)}
+              sx={{
+                ml: 3,
+                borderLeft: '1px solid',
+                borderColor: 'secondary',
+              }}
+              suffix={<X sx={{ ml: 3, mb: 1 }} />}
+            ></Button>
+          </Flex>
+        </Box>
+      )}
+
       <Box
         sx={{
           position: 'absolute',

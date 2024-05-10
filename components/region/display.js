@@ -54,10 +54,11 @@ const DisplaySection = ({ sx }) => {
     },
     [variableFamily, setCurrentVariable]
   )
+  console.log(currentVariable)
 
   return (
     <>
-      <Box sx={sx.subHeading}>Display</Box>
+      {/* <Box sx={sx.subHeading}>Display</Box> */}
       <Row columns={[6, 8, 4, 4]} sx={{ mt: 3 }}>
         <Column start={1} width={[2, 2, 1, 1]} sx={sx.label}>
           Variable

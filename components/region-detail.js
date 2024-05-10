@@ -183,7 +183,9 @@ const RegionDetail = ({ sx }) => {
   }, [selectedLines])
 
   return (
-    <Box sx={{ mb: 4 }}>
+    <Box
+      sx={{ mb: 4, opacity: currentVariable.key === 'EFFICIENCY' ? 0.1 : 1 }}
+    >
       <DisplaySection sx={sx} />
 
       {index >= 2 && (
