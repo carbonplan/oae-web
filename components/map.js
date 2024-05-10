@@ -155,8 +155,8 @@ const MapWrapper = ({ children }) => {
             borderRadius: 40,
           }}
         >
-          <Flex sx={{ alignItems: 'center', zIndex: 1000000 }}>
-            <Box>Region {selectedRegion}</Box>
+          <Flex sx={{ alignItems: 'center', fontFamily: 'mono' }}>
+            <Box>REGION {selectedRegion}</Box>
             <Button
               onClick={() => setSelectedRegion(null)}
               sx={{
