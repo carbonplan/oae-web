@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Spinner } from 'theme-ui'
+import { Box, Spinner, useThemeUI } from 'theme-ui'
 import { alpha } from '@theme-ui/color'
 import {
   AxisLabel,
@@ -84,6 +84,7 @@ const RenderLines = ({
   handleHover,
   gradient = false,
 }) => {
+  const { theme } = useThemeUI()
   const lineCount = Object.keys(linesObject).length
   const interactive = handleClick || handleHover
   return Object.values(linesObject).map(({ id, data, color, strokeWidth }) => (
@@ -92,7 +93,13 @@ const RenderLines = ({
       data={data}
       id={id}
       width={strokeWidth}
-      color={gradient ? 'url(#colormapGradient)' : color}
+      color={
+        gradient && interactive
+          ? 'url(#colormapGradient)'
+          : lineCount === 1
+          ? color
+          : theme.rawColors?.muted + '10'
+      }
       sx={{
         pointerEvents: 'visiblePainted',
         '&:hover': {
