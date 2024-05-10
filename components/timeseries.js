@@ -265,6 +265,7 @@ const Timeseries = ({
         width: '100%',
         height: '300px',
         pointerEvents: 'none',
+        mb: 3,
       }}
     >
       {renderTimeAndData()}

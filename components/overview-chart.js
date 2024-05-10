@@ -191,15 +191,6 @@ const OverviewChart = ({ sx }) => {
         shadeHorizon
         showActive
       />
-      <Column start={[1]} width={[6, 8, 4, 4]} sx={{ my: 4 }}>
-        <Colorbar
-          colormap={colormap}
-          clim={[0, 1]}
-          horizontal
-          width={'100%'}
-          sx={{ mt: 2 }}
-        />
-      </Column>
     </>
   )
 }
