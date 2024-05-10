@@ -148,6 +148,7 @@ const MapWrapper = ({ children }) => {
             position: 'absolute',
             left: '66%',
             top: 50,
+            transform: 'translate(-50%, 0)',
             background: 'muted',
             py: 2,
             px: 3,
