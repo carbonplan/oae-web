@@ -98,7 +98,6 @@ const RegionInfo = ({ sx }) => {
                   color: 'secondary',
                   overflowX: 'visible',
                   wordWrap: 'normal',
-                  mt: -1,
                 }}
               >
                 Select a model run on the map{index > 1 ? '/graph' : ''}
