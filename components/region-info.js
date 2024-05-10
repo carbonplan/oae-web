@@ -2,11 +2,10 @@ import React from 'react'
 import { Box, Flex } from 'theme-ui'
 import { Badge, Expander } from '@carbonplan/components'
 import { alpha } from '@theme-ui/color'
-
-import useStore from '../store'
-
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { SidebarDivider } from '@carbonplan/layouts'
+
+import useStore from '../store'
 
 const RegionInfo = ({ sx }) => {
   const hoveredRegion = useStore((state) => state.hoveredRegion)

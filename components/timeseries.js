@@ -13,8 +13,9 @@ import {
   TickLabels,
   Ticks,
 } from '@carbonplan/charts'
-import useStore from '../store'
 import { Badge } from '@carbonplan/components'
+
+import useStore from '../store'
 
 const renderPoint = (point) => {
   const { x, y, color } = point

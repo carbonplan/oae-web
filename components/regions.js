@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
-import useStore, { overviewVariable, getInjectionMonth } from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import centroid from '@turf/centroid'
+
+import useStore, { overviewVariable, getInjectionMonth } from '../store'
 
 const Regions = () => {
   const hoveredRegion = useStore((state) => state.hoveredRegion)

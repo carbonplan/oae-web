@@ -1,5 +1,3 @@
-import { Box } from 'theme-ui'
-
 import useStore from '../store'
 import OverviewChart from './overview-chart'
 import RegionChart from './region-chart'

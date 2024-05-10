@@ -1,9 +1,9 @@
 import React from 'react'
 import { Box } from 'theme-ui'
 import { SidebarDivider } from '@carbonplan/layouts'
+import { Column, Logo, Row } from '@carbonplan/components'
 
 import { CarbonToSea, CWorthy } from './logos'
-import { Column, Logo, Row } from '@carbonplan/components'
 
 const About = ({ sx }) => {
   return (
