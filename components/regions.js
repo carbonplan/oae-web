@@ -16,6 +16,7 @@ const Regions = () => {
   )
   const filterToRegionsInView = useStore((state) => state.filterToRegionsInView)
   const setRegionsInView = useStore((state) => state.setRegionsInView)
+  const currentVariable = useStore((state) => state.currentVariable)
   const injectionSeason = useStore((state) => state.injectionSeason)
   const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
   const yearsElapsed = Math.floor(overviewElapsedTime / 12 + 1)
@@ -162,6 +163,26 @@ const Regions = () => {
             ],
           },
         })
+        map.addLayer({
+          id: 'selected-region-fill',
+          type: 'fill',
+          source: 'regions',
+          'source-layer': 'regions_joined',
+          paint: {
+            'fill-color': buildColorExpression(),
+            'fill-outline-color': transparent,
+            'fill-opacity': [
+              'case',
+              [
+                'all',
+                ['boolean', ['feature-state', 'selected'], false],
+                ['boolean', ['feature-state', 'efficiency'], false],
+              ],
+              1, // Opacity when selected and efficiency variable is active
+              0, // Default opacity
+            ],
+          },
+        })
 
         map.on('mousemove', 'regions-fill', handleMouseMove)
         map.on('mouseleave', 'regions-fill', handleMouseLeave)
@@ -195,6 +216,9 @@ const Regions = () => {
         }
         if (map.getLayer('regions-selected')) {
           map.removeLayer('regions-selected')
+        }
+        if (map.getLayer('selected-region-fill')) {
+          map.removeLayer('selected-region-fill')
         }
       }
     }
@@ -273,11 +297,20 @@ const Regions = () => {
         },
         { selected: true }
       )
+
+      map.setFeatureState(
+        {
+          source: 'regions',
+          sourceLayer: 'regions_joined',
+          id: selectedRegion,
+        },
+        { efficiency: currentVariable.key === 'EFFICIENCY' }
+      )
       toggleLayerVisibilities(false)
     } else {
       toggleLayerVisibilities(true)
     }
-  }, [selectedRegion, map, toggleLayerVisibilities])
+  }, [selectedRegion, map, currentVariable, toggleLayerVisibilities])
 
   useEffect(() => {
     if (!filterToRegionsInView) {
