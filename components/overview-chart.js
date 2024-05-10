@@ -118,7 +118,7 @@ const OverviewChart = ({ sx }) => {
   return (
     <>
       <Divider sx={{ mt: 4, mb: 5 }} />
-      <Box sx={sx.subHeading}>Time series</Box>
+      <Box sx={sx.heading}>Time series</Box>
       <Label
         sx={{
           color: disableFilter ? 'muted' : 'secondary',

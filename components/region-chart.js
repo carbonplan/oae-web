@@ -187,9 +187,15 @@ const RegionChart = ({ sx }) => {
         <>
           <Divider sx={{ mt: 4, mb: 5 }} />
           <Button
-            suffix={showRegionPicker ? <X /> : <Search />}
-            sx={sx.subHeading}
-            size='sm'
+            suffix={
+              showRegionPicker ? (
+                <X sx={{ mt: -1 }} />
+              ) : (
+                <Search sx={{ mt: -1 }} />
+              )
+            }
+            sx={sx.heading}
+            size='md'
             onClick={() => setShowRegionPicker(!showRegionPicker)}
           >
             Time series
