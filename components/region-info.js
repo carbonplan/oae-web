@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Flex } from 'theme-ui'
 import { Badge, Expander } from '@carbonplan/components'
-import { alpha } from '@theme-ui/color'
+import { mix } from '@theme-ui/color'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { SidebarDivider } from '@carbonplan/layouts'
 
@@ -31,7 +31,7 @@ const RegionInfo = ({ sx }) => {
           mx: [-4, -5, -5, -6],
           px: [4, 5, 5, 6],
           '&:hover': {
-            background: alpha('muted', 0.25),
+            background: mix('muted', 'background', 0.25),
           },
           '&:hover #guide': {
             color: 'primary',
