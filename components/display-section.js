@@ -6,6 +6,22 @@ import { useThemedColormap } from '@carbonplan/colormaps'
 import TooltipWrapper from './tooltip'
 import useStore, { variables } from '../store'
 
+const DESCRIPTIONS = {
+  EFFICIENCY: {
+    overview:
+      'Overall efficiency of release. Select a region to view other experimental outputs.',
+    region: 'Overall efficiency of release.',
+  },
+  ALK: {
+    region:
+      "Concentration of alkalinity in water. Higher alkalinity concentration correlates with increases in the ocean's ability to absorb carbon.",
+  },
+  DIC: {
+    region:
+      'DIC (mmol/m³) is the sum of inorganic carbon in water. It is a measure of how much carbon is stored in the ocean.',
+  },
+}
+
 const DisplaySection = ({ sx }) => {
   const selectedRegion = useStore((state) => state.selectedRegion)
   const currentVariable = useStore((s) => s.currentVariable)
@@ -67,8 +83,14 @@ const DisplaySection = ({ sx }) => {
                 width: '100%',
                 mr: 2,
                 mb: 1,
+                '&:hover + #description': selectedRegion
+                  ? {}
+                  : {
+                      color: 'primary',
+                    },
               }}
               sxSelect={{
+                cursor: selectedRegion ? 'pointer' : 'help',
                 fontFamily: 'mono',
                 width: '100%',
               }}
@@ -79,8 +101,19 @@ const DisplaySection = ({ sx }) => {
                 </option>
               ))}
             </Select>
-            <Box sx={{ fontSize: 0, color: 'secondary' }}>
-              {variables[variableFamily]?.meta?.description}
+            <Box
+              id='description'
+              sx={{
+                fontSize: 0,
+                color: 'secondary',
+                transition: 'all 0.2s',
+              }}
+            >
+              {
+                DESCRIPTIONS[variableFamily][
+                  selectedRegion ? 'region' : 'overview'
+                ]
+              }
             </Box>
           </Box>
 

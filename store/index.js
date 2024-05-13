@@ -6,14 +6,12 @@ export const overviewVariable = {
   colormap: 'water',
   label: 'Efficiency',
   unit: 'mole CO₂ / mole alkalinity',
-  // description: 'tk',
 }
 
 export const variables = {
   EFFICIENCY: {
     meta: {
       label: 'Efficiency',
-      description: `Overall efficiency of release. Select a region to view other experimental values.`,
       threshold: 0.001,
     },
     variables: [overviewVariable],
@@ -21,7 +19,6 @@ export const variables = {
   ALK: {
     meta: {
       label: 'Alkalinity',
-      description: `Alkalinity (mEq/m³). Higher alkalinity values correlate with increases in the ocean's ability to absorb carbon dioxide.`,
       threshold: 0.001,
     },
     variables: [
@@ -32,8 +29,6 @@ export const variables = {
         colormap: 'warm',
         label: 'change',
         unit: 'mEq/m³',
-        description:
-          'Change in alkalinity (mEq/m³) due to alkalinity enhancement in the selected region.',
       },
       {
         variable: 'ALK',
@@ -42,15 +37,13 @@ export const variables = {
         colormap: 'warm',
         label: 'Total',
         unit: 'mEq/m³',
-        description:
-          'Total alkalinity (mEq/m³) in the ocean after alkalinity enhancement in the selected region.',
       },
     ],
   },
   DIC: {
     meta: {
       label: 'Dissolved inorganic carbon (DIC)',
-      description: `DIC (mmol/m³) is the sum of inorganic carbon in water. It is a measure of how much carbon is stored in the ocean.`,
+
       threshold: 0.001,
     },
     variables: [
@@ -61,8 +54,6 @@ export const variables = {
         colormap: 'cool',
         label: 'change',
         unit: 'mmol/m³',
-        description:
-          'Change in DIC (mmol/m³) due to alkalinity enhancement in the selected region.',
       },
       {
         variable: 'DIC',
@@ -71,8 +62,6 @@ export const variables = {
         colormap: 'cool',
         label: 'Total',
         unit: 'mmol/m³',
-        description:
-          'Total DIC (mmol/m³) in the ocean after alkalinity enhancement in the selected region.',
       },
     ],
   },
