@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { Select } from '@carbonplan/components'
 import { useCallback } from 'react'
 
-import useStore from '../store'
+import useStore from '../../store'
 
 const OFFSETS = {
   JAN: 0,
@@ -11,7 +11,7 @@ const OFFSETS = {
   OCT: 9,
 }
 
-const MonthPicker = () => {
+const MonthPicker = ({ sx }) => {
   const { currentVariable, elapsedTime, setElapsedTime } = useStore(
     (state) => ({
       currentVariable: state.currentVariable,
@@ -61,6 +61,7 @@ const MonthPicker = () => {
         svg: {
           fill: disableMonthSelect ? 'muted' : 'primary',
         },
+        ...sx,
       }}
       sxSelect={{
         fontSize: 1,

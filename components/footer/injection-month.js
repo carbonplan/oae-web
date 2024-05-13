@@ -18,7 +18,7 @@ const InjectionMonth = () => {
   const setInjectionSeason = useStore((state) => state.setInjectionSeason)
 
   return (
-    <Flex sx={{ gap: [4, 5, 5, 6], mt: -1, mb: -1 }}>
+    <Flex sx={{ gap: [3, 4, 4, 5], mt: -1, mb: -1 }}>
       <Box sx={{ ...sx.label, pt: '2px' }}>Injection month</Box>
 
       <Filter

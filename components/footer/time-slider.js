@@ -4,6 +4,7 @@ import { Box, Flex } from 'theme-ui'
 import { useCallback, useState } from 'react'
 
 import useStore from '../../store'
+import MonthPicker from './month-picker'
 
 const sx = {
   label: {
@@ -60,7 +61,7 @@ const UnitSlider = ({
   }
 
   return (
-    <Box sx={{ flex: 1, mt: -2, mb: -3 }}>
+    <Box sx={{ flex: 1, mb: -3 }}>
       <Slider
         value={sliderValue}
         min={range[0]}
@@ -106,15 +107,18 @@ const TimeSlider = () => {
   )
 
   return (
-    <Flex sx={{ gap: [4, 5, 5, 6], alignItems: 'center' }}>
+    <Flex sx={{ gap: [3, 4, 4, 5], alignItems: 'center' }}>
       <Box sx={{ ...sx.label, mt: -2 }}>Elapsed time</Box>
-      <UnitSlider
-        value={Math.floor(elapsedTime / 12)}
-        range={[0, 14]}
-        onChange={handleYearChange}
-        formatLabel={(d) => `Year ${d + 1}`}
-        showValue
-      />
+      <Flex sx={{ flex: 1, gap: 3 }}>
+        <UnitSlider
+          value={Math.floor(elapsedTime / 12)}
+          range={[0, 14]}
+          onChange={handleYearChange}
+          formatLabel={(d) => `Year ${d + 1}`}
+          showValue
+        />
+        <MonthPicker />
+      </Flex>
     </Flex>
   )
 }

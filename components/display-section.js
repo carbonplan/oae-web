@@ -5,7 +5,6 @@ import { useThemedColormap } from '@carbonplan/colormaps'
 
 import TooltipWrapper from './tooltip'
 import useStore, { variables } from '../store'
-import MonthPicker from './month-picker'
 
 const DisplaySection = ({ sx }) => {
   const selectedRegion = useStore((state) => state.selectedRegion)
@@ -102,20 +101,15 @@ const DisplaySection = ({ sx }) => {
             </Box>
           )}
         </Column>
-        <Column start={1} width={[2, 2, 1, 1]} sx={{ ...sx.label, my: 4 }}>
-          Month
-        </Column>
-        <Column start={[3, 3, 2, 2]} width={[4, 6, 3, 3]} sx={{ my: 4 }}>
-          <MonthPicker />
-        </Column>
-        <Column start={1} width={[6, 8, 4, 4]} sx={sx.label}>
+
+        <Column start={1} width={[6, 8, 4, 4]} sx={{ ...sx.label, mt: 4 }}>
           Color range (
           <Box as='span' sx={{ textTransform: 'none' }}>
             {currentVariable.unit}
           </Box>
           )
         </Column>
-        <Column start={[1]} width={[6, 8, 4, 4]}>
+        <Column start={[1]} width={[6, 8, 4, 4]} sx={{ mb: 2 }}>
           <Colorbar
             colormap={colormap}
             clim={currentVariable.colorLimits}
