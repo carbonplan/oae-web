@@ -60,15 +60,20 @@ const MonthPicker = ({ sx }) => {
         color: disableMonthSelect ? 'muted' : 'primary',
         svg: {
           fill: disableMonthSelect ? 'muted' : 'primary',
+          width: 12,
+          height: 12,
         },
         ...sx,
       }}
       sxSelect={{
         fontSize: 1,
         fontFamily: 'mono',
+        letterSpacing: 'mono',
         borderBottomColor: disableMonthSelect ? 'muted' : 'primary',
         transition: 'color 0.2s, border-color 0.2s',
         textTransform: 'uppercase',
+        pr: 20,
+        pb: '4px',
         '&:hover': !disableMonthSelect
           ? {
               color: 'primary',

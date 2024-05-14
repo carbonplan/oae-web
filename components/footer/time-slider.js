@@ -22,7 +22,6 @@ const UnitSlider = ({
   onChange,
   formatLabel,
   formatValue,
-  showValue,
   debounce = false,
 }) => {
   const [sliderValue, setSliderValue] = useState(value)
@@ -75,9 +74,7 @@ const UnitSlider = ({
         <Box
           sx={{
             ...sx.label,
-            color: sliding ? 'primary' : 'secondary',
-            opacity: sliding || showValue ? 1 : 0,
-            transition: 'opacity 0.2s, color 0.2s',
+            color: 'primary',
           }}
         >
           {formattedValue}
@@ -107,7 +104,7 @@ const TimeSlider = () => {
   )
 
   return (
-    <Flex sx={{ gap: [3, 4, 4, 5], alignItems: 'center' }}>
+    <Flex sx={{ gap: [3, 4, 4, 5], mt: -1, alignItems: 'center' }}>
       <Box sx={{ ...sx.label, mt: -2 }}>Elapsed time</Box>
       <Flex sx={{ flex: 1, gap: 3 }}>
         <UnitSlider
@@ -115,9 +112,8 @@ const TimeSlider = () => {
           range={[0, 14]}
           onChange={handleYearChange}
           formatLabel={(d) => `Year ${d + 1}`}
-          showValue
         />
-        <MonthPicker />
+        <MonthPicker sx={{ mt: -1 }} />
       </Flex>
     </Flex>
   )

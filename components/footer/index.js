@@ -5,7 +5,7 @@ import TimeSlider from './time-slider'
 const Footer = () => {
   return (
     <>
-      <FooterWrapper bottom={[56, 56, 0, 0]}>
+      <FooterWrapper bottom={[64, 64, 0, 0]}>
         <InjectionMonth />
       </FooterWrapper>
       <FooterWrapper>
