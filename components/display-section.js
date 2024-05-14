@@ -10,16 +10,17 @@ import useStore, { variables } from '../store'
 const DESCRIPTIONS = {
   EFFICIENCY: {
     overview:
-      'Overall efficiency of release. Select a region to view other experimental outputs.',
-    region: 'Overall efficiency of release.',
+      'Carbon removal efficiency of release as a function of region, season of injection, and time. Select a region to view other experimental outputs.',
+    region:
+      'Carbon removal efficiency of release as a function of region, season of injection, and time.',
   },
   ALK: {
     region:
-      "Concentration of alkalinity in water. Higher alkalinity concentration correlates with increases in the ocean's ability to absorb carbon.",
+      'Alkalinity increases the ocean’s ability to absorb carbon. Surface values shown here.',
   },
   DIC: {
     region:
-      'DIC (mmol/m³) is the sum of inorganic carbon in water. It is a measure of how much carbon is stored in the ocean.',
+      'Dissolved inorganic carbon (DIC) is the sum of inorganic carbon in water. Full water column values shown here.',
   },
 }
 
@@ -127,7 +128,7 @@ const DisplaySection = ({ sx }) => {
             <Box sx={{ mt: 3 }}>
               <TooltipWrapper
                 sx={{ justifyContent: 'flex-start', gap: 2 }}
-                tooltip='Toggle between a view of the shift in the selected variable and its total values.'
+                tooltip='View the change in the selected variable, or its total values.'
               >
                 {Object.keys(filterValues).length && (
                   <Filter
