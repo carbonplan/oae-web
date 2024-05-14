@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box } from 'theme-ui'
 import { SidebarDivider } from '@carbonplan/layouts'
-import { Column, Logo, Row } from '@carbonplan/components'
+import { Column, Link, Logo, Row } from '@carbonplan/components'
 
 import { CarbonToSea, CWorthy } from './logos'
 
@@ -13,9 +13,13 @@ const About = ({ sx }) => {
 
       <Box sx={{ fontSize: 1, mb: 3 }}>
         <p>
-          This interactive tool explores the efficiency of enhanced alkalinity
-          enhancement (OAE). It was built by [C]Worthy and CarbonPlan, with
-          funding from the Carbon to Sea Initiative.
+          [C]Worthy and collaborators{' '}
+          <Link href='https://doi.org/10.21203/rs.3.rs-4124909/v1'>
+            developed
+          </Link>{' '}
+          the underlying OAE efficiency dataset. Together, CarbonPlan and
+          [C]Worthy built the interactive tool, with funding from the Carbon to
+          Sea Initiative.
         </p>
         <p>TK</p>
       </Box>
