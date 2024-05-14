@@ -10,13 +10,13 @@ import useStore, { variables } from '../store'
 const DESCRIPTIONS = {
   EFFICIENCY: {
     overview:
-      'Carbon removal efficiency of release as a function of region, season of injection, and time. Select a region to view other experimental outputs.',
+      'Carbon removal efficiency of release as a function of region, season of injection, and elapsed time. Select a region to view other experimental outputs.',
     region:
-      'Carbon removal efficiency of release as a function of region, season of injection, and time.',
+      'Carbon removal efficiency of release as a function of region, season of injection, and elapsed time.',
   },
   ALK: {
     region:
-      'Alkalinity increases the ocean’s ability to absorb carbon. Surface values shown here.',
+      'Concentration of alkalinity in surface waters. Alkalinity increases the ocean’s ability to absorb carbon.',
   },
   DIC: {
     region:
