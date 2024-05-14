@@ -3,7 +3,7 @@ import { create } from 'zustand'
 export const overviewVariable = {
   key: 'EFFICIENCY',
   colorLimits: [0, 1],
-  colormap: 'water',
+  colormap: 'cool',
   label: 'Efficiency',
   unit: 'mole CO₂ / mole alkalinity',
 }
@@ -51,7 +51,7 @@ export const variables = {
         variable: 'DIC',
         delta: true,
         colorLimits: [0, 0.1],
-        colormap: 'cool',
+        colormap: 'warm',
         label: 'change',
         unit: 'mmol/m³',
       },
@@ -59,7 +59,7 @@ export const variables = {
         variable: 'DIC',
         delta: false,
         colorLimits: [1800, 2300],
-        colormap: 'cool',
+        colormap: 'warm',
         label: 'Total',
         unit: 'mmol/m³',
       },
