@@ -1,19 +1,9 @@
 import React from 'react'
 import { Box } from 'theme-ui'
 
-const CWorthyLogo = () => {
+const CWorthy = (props) => {
   return (
-    <Box
-      as={'svg'}
-      viewBox='0 0 581.26 138'
-      sx={{
-        fill: 'primary',
-        width: 125,
-        mt: '10px',
-        cursor: 'pointer',
-      }}
-      onClick={() => window.open('https://cworthy.org/', '_blank')}
-    >
+    <Box as={'svg'} viewBox='0 0 581.26 138' fill='currentColor' {...props}>
       <path d='m0,.56c9.36.07,18.72.13,28.08.2,1.27,0,2.55,0,4.05,0v11.08H12.73v114.72h19.8v11.45H0V.56Z' />
       <path d='m105.33,138v-11.26h19.8V12.02h-19.4V.96h31.94c0,1.24,0,2.39,0,3.55,0,43.32,0,86.63,0,129.95,0,1.18.12,2.37.19,3.55h-32.54Z' />
       <path d='m530.53,138c3.4-8.58,6.84-17.14,10.12-25.76.36-.94.06-2.32-.36-3.32-7.85-18.71-15.77-37.39-23.67-56.08-.38-.9-.7-1.83-1.21-3.14,5.01,0,9.67-.13,14.3.13.78.04,1.72,1.66,2.17,2.72,6.91,16.13,13.4,32.46,20.79,48.36,3.01,6.48,3.16,11.9.1,18.2-2.95,6.06-4.94,12.57-7.36,18.89h-14.89Z' />
@@ -34,4 +24,4 @@ const CWorthyLogo = () => {
   )
 }
 
-export default CWorthyLogo
+export default CWorthy

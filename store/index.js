@@ -5,15 +5,20 @@ export const overviewVariable = {
   colorLimits: [0, 1],
   colormap: 'water',
   label: 'Efficiency',
-  unit: '',
-  description: 'tk',
+  unit: 'mole CO₂ / mole alkalinity',
 }
 
 export const variables = {
+  EFFICIENCY: {
+    meta: {
+      label: 'Efficiency',
+      threshold: 0.001,
+    },
+    variables: [overviewVariable],
+  },
   ALK: {
     meta: {
       label: 'Alkalinity',
-      description: `Alkalinity (mEq/m³). Higher alkalinity values correlate with increases in the ocean's ability to absorb carbon dioxide.`,
       threshold: 0.001,
     },
     variables: [
@@ -24,8 +29,6 @@ export const variables = {
         colormap: 'warm',
         label: 'change',
         unit: 'mEq/m³',
-        description:
-          'Change in alkalinity (mEq/m³) due to alkalinity enhancement in the selected region.',
       },
       {
         variable: 'ALK',
@@ -34,15 +37,13 @@ export const variables = {
         colormap: 'warm',
         label: 'Total',
         unit: 'mEq/m³',
-        description:
-          'Total alkalinity (mEq/m³) in the ocean after alkalinity enhancement in the selected region.',
       },
     ],
   },
   DIC: {
     meta: {
       label: 'Dissolved inorganic carbon (DIC)',
-      description: `DIC (mmol/m³) is the sum of inorganic carbon in water. It is a measure of how much carbon is stored in the ocean.`,
+
       threshold: 0.001,
     },
     variables: [
@@ -53,8 +54,6 @@ export const variables = {
         colormap: 'cool',
         label: 'change',
         unit: 'mmol/m³',
-        description:
-          'Change in DIC (mmol/m³) due to alkalinity enhancement in the selected region.',
       },
       {
         variable: 'DIC',
@@ -63,8 +62,6 @@ export const variables = {
         colormap: 'cool',
         label: 'Total',
         unit: 'mmol/m³',
-        description:
-          'Total DIC (mmol/m³) in the ocean after alkalinity enhancement in the selected region.',
       },
     ],
   },
@@ -97,7 +94,7 @@ const useStore = create((set) => ({
   expanded: true,
   setExpanded: (expanded) => set({ expanded }),
 
-  variableFamily: 'ALK',
+  variableFamily: 'EFFICIENCY',
   setVariableFamily: (variableFamily) => set({ variableFamily }),
 
   currentVariable: overviewVariable,
@@ -106,21 +103,30 @@ const useStore = create((set) => ({
   selectedRegion: null,
   setSelectedRegion: (selectedRegion) =>
     selectedRegion !== null
-      ? set(() => {
+      ? set((state) => {
           if (selectedRegion !== 301) {
             alert(
               'only region 301 (upper mid pacific) is available at this time'
             )
             return { selectedRegion: null }
           }
-          return { selectedRegion, currentVariable: variables.ALK.variables[0] }
+
+          const activeLineData = state.efficiencyLineData[selectedRegion]
+          return {
+            selectedRegion,
+            currentVariable: variables.ALK.variables[0],
+            variableFamily: 'ALK',
+            activeLineData,
+          }
         })
       : set({
           selectedRegion,
           currentVariable: overviewVariable,
+          variableFamily: 'EFFICIENCY',
           showRegionPicker: false,
           regionData: null,
           hoveredRegion: null,
+          activeLineData: null,
         }),
 
   selectedRegionCenter: null,
@@ -137,12 +143,16 @@ const useStore = create((set) => ({
   hoveredRegion: null,
   setHoveredRegion: (hoveredRegion) =>
     set((state) => {
-      const hoveredLineData = state.efficiencyLineData[hoveredRegion]
-      return { hoveredRegion, hoveredLineData: hoveredLineData || null }
+      if (state.selectedRegion) {
+        return {}
+      }
+
+      const activeLineData = state.efficiencyLineData[hoveredRegion]
+      return { hoveredRegion, activeLineData: activeLineData || null }
     }),
 
-  hoveredLineData: null,
-  setHoveredLineData: (hoveredLineData) => set({ hoveredLineData }),
+  activeLineData: null,
+  setActiveLineData: (activeLineData) => set({ activeLineData }),
 
   overviewElapsedTime: 179,
   setOverviewElapsedTime: (overviewElapsedTime) => set({ overviewElapsedTime }),

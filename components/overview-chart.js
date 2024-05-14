@@ -1,22 +1,22 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useThemedColormap } from '@carbonplan/colormaps'
-import { Box, Checkbox, Flex, Label, useThemeUI } from 'theme-ui'
+import { Box, Checkbox, Divider, Flex, Label, useThemeUI } from 'theme-ui'
 import { alpha } from '@theme-ui/color'
+import { useThemedColormap } from '@carbonplan/colormaps'
+import { Button } from '@carbonplan/components'
+import { Down } from '@carbonplan/icons'
 
 import useStore, { overviewVariable } from '../store'
 import Timeseries from './timeseries'
 import { openZarr, getChunk, getTimeSeriesData, loadZarr } from '../utils/zarr'
 import { downloadCsv } from '../utils/csv'
 import { getColorForValue } from '../utils/color'
-import { Button } from '@carbonplan/components'
-import { Down } from '@carbonplan/icons'
-
 const zarrUrl =
   'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 
 const OverviewChart = ({ sx }) => {
+  const selectedRegion = useStore((state) => state.selectedRegion)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
   const setHoveredRegion = useStore((state) => state.setHoveredRegion)
   const efficiencyLineData = useStore((state) => state.efficiencyLineData)
@@ -29,12 +29,14 @@ const OverviewChart = ({ sx }) => {
   const regionsInView = useStore((state) => state.regionsInView)
   const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
 
-  const colormap = useThemedColormap(overviewVariable?.colormap, { count: 20 }) // low count prevents banding in gradient
+  const colormap = useThemedColormap(overviewVariable.colormap, { count: 20 }) // low count prevents banding in gradient
   const colorLimits = overviewVariable.colorLimits
   const [timeData, setTimeData] = useState([])
   const startYear = 0
 
   const { theme } = useThemeUI()
+
+  const disableFilter = !!selectedRegion
 
   useEffect(() => {
     const fetchTimeSeriesData = async () => {
@@ -69,7 +71,7 @@ const OverviewChart = ({ sx }) => {
         selected[index] = {
           id: index,
           color: alphaColor,
-          hoveredColor: theme.rawColors?.primary,
+          activeColor: theme.rawColors?.primary,
           strokeWidth: 2,
           data: regionData,
         }
@@ -115,10 +117,11 @@ const OverviewChart = ({ sx }) => {
 
   return (
     <>
-      <Box sx={sx.heading}>efficiency</Box>
+      <Divider sx={{ mt: 4, mb: 5 }} />
+      <Box sx={sx.heading}>Time series</Box>
       <Label
         sx={{
-          color: 'secondary',
+          color: disableFilter ? 'muted' : 'secondary',
           cursor: 'pointer',
           fontSize: 1,
           fontFamily: 'mono',
@@ -126,6 +129,7 @@ const OverviewChart = ({ sx }) => {
         }}
       >
         <Checkbox
+          disabled={disableFilter}
           checked={filterToRegionsInView}
           onChange={(e) => setFilterToRegionsInView(e.target.checked)}
           sx={{
@@ -140,7 +144,10 @@ const OverviewChart = ({ sx }) => {
               bg: 'background',
               color: filterToRegionsInView ? 'primary' : 'muted',
             },
-            'input:hover ~ &': { bg: 'background', color: 'primary' },
+            'input:hover ~ &': {
+              bg: 'background',
+              color: disableFilter ? 'muted' : 'primary',
+            },
             'input:focus-visible ~ &': {
               outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
               background: 'rgb(110, 110, 110, 0.625)',
@@ -179,9 +186,10 @@ const OverviewChart = ({ sx }) => {
         elapsedYears={(overviewElapsedTime + 1) / 12}
         colormap={colormap}
         opacity={0.1}
-        handleClick={handleClick}
-        handleHover={handleHover}
-        shadeHorizon={true}
+        handleClick={selectedRegion ? undefined : handleClick}
+        handleHover={selectedRegion ? undefined : handleHover}
+        shadeHorizon
+        showActive
       />
     </>
   )

@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import { RegionPicker, useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
+
 import useStore from '../store'
 
 const RegionPickerWrapper = () => {

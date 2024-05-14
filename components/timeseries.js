@@ -13,8 +13,9 @@ import {
   TickLabels,
   Ticks,
 } from '@carbonplan/charts'
-import useStore from '../store'
 import { Badge } from '@carbonplan/components'
+
+import useStore from '../store'
 
 const renderPoint = (point) => {
   const { x, y, color } = point
@@ -80,11 +81,12 @@ const ColormapGradient = ({ colormap, opacity = 1 }) => {
 const RenderLines = ({
   linesObject = {},
   additionalStyles = {},
-  handleClick = () => {},
-  handleHover = (id) => {},
+  handleClick,
+  handleHover,
   gradient = false,
 }) => {
   const lineCount = Object.keys(linesObject).length
+  const interactive = handleClick || handleHover
   return Object.values(linesObject).map(({ id, data, color, strokeWidth }) => (
     <Line
       key={id}
@@ -95,47 +97,47 @@ const RenderLines = ({
       sx={{
         pointerEvents: 'visiblePainted',
         '&:hover': {
-          cursor: 'pointer',
+          cursor: interactive ? 'pointer' : 'default',
         },
         shapeRendering: lineCount > 100 ? 'optimizeSpeed' : 'auto',
         ...additionalStyles,
       }}
       onClick={handleClick}
-      onMouseOver={() => handleHover(id)}
-      onMouseLeave={() => handleHover(null)}
+      onMouseOver={handleHover ? () => handleHover(id) : undefined}
+      onMouseLeave={handleHover ? () => handleHover(null) : undefined}
     />
   ))
 }
 
-const HoveredLine = () => {
-  const hoveredLineData = useStore((s) => s.hoveredLineData)
+const ActiveLine = () => {
+  const activeLineData = useStore((s) => s.activeLineData)
   const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
-  if (!hoveredLineData || !hoveredLineData.data) {
+
+  if (!activeLineData || !activeLineData.data) {
     return null
   }
-  const { hoveredColor, color } = hoveredLineData
-  const x = hoveredLineData.data[overviewElapsedTime][0]
-  const y = hoveredLineData.data[overviewElapsedTime][1]
+
+  const { activeColor, color } = activeLineData
+  const x = activeLineData.data[overviewElapsedTime][0]
+  const y = activeLineData.data[overviewElapsedTime][1]
   return (
     <>
       <Line
-        key={'-hovered'}
-        id={hoveredLineData.id + '-hovered'}
         sx={{
-          stroke: hoveredColor ? hoveredColor : color,
+          stroke: activeColor ? activeColor : color,
           strokeWidth: 2,
           pointerEvents: 'none',
           '&:hover': {
             cursor: 'pointer',
           },
         }}
-        data={hoveredLineData.data}
+        data={activeLineData.data}
       />
       <Circle
         x={x}
         y={y}
         size={10}
-        color={hoveredColor ? hoveredColor : color}
+        color={activeColor ? activeColor : color}
         sx={{ pointerEvents: 'none' }}
       />
     </>
@@ -143,13 +145,13 @@ const HoveredLine = () => {
 }
 
 const OverviewBadge = () => {
-  const hoveredLineData = useStore((s) => s.hoveredLineData)
+  const activeLineData = useStore((s) => s.activeLineData)
   const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
-  if (!hoveredLineData || !hoveredLineData.data) {
+  if (!activeLineData || !activeLineData.data) {
     return null
   }
-  const { color } = hoveredLineData
-  const data = hoveredLineData.data[overviewElapsedTime]
+  const { color } = activeLineData
+  const data = activeLineData.data[overviewElapsedTime]
   const x = data[0]
   const y = data[1]
   const point = { x, y, color, text: data[1].toFixed(2) }
@@ -167,6 +169,7 @@ const Timeseries = ({
   elapsedYears,
   colormap,
   opacity,
+  showActive = false,
   shadeHorizon = false,
   xSelector = false,
   handleXSelectorClick = () => {},
@@ -289,7 +292,10 @@ const Timeseries = ({
         <Plot
           sx={{
             pointerEvents: 'auto',
-            cursor: xSelector && mousePosition ? 'pointer' : 'auto',
+            cursor:
+              (handleClick || handleHover) && xSelector && mousePosition
+                ? 'pointer'
+                : 'auto',
           }}
           {...xSelectorHandlers}
         >
@@ -316,12 +322,12 @@ const Timeseries = ({
             />
           )}
 
-          <HoveredLine />
+          {showActive && <ActiveLine />}
           {xSelector && mousePosition && renderXSelector(mousePosition, false)}
           {point && renderPoint(point)}
         </Plot>
         {!xSelector && renderDataBadge()}
-        <OverviewBadge />
+        {showActive && <OverviewBadge />}
         {regionDataLoading && xSelector && (
           <Box
             sx={{

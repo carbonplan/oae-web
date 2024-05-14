@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import { Map, Line, Raster, Fill } from '@carbonplan/maps'
-import { Box, useThemeUI } from 'theme-ui'
-import { Colorbar } from '@carbonplan/components'
+import { useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
 
 import useStore, { variables } from '../store'
@@ -103,7 +102,7 @@ const MapWrapper = ({ children }) => {
 
   return (
     <Map zoom={1.5} center={[140, -45]} debug={false} setLoading={setLoading}>
-      {selectedRegion !== null && (
+      {selectedRegion !== null && currentVariable.key !== 'EFFICIENCY' && (
         <>
           <Raster
             key={variableFamily}
@@ -140,22 +139,6 @@ const MapWrapper = ({ children }) => {
           {showRegionPicker && <RegionPickerWrapper />}
         </>
       )}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: ['72px', '80px', 'unset', 'unset'],
-          bottom: ['unset', 'unset', 4, 4],
-          right: [3, 4, 5, 6],
-        }}
-      >
-        <Colorbar
-          colormap={colormap}
-          clim={currentVariable.colorLimits}
-          label={currentVariable.label}
-          units={currentVariable.unit}
-          horizontal
-        />
-      </Box>
       <Fill
         color={theme.rawColors.background}
         source={bucket + 'basemaps/land'}
