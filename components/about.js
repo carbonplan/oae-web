@@ -13,9 +13,9 @@ const About = ({ sx }) => {
 
       <Box sx={{ fontSize: 1, mb: 3 }}>
         <p>
-          This is interactive tool explores the efficiency of enhanced
-          alkalinity enhancement (OAE). It was built by [C]Worthy and
-          CarbonPlan, with funding from the Carbon to Sea Initiative.
+          This interactive tool explores the efficiency of enhanced alkalinity
+          enhancement (OAE). It was built by [C]Worthy and CarbonPlan, with
+          funding from the Carbon to Sea Initiative.
         </p>
         <p>TK</p>
       </Box>
