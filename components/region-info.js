@@ -49,7 +49,8 @@ const RegionInfo = ({ sx }) => {
             alignItems: 'center',
             justifyContent: 'space-between',
             color: 'primary',
-            py: 3,
+            pt: 3,
+            pb: '9px',
           }}
         >
           <Flex sx={{ gap: 2, alignItems: 'flex-start' }}>
@@ -72,6 +73,7 @@ const RegionInfo = ({ sx }) => {
                     color: 'secondary',
                     overflowX: 'visible',
                     wordWrap: 'normal',
+                    mt: '-5px',
                   }}
                 >
                   Clear
@@ -82,6 +84,7 @@ const RegionInfo = ({ sx }) => {
                   sx={{
                     width: 24,
                     ml: 1,
+                    mt: '-5px',
                   }}
                   onClick={handleClear}
                 />
@@ -94,7 +97,7 @@ const RegionInfo = ({ sx }) => {
                   color: 'secondary',
                   overflowX: 'visible',
                   wordWrap: 'normal',
-                  mt: -1,
+                  mt: '-5px',
                 }}
               >
                 Select a model run on the map{index > 1 ? '/graph' : ''}
