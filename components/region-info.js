@@ -2,7 +2,6 @@ import React from 'react'
 import { Box, Flex } from 'theme-ui'
 import { Badge, Expander } from '@carbonplan/components'
 import { mix } from '@theme-ui/color'
-import { useBreakpointIndex } from '@theme-ui/match-media'
 import { SidebarDivider } from '@carbonplan/layouts'
 
 import useStore from '../store'
@@ -11,8 +10,6 @@ const RegionInfo = ({ sx }) => {
   const hoveredRegion = useStore((state) => state.hoveredRegion)
   const selectedRegion = useStore((state) => state.selectedRegion)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
-
-  const index = useBreakpointIndex({ defaultIndex: 2 })
 
   const handleClear = () => {
     setSelectedRegion(null)
@@ -100,7 +97,7 @@ const RegionInfo = ({ sx }) => {
                   mt: '-5px',
                 }}
               >
-                Select a model run on the map{index > 1 ? '/graph' : ''}
+                Select a model run on the map
               </Box>
             )}
           </Box>
