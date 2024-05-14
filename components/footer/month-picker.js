@@ -3,6 +3,8 @@ import { Select } from '@carbonplan/components'
 import { useCallback } from 'react'
 
 import useStore from '../../store'
+import Lock from '../lock'
+import { Box } from 'theme-ui'
 
 const OFFSETS = {
   JAN: 0,
@@ -52,43 +54,41 @@ const MonthPicker = ({ sx }) => {
   )
 
   return (
-    <Select
-      value={elapsedTime % 12}
-      size='xs'
-      disabled={disableMonthSelect}
-      sx={{
-        color: disableMonthSelect ? 'muted' : 'primary',
-        svg: {
-          fill: disableMonthSelect ? 'muted' : 'primary',
-          width: 12,
-          height: 12,
-        },
-        ...sx,
-      }}
-      sxSelect={{
-        fontSize: 1,
-        fontFamily: 'mono',
-        letterSpacing: 'mono',
-        borderBottomColor: disableMonthSelect ? 'muted' : 'primary',
-        transition: 'color 0.2s, border-color 0.2s',
-        textTransform: 'uppercase',
-        pr: 20,
-        pb: '4px',
-        '&:hover': !disableMonthSelect
-          ? {
-              color: 'primary',
-              borderBottomColor: 'primary',
-            }
-          : { cursor: 'not-allowed' },
-      }}
-      onChange={(e) => handleMonthChange(parseInt(e.target.value))}
-    >
-      {months.map((m) => (
-        <option key={m.value} value={m.value}>
-          {m.label}
-        </option>
-      ))}
-    </Select>
+    <Box sx={{ position: 'relative' }}>
+      <Select
+        value={elapsedTime % 12}
+        size='xs'
+        disabled={disableMonthSelect}
+        sx={{
+          svg: {
+            width: 12,
+            height: 12,
+          },
+          ...sx,
+        }}
+        sxSelect={{
+          fontSize: 1,
+          fontFamily: 'mono',
+          letterSpacing: 'mono',
+          transition: 'color 0.2s, border-color 0.2s',
+          textTransform: 'uppercase',
+          pr: 20,
+          pb: '4px',
+          cursor: disableMonthSelect ? 'not-allowed' : 'cursor',
+        }}
+        onChange={(e) => handleMonthChange(parseInt(e.target.value))}
+      >
+        {months.map((m) => (
+          <option key={m.value} value={m.value}>
+            {m.label}
+          </option>
+        ))}
+      </Select>
+      <Lock
+        display={disableMonthSelect}
+        sx={{ right: '-2px', top: '1px', svg: { width: 12, height: 12 } }}
+      />
+    </Box>
   )
 }
 
