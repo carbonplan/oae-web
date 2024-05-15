@@ -11,7 +11,13 @@ import {
 const Header = ({ expanded, setExpanded }) => {
   return (
     <>
-      <Meta card={''} description={'OAE Web'} title={'OAE'} />
+      <Meta
+        card={''}
+        description={
+          'Interactive mapping tool for exploring the efficiency of ocean alkalinity enhancement (OAE).'
+        }
+        title={'OAE Efficiency – CarbonPlan'}
+      />
 
       <Container>
         <Guide color='teal' />
