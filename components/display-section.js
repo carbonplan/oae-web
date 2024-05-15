@@ -10,9 +10,9 @@ import useStore, { variables } from '../store'
 const DESCRIPTIONS = {
   EFFICIENCY: {
     overview:
-      'Carbon removal efficiency of release as a function of region, season of injection, and elapsed time. Select a region to view other experimental outputs.',
+      'Carbon removal efficiency of release as a function of region, injection month, and elapsed time. Select a region to view other experimental outputs.',
     region:
-      'Carbon removal efficiency of release as a function of region, season of injection, and elapsed time.',
+      'Carbon removal efficiency of release as a function of region, injection month, and elapsed time.',
   },
   ALK: {
     region:
