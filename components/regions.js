@@ -105,7 +105,7 @@ const Regions = () => {
             promoteId: 'polygon_id',
             maxzoom: 0,
             tiles: [
-              'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/allPoly/3857/{z}/{x}/{y}.pbf',
+              'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/allPoly/3857_3/{z}/{x}/{y}.pbf',
             ],
           })
         }
