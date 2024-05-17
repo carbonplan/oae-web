@@ -25,7 +25,8 @@ export const variables = {
       {
         variable: 'ALK',
         delta: true,
-        colorLimits: [0, 0.1],
+        logScale: true,
+        colorLimits: [0.001, 0.1],
         colormap: 'warm',
         label: 'change',
         unit: 'mEq/m³',

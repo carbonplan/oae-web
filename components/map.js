@@ -14,6 +14,7 @@ const bands = ['experiment', 'counterfactual']
 const frag = `
     float value;
     bool isDelta = delta == 1.0;
+    bool useLogScale = logScale == 1.0;
     float baseValue = 0.0;
     float blendFactor = 0.1;
     vec4 bgc = vec4(0.0);
@@ -24,11 +25,6 @@ const frag = `
         gl_FragColor = vec4(0.0);
         return;
       }
-      float rescaled = (value - clim.x) / (clim.y - clim.x);
-      gl_FragColor = texture2D(colormap, vec2(rescaled, 1.0));
-      gl_FragColor.a = opacity;
-      gl_FragColor.rgb *= gl_FragColor.a;
-      return;
     }
 
     if (isDelta) {
@@ -37,12 +33,17 @@ const frag = `
         gl_FragColor = vec4(0.0);
         return;
       }
-      float rescaled = (value - clim.x) / (clim.y - clim.x);
-      gl_FragColor = texture2D(colormap, vec2(rescaled, 1.0));
-      gl_FragColor.a = opacity;
-      gl_FragColor.rgb *= gl_FragColor.a;
-      return;
     }
+
+    float rescaled;
+    if (useLogScale) {
+      rescaled = (log(value) - log(clim.x)) / (log(clim.y) - log(clim.x));
+    } else {
+      rescaled = (value - clim.x) / (clim.y - clim.x);
+    }
+    gl_FragColor = texture2D(colormap, vec2(rescaled, 1.0));
+    gl_FragColor.a = opacity;
+    gl_FragColor.rgb *= gl_FragColor.a;
   `
 
 const MapWrapper = ({ children }) => {
@@ -103,6 +104,7 @@ const MapWrapper = ({ children }) => {
             }}
             uniforms={{
               delta: currentVariable.delta ? 1.0 : 0.0,
+              logScale: currentVariable.logScale ? 1.0 : 0.0,
               threshold: variables[variableFamily].meta.threshold ?? 0.0,
             }}
             frag={frag}
