@@ -63,6 +63,7 @@ const MonthPicker = ({ sx }) => {
           svg: {
             width: 12,
             height: 12,
+            display: disableMonthSelect ? 'none' : 'inherit',
           },
           ...sx,
         }}
@@ -75,6 +76,7 @@ const MonthPicker = ({ sx }) => {
           pr: 20,
           pb: '4px',
           cursor: disableMonthSelect ? 'not-allowed' : 'cursor',
+          background: 'none',
         }}
         onChange={(e) => handleMonthChange(parseInt(e.target.value))}
       >

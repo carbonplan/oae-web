@@ -85,6 +85,9 @@ const DisplaySection = ({ sx }) => {
                 width: '100%',
                 mr: 2,
                 mb: 1,
+                svg: {
+                  display: selectedRegion ? 'inherit' : 'none',
+                },
                 '&:hover ~ #description': selectedRegion
                   ? {}
                   : {

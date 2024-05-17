@@ -8,7 +8,6 @@ const Lock = ({ display, sx }) => {
         position: 'absolute',
         right: 0,
         top: '2px',
-        background: 'background',
         pointerEvents: 'none',
         color: 'secondary',
         opacity: 1,
