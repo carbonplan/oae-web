@@ -133,10 +133,6 @@ const useStore = create((set) => ({
   setSelectedRegionCenter: (selectedRegionCenter) =>
     set({ selectedRegionCenter }),
 
-  showDeltaOverBackground: false,
-  setShowDeltaOverBackground: (showDeltaOverBackground) =>
-    set({ showDeltaOverBackground }),
-
   efficiencyLineData: {},
   setEfficiencyLineData: (efficiencyLineData) => set({ efficiencyLineData }),
 

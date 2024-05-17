@@ -14,12 +14,11 @@ const bands = ['experiment', 'counterfactual']
 const frag = `
     float value;
     bool isDelta = delta == 1.0;
-    bool showDeltaOverBackground = showDeltaOverBackground == 1.0;
     float baseValue = 0.0;
     float blendFactor = 0.1;
     vec4 bgc = vec4(0.0);
 
-    if (!isDelta && !showDeltaOverBackground) {
+    if (!isDelta) {
       value = experiment;
       if (value == fillValue) {
         gl_FragColor = vec4(0.0);
@@ -32,7 +31,7 @@ const frag = `
       return;
     }
 
-    if (isDelta && !showDeltaOverBackground) {
+    if (isDelta) {
       value = experiment - counterfactual;
       if (value < threshold || value == fillValue) {
         gl_FragColor = vec4(0.0);
@@ -43,31 +42,6 @@ const frag = `
       gl_FragColor.a = opacity;
       gl_FragColor.rgb *= gl_FragColor.a;
       return;
-    }
-
-    if (showDeltaOverBackground) {
-      value = experiment - counterfactual;
-      baseValue = experiment;
-      float bgRescaled = (baseValue - clim.x) / (clim.y - clim.x);
-      bgc = texture2D(colormap, vec2(bgRescaled, 1.0));
-      bgc.a = opacity;
-      if (baseValue == fillValue) {
-        gl_FragColor = vec4(0.0);
-        return;
-      }
-      if (value < threshold) {
-        // background color
-        gl_FragColor = vec4(bgc.rgb, bgc.a);
-        gl_FragColor.rgb *= gl_FragColor.a;
-        return;
-      } else {
-        // show grey delta
-        vec4 greyColor = vec4(1, 1, 1, 1.0);
-        vec4 blendedColor = mix(bgc, greyColor, blendFactor * greyColor.a);
-        gl_FragColor = vec4(blendedColor.rgb, blendedColor.a);
-        gl_FragColor.rgb *= gl_FragColor.a;
-        return;
-      }
     }
   `
 
@@ -81,7 +55,6 @@ const MapWrapper = ({ children }) => {
   const variableFamily = useStore((s) => s.variableFamily)
   const showRegionPicker = useStore((s) => s.showRegionPicker)
   const setRegionData = useStore((s) => s.setRegionData)
-  const showDeltaOverBackground = useStore((s) => s.showDeltaOverBackground)
 
   const colormap = useThemedColormap(currentVariable.colormap)
 
@@ -130,8 +103,6 @@ const MapWrapper = ({ children }) => {
             }}
             uniforms={{
               delta: currentVariable.delta ? 1.0 : 0.0,
-              showDeltaOverBackground:
-                showDeltaOverBackground && !currentVariable.delta ? 1.0 : 0.0,
               threshold: variables[variableFamily].meta.threshold ?? 0.0,
             }}
             frag={frag}
