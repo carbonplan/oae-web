@@ -17,7 +17,7 @@ gdf.set_index('polygon_id', inplace=True)
 
 injection_dates = ds["injection_date"].values
 
-def (polygon_id, ds, gdf):
+def flatten_efficiency_data_and_apply(polygon_id, ds, gdf):
     for injection_date in injection_dates:  # Injection dates labeled 1 to 4
         try:
             efficiency_data = np.round(ds['OAE_efficiency'].sel(polygon_id=polygon_id, injection_date=injection_date, drop=True).values, 3)
