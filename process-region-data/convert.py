@@ -78,6 +78,11 @@ dissolved_gdf = gdf.dissolve(by='polygon_mask_id')
 dissolved_gdf['polygon_id'] = dissolved_gdf.index
 dissolved_gdf.reset_index(drop=True, inplace=True)
 
+# Adjust coordinates by height and width of cell
+cell_height = (latitude[1, 0] - latitude[0, 0]) / 2
+cell_width = (longitude[0, 1] - longitude[0, 0]) / 2
+dissolved_gdf['geometry'] = dissolved_gdf['geometry'].translate(xoff=(cell_width * -1), yoff=(cell_height * -1))
+
 # Save the dissolved polygons to a new GeoJSON file
 output_file = 'grid_geojson_dissolved.geojson'  # Name of the output file
 dissolved_gdf.to_file(output_file, driver='GeoJSON')
