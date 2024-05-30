@@ -26,7 +26,8 @@ export const variables = {
         variable: 'ALK',
         delta: true,
         logScale: true,
-        colorLimits: [0.001, 0.1],
+        colorLimits: [0, 0.1],
+        logColorLimits: [0.0001, 10],
         colormap: 'warm',
         label: 'change',
         unit: 'mEq/m³',
@@ -44,7 +45,6 @@ export const variables = {
   DIC: {
     meta: {
       label: 'Dissolved inorganic carbon (DIC)',
-
       threshold: 0.001,
     },
     variables: [
@@ -101,6 +101,15 @@ const useStore = create((set) => ({
   currentVariable: overviewVariable,
   setCurrentVariable: (currentVariable) => set({ currentVariable }),
 
+  logScale: false,
+  setLogScale: (logScale) =>
+    set((state) => {
+      if (!state.currentVariable.logScale) {
+        return {}
+      }
+      return { logScale }
+    }),
+
   selectedRegion: null,
   setSelectedRegion: (selectedRegion) =>
     selectedRegion !== null
@@ -128,6 +137,7 @@ const useStore = create((set) => ({
           regionData: null,
           hoveredRegion: null,
           activeLineData: null,
+          logScale: false,
         }),
 
   selectedRegionCenter: null,

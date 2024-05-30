@@ -1,11 +1,13 @@
 import React, { useCallback, useMemo } from 'react'
-import { Box } from 'theme-ui'
+import { Box, Checkbox, Label } from 'theme-ui'
 import { Column, Filter, Select, Row, Colorbar } from '@carbonplan/components'
 import { useThemedColormap } from '@carbonplan/colormaps'
 
 import TooltipWrapper from './tooltip'
 import Lock from './lock'
 import useStore, { variables } from '../store'
+import { Chart, TickLabels, Ticks } from '@carbonplan/charts'
+import { generateLogTicks } from '../utils/color'
 
 const DESCRIPTIONS = {
   EFFICIENCY: {
@@ -30,11 +32,23 @@ const DisplaySection = ({ sx }) => {
   const setCurrentVariable = useStore((s) => s.setCurrentVariable)
   const variableFamily = useStore((s) => s.variableFamily)
   const setVariableFamily = useStore((s) => s.setVariableFamily)
-  const colormap = useThemedColormap(currentVariable.colormap)
+  const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
+  const setLogScale = useStore((s) => s.setLogScale)
+
+  const min = logScale
+    ? currentVariable.logColorLimits[0]
+    : currentVariable.colorLimits[0]
+  const max = logScale
+    ? currentVariable.logColorLimits[1]
+    : currentVariable.colorLimits[1]
+  const logLabels = logScale ? generateLogTicks(min, max) : [min, max]
+  const colormap = useThemedColormap(currentVariable.colormap, {
+    count: logScale ? logLabels.length - 1 : undefined,
+  })
 
   const filterValues = useMemo(() => {
     return variables[variableFamily].variables.reduce(
-      (acc, variable, index) => ({
+      (acc, variable) => ({
         ...acc,
         [variable.label]: currentVariable.label === variable.label,
       }),
@@ -151,15 +165,63 @@ const DisplaySection = ({ sx }) => {
             {currentVariable.unit}
           </Box>
           )
+          <Label
+            sx={{
+              cursor: currentVariable.logScale ? 'pointer' : '',
+              textTransform: 'none',
+              mt: 1,
+              color: currentVariable.logScale ? 'secondary' : 'muted',
+            }}
+          >
+            <Checkbox
+              disabled={!currentVariable.logScale}
+              checked={logScale}
+              onChange={(e) => setLogScale(e.target.checked)}
+              sx={{
+                width: 18,
+                mr: 1,
+                mt: '-3px',
+                color: currentVariable.logScale ? 'secondary' : 'muted',
+                transition: 'color 0.15s',
+                'input:active ~ &': { bg: 'background', color: 'primary' },
+                'input:focus ~ &': {
+                  bg: 'background',
+                  color: logScale ? 'primary' : 'muted',
+                },
+                'input:hover ~ &': {
+                  bg: 'background',
+                  color: !currentVariable.logScale ? 'muted' : 'primary',
+                },
+                'input:focus-visible ~ &': {
+                  outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
+                  background: 'rgb(110, 110, 110, 0.625)',
+                },
+              }}
+            />
+            Log scale
+          </Label>
         </Column>
         <Column start={[1]} width={[6, 8, 4, 4]} sx={{ mb: 2 }}>
           <Colorbar
             colormap={colormap}
-            clim={currentVariable.colorLimits}
+            discrete={logScale}
             horizontal
             width={'100%'}
             sx={{ mt: 2 }}
           />
+        </Column>
+      </Row>
+      <Row columns={[6, 8, 4, 4]} sx={{ mt: '9px' }}>
+        <Column start={1} width={[6, 8, 4, 4]} sx={{ ...sx.label, mt: 5 }}>
+          <Chart
+            logx={logScale}
+            x={[min, max]}
+            y={[0, 0]}
+            padding={{ left: 0 }}
+          >
+            <Ticks values={logScale ? logLabels : null} bottom />
+            <TickLabels values={logScale ? logLabels : null} bottom />
+          </Chart>
         </Column>
       </Row>
     </>

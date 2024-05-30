@@ -6,6 +6,7 @@ import { useThemedColormap } from '@carbonplan/colormaps'
 import useStore, { variables } from '../store'
 import Regions from './regions'
 import RegionPickerWrapper from './region-picker'
+import { generateLogTicks } from '../utils/color'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
@@ -37,7 +38,12 @@ const frag = `
 
     float rescaled;
     if (useLogScale) {
-      rescaled = (log(value) - log(clim.x)) / (log(clim.y) - log(clim.x));
+      float logMin = log(clim.x);
+      float logMax = log(clim.y);
+      float logValue = log(value);
+      if (logValue < logMin) logValue = logMin;
+      if (logValue > logMax) logValue = logMax;
+      rescaled = (logValue - logMin) / (logMax - logMin);
     } else {
       rescaled = (value - clim.x) / (clim.y - clim.x);
     }
@@ -56,8 +62,18 @@ const MapWrapper = ({ children }) => {
   const variableFamily = useStore((s) => s.variableFamily)
   const showRegionPicker = useStore((s) => s.showRegionPicker)
   const setRegionData = useStore((s) => s.setRegionData)
+  const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
 
-  const colormap = useThemedColormap(currentVariable.colormap)
+  const min = logScale
+    ? currentVariable.logColorLimits[0]
+    : currentVariable.colorLimits[0]
+  const max = logScale
+    ? currentVariable.logColorLimits[1]
+    : currentVariable.colorLimits[1]
+  const logLabels = logScale ? generateLogTicks(min, max) : [min, max]
+  const colormap = useThemedColormap(currentVariable.colormap, {
+    count: logScale ? logLabels.length - 1 : undefined,
+  })
 
   const { theme } = useThemeUI()
 
@@ -85,7 +101,11 @@ const MapWrapper = ({ children }) => {
               'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/reshaped_time_pyramid.zarr'
             }
             colormap={colormap}
-            clim={currentVariable.colorLimits}
+            clim={
+              logScale
+                ? currentVariable.logColorLimits
+                : currentVariable.colorLimits
+            }
             mode={'texture'}
             fillValue={9.969209968386869e36}
             regionOptions={{
@@ -104,7 +124,7 @@ const MapWrapper = ({ children }) => {
             }}
             uniforms={{
               delta: currentVariable.delta ? 1.0 : 0.0,
-              logScale: currentVariable.logScale ? 1.0 : 0.0,
+              logScale: logScale ? 1.0 : 0.0,
               threshold: variables[variableFamily].meta.threshold ?? 0.0,
             }}
             frag={frag}
