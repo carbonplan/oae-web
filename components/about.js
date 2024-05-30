@@ -21,20 +21,19 @@ const About = ({ sx }) => {
           [C]Worthy built the interactive tool, with funding from the Carbon to
           Sea Initiative and Environmental Defense Fund.
         </p>
-        <p>TK</p>
       </Box>
       <Row columns={[6, 8, 4, 4]} sx={{ mt: 5 }}>
         <Column start={1} width={[3, 4, 2, 2]}>
-          <CWorthy sx={{ width: '90%', maxWidth: '200px' }} />
+          <CWorthy sx={{ width: '75%', maxWidth: '200px' }} />
         </Column>
         <Column start={[4, 5, 3, 3]} width={[3, 4, 2, 2]}>
-          <CarbonToSea sx={{ width: '100%', maxWidth: '200px' }} />
+          <CarbonToSea sx={{ mt: 1, width: '80%', maxWidth: '200px' }} />
         </Column>
         <Column start={1} width={[3, 4, 2, 2]}>
-          <EDF sx={{ mt: 3, width: '100%', maxWidth: '200px' }} />
+          <EDF sx={{ mt: 4, width: '80%', maxWidth: '200px' }} />
         </Column>
         <Column start={[4, 5, 3, 3]} width={[3, 4, 2, 2]}>
-          <Logo sx={{ mt: 3, width: '100%', maxWidth: '200px' }} />
+          <Logo sx={{ mt: 4, width: '80%', maxWidth: '200px' }} />
         </Column>
       </Row>
     </>
