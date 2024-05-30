@@ -3,7 +3,7 @@ import { Box } from 'theme-ui'
 import { SidebarDivider } from '@carbonplan/layouts'
 import { Column, Link, Logo, Row } from '@carbonplan/components'
 
-import { CarbonToSea, CWorthy } from './logos'
+import { CarbonToSea, CWorthy, EDF } from './logos'
 
 const About = ({ sx }) => {
   return (
@@ -19,7 +19,7 @@ const About = ({ sx }) => {
           </Link>{' '}
           the underlying OAE efficiency dataset. Together, CarbonPlan and
           [C]Worthy built the interactive tool, with funding from the Carbon to
-          Sea Initiative.
+          Sea Initiative and Environmental Defense Fund.
         </p>
         <p>TK</p>
       </Box>
@@ -31,6 +31,9 @@ const About = ({ sx }) => {
           <CarbonToSea sx={{ width: '100%', maxWidth: '200px' }} />
         </Column>
         <Column start={1} width={[3, 4, 2, 2]}>
+          <EDF sx={{ mt: 3, width: '100%', maxWidth: '200px' }} />
+        </Column>
+        <Column start={[4, 5, 3, 3]} width={[3, 4, 2, 2]}>
           <Logo sx={{ mt: 3, width: '100%', maxWidth: '200px' }} />
         </Column>
       </Row>
