@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
-import { Box, Checkbox, Label } from 'theme-ui'
+import { Box, Checkbox, Flex, Label } from 'theme-ui'
 import { Column, Filter, Select, Row, Colorbar } from '@carbonplan/components'
 import { useThemedColormap } from '@carbonplan/colormaps'
 
@@ -160,46 +160,55 @@ const DisplaySection = ({ sx }) => {
         </Column>
 
         <Column start={1} width={[6, 8, 4, 4]} sx={{ ...sx.label, mt: 4 }}>
-          Color range (
-          <Box as='span' sx={{ textTransform: 'none' }}>
-            {currentVariable.unit}
-          </Box>
-          )
-          <Label
-            sx={{
-              cursor: currentVariable.logScale ? 'pointer' : '',
-              textTransform: 'none',
-              mt: 1,
-              color: currentVariable.logScale ? 'secondary' : 'muted',
-            }}
-          >
-            <Checkbox
-              disabled={!currentVariable.logScale}
-              checked={logScale}
-              onChange={(e) => setLogScale(e.target.checked)}
-              sx={{
-                width: 18,
-                mr: 1,
-                mt: '-3px',
-                color: currentVariable.logScale ? 'secondary' : 'muted',
-                transition: 'color 0.15s',
-                'input:active ~ &': { bg: 'background', color: 'primary' },
-                'input:focus ~ &': {
-                  bg: 'background',
-                  color: logScale ? 'primary' : 'muted',
-                },
-                'input:hover ~ &': {
-                  bg: 'background',
-                  color: !currentVariable.logScale ? 'muted' : 'primary',
-                },
-                'input:focus-visible ~ &': {
-                  outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
-                  background: 'rgb(110, 110, 110, 0.625)',
-                },
-              }}
-            />
-            Log scale
-          </Label>
+          <Flex sx={{ justifyContent: 'space-between', height: 25 }}>
+            <Box>
+              Color range (
+              <Box as='span' sx={{ textTransform: 'none' }}>
+                {currentVariable.unit}
+              </Box>
+              )
+            </Box>
+            <Box>
+              {currentVariable.logScale && (
+                <Label
+                  sx={{
+                    cursor: 'pointer',
+                    textTransform: 'none',
+                    color: 'secondary',
+                  }}
+                >
+                  <Checkbox
+                    checked={logScale}
+                    onChange={(e) => setLogScale(e.target.checked)}
+                    sx={{
+                      width: 18,
+                      mr: 1,
+                      mt: '-3px',
+                      color: 'secondary',
+                      transition: 'color 0.15s',
+                      'input:active ~ &': {
+                        bg: 'background',
+                        color: 'primary',
+                      },
+                      'input:focus ~ &': {
+                        bg: 'background',
+                        color: logScale ? 'primary' : 'muted',
+                      },
+                      'input:hover ~ &': {
+                        bg: 'background',
+                        color: 'primary',
+                      },
+                      'input:focus-visible ~ &': {
+                        outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
+                        background: 'rgb(110, 110, 110, 0.625)',
+                      },
+                    }}
+                  />
+                  Log scale
+                </Label>
+              )}
+            </Box>
+          </Flex>
         </Column>
         <Column start={[1]} width={[6, 8, 4, 4]} sx={{ mb: 2 }}>
           <Colorbar
