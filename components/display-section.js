@@ -228,9 +228,15 @@ const DisplaySection = ({ sx }) => {
             logx={logScale}
             x={[min, max]}
             y={[0, 0]}
-            padding={{ left: 0 }}
+            padding={{ left: 1 }}
           >
-            <Ticks values={logScale ? logLabels : null} bottom />
+            <Ticks
+              values={logScale ? logLabels : null}
+              bottom
+              sx={{
+                '&:first-of-type': { ml: '-1px' },
+              }}
+            />
             <TickLabels values={logScale ? logLabels : null} bottom />
           </Chart>
         </Column>
