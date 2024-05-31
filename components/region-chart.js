@@ -243,7 +243,7 @@ const RegionChart = ({ sx }) => {
               point={point}
               xSelector={true}
               handleXSelectorClick={handleTimeseriesClick}
-              logy={logScale}
+              logy={logScale && minMax[0] > 0} // stale state during switch to log scale
               logLabels={
                 logScale &&
                 minMax[0] > 0 &&
