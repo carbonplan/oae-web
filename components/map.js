@@ -38,7 +38,9 @@ const frag = `
 
     float rescaled;
     if (useLogScale) {
-      rescaled = (log(value)/log(10.0) - log(clim.x)/log(10.0)) / (log(clim.y)/log(10.0) - log(clim.x)/log(10.0));
+      rescaled =
+        (log(value)/log(10.0) - log(clim.x)/log(10.0)) /
+        (log(clim.y)/log(10.0) - log(clim.x)/log(10.0));
     } else {
       rescaled = (value - clim.x) / (clim.y - clim.x);
     }
