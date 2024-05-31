@@ -41,10 +41,12 @@ const DisplaySection = ({ sx }) => {
   const max = logScale
     ? currentVariable.logColorLimits[1]
     : currentVariable.colorLimits[1]
-  const logLabels = logScale ? generateLogTicks(min, max) : [min, max]
-  const colormap = useThemedColormap(currentVariable.colormap, {
-    count: logScale ? logLabels.length - 1 : undefined,
-  })
+  const logLabels = logScale ? generateLogTicks(min, max) : null
+  const colormap = logScale
+    ? useThemedColormap(currentVariable.colormap, {
+        count: logLabels.length,
+      }).slice(1, logLabels.length)
+    : useThemedColormap(currentVariable.colormap)
 
   const filterValues = useMemo(() => {
     return variables[variableFamily].variables.reduce(

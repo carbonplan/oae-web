@@ -62,14 +62,18 @@ const MapWrapper = ({ children }) => {
   const setRegionData = useStore((s) => s.setRegionData)
   const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
 
-  const colormap = useThemedColormap(currentVariable.colormap, {
-    count: logScale
-      ? generateLogTicks(
-          currentVariable.logColorLimits[0],
-          currentVariable.logColorLimits[1]
-        ).length - 1
-      : undefined,
-  })
+  const colormapLength = logScale
+    ? generateLogTicks(
+        currentVariable.logColorLimits[0],
+        currentVariable.logColorLimits[1]
+      ).length
+    : undefined
+  console.log('colormapLength', colormapLength)
+  const colormap = logScale
+    ? useThemedColormap(currentVariable.colormap, {
+        count: colormapLength,
+      }).slice(1, colormapLength)
+    : useThemedColormap(currentVariable.colormap)
 
   const { theme } = useThemeUI()
 
