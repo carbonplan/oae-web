@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { Box, Spinner } from 'theme-ui'
 import { alpha } from '@theme-ui/color'
 import {
@@ -16,7 +16,6 @@ import {
 import { Badge } from '@carbonplan/components'
 
 import useStore from '../store'
-import { generateLogTicks } from '../utils/color'
 
 const renderPoint = (point) => {
   const { x, y, color } = point
@@ -175,30 +174,13 @@ const Timeseries = ({
   xSelector = false,
   handleXSelectorClick = () => {},
   logy = false,
+  logLabels = [],
 }) => {
   const regionDataLoading = useStore((s) => s.regionDataLoading)
   const [mousePosition, setMousePosition] = useState(null)
   const [isHovering, setIsHovering] = useState(false)
   const [xSelectorValue, setXSelectorValue] = useState(null)
   const currentVariable = useStore((s) => s.currentVariable)
-
-  const logSafeLines = useMemo(() => {
-    if (!logy) return selectedLines
-    const adjustedLines = {}
-    Object.entries(selectedLines).forEach(([id, line]) => {
-      const adjustedData = line.data.map(([x, y]) => {
-        return [x, y <= 0 ? yLimits[0] : y]
-      })
-      adjustedLines[id] = {
-        ...line,
-        data: adjustedData,
-      }
-    })
-    return adjustedLines
-  }, [selectedLines, logy, yLimits[0]])
-
-  const logLabels =
-    logy && yLimits[0] > 0 ? generateLogTicks(yLimits[0], yLimits[1]) : []
 
   const xYearsMonth = (x) => {
     const years = Math.floor(x)
@@ -214,7 +196,7 @@ const Timeseries = ({
     const months = Math.round((clickX / width) * 179)
     const years = months / 12
     setMousePosition(years)
-    setXSelectorValue(logSafeLines[0]?.data?.[months]?.[1])
+    setXSelectorValue(selectedLines[0]?.data?.[months]?.[1])
   }
 
   const handleXSelectorMouseEnter = () => {
@@ -324,7 +306,7 @@ const Timeseries = ({
             <ColormapGradient colormap={colormap} opacity={opacity} />
           )}
           <RenderLines
-            linesObject={logSafeLines}
+            linesObject={selectedLines}
             handleHover={handleHover}
             handleClick={handleClick}
             gradient={colormap ? true : false}

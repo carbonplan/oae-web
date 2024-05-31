@@ -8,7 +8,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media'
 import { Down, Search, X } from '@carbonplan/icons'
 
 import Timeseries from './timeseries'
-import { getColorForValue } from '../utils/color'
+import { generateLogTicks, getColorForValue } from '../utils/color'
 import { downloadCsv } from '../utils/csv'
 import useStore from '../store'
 
@@ -138,7 +138,12 @@ const RegionChart = ({ sx }) => {
         id: id,
         color,
         strokeWidth: 2,
-        data: line,
+        data: logScale
+          ? line.map(([x, y]) => [
+              x,
+              y <= 0 ? currentVariable.logColorLimits[0] : y,
+            ])
+          : line,
       }
     })
     return selected
@@ -239,6 +244,11 @@ const RegionChart = ({ sx }) => {
               xSelector={true}
               handleXSelectorClick={handleTimeseriesClick}
               logy={logScale}
+              logLabels={
+                logScale &&
+                minMax[0] > 0 &&
+                generateLogTicks(minMax[0], minMax[1])
+              }
             />
           </AnimateHeight>
         </>

@@ -68,7 +68,6 @@ const MapWrapper = ({ children }) => {
         currentVariable.logColorLimits[1]
       ).length
     : undefined
-  console.log('colormapLength', colormapLength)
   const colormap = logScale
     ? useThemedColormap(currentVariable.colormap, {
         count: colormapLength,
