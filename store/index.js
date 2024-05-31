@@ -105,7 +105,7 @@ const useStore = create((set) => ({
   setLogScale: (logScale) =>
     set((state) => {
       if (!state.currentVariable.logScale) {
-        return {}
+        return { logScale: false }
       }
       return { logScale }
     }),
