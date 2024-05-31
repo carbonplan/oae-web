@@ -19,13 +19,15 @@ export const variables = {
   ALK: {
     meta: {
       label: 'Alkalinity',
-      threshold: 0.001,
+      threshold: 0.0001,
     },
     variables: [
       {
         variable: 'ALK',
         delta: true,
+        logScale: true,
         colorLimits: [0, 0.1],
+        logColorLimits: [0.0001, 10],
         colormap: 'warm',
         label: 'change',
         unit: 'mEq/m³',
@@ -43,7 +45,6 @@ export const variables = {
   DIC: {
     meta: {
       label: 'Dissolved inorganic carbon (DIC)',
-
       threshold: 0.001,
     },
     variables: [
@@ -100,6 +101,15 @@ const useStore = create((set) => ({
   currentVariable: overviewVariable,
   setCurrentVariable: (currentVariable) => set({ currentVariable }),
 
+  logScale: false,
+  setLogScale: (logScale) =>
+    set((state) => {
+      if (!state.currentVariable.logScale) {
+        return { logScale: false }
+      }
+      return { logScale }
+    }),
+
   selectedRegion: null,
   setSelectedRegion: (selectedRegion) =>
     selectedRegion !== null
@@ -127,15 +137,12 @@ const useStore = create((set) => ({
           regionData: null,
           hoveredRegion: null,
           activeLineData: null,
+          logScale: false,
         }),
 
   selectedRegionCenter: null,
   setSelectedRegionCenter: (selectedRegionCenter) =>
     set({ selectedRegionCenter }),
-
-  showDeltaOverBackground: false,
-  setShowDeltaOverBackground: (showDeltaOverBackground) =>
-    set({ showDeltaOverBackground }),
 
   efficiencyLineData: {},
   setEfficiencyLineData: (efficiencyLineData) => set({ efficiencyLineData }),

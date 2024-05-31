@@ -19,3 +19,13 @@ export const getColorForValue = (
   }
   return colormap[index]
 }
+
+export const generateLogTicks = (min, max) => {
+  const minExp = Math.ceil(Math.log10(min))
+  const maxExp = Math.floor(Math.log10(max))
+  const ticks = []
+  for (let exp = minExp; exp <= maxExp; exp++) {
+    ticks.push(Number(Math.pow(10, exp).toFixed(Math.abs(exp))))
+  }
+  return ticks
+}
