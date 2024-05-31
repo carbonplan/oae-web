@@ -50,6 +50,7 @@ const RegionChart = ({ sx }) => {
   const setDetailElapsedTime = useStore((s) => s.setDetailElapsedTime)
   const selectedRegion = useStore((s) => s.selectedRegion)
   const regionDataLoading = useStore((s) => s.regionDataLoading)
+  const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
 
   const colormap = useThemedColormap(currentVariable?.colormap)
   const { region } = useRegion()
@@ -114,7 +115,10 @@ const RegionChart = ({ sx }) => {
       ([min, max], [_, value]) => [Math.min(min, value), Math.max(max, value)],
       [Infinity, -Infinity]
     )
-    setMinMax([min, max])
+    const logSafeMinMax = logScale
+      ? [Math.max(currentVariable.logColorLimits[0], min), max]
+      : [min, max]
+    setMinMax(logSafeMinMax)
     return [averages]
   }, [regionData, currentVariable])
 
@@ -234,6 +238,7 @@ const RegionChart = ({ sx }) => {
               point={point}
               xSelector={true}
               handleXSelectorClick={handleTimeseriesClick}
+              logy={logScale}
             />
           </AnimateHeight>
         </>
