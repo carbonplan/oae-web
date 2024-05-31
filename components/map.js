@@ -62,15 +62,13 @@ const MapWrapper = ({ children }) => {
   const setRegionData = useStore((s) => s.setRegionData)
   const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
 
-  const min = logScale
-    ? currentVariable.logColorLimits[0]
-    : currentVariable.colorLimits[0]
-  const max = logScale
-    ? currentVariable.logColorLimits[1]
-    : currentVariable.colorLimits[1]
-  const logLabels = logScale ? generateLogTicks(min, max) : [min, max]
   const colormap = useThemedColormap(currentVariable.colormap, {
-    count: logScale ? logLabels.length - 1 : undefined,
+    count: logScale
+      ? generateLogTicks(
+          currentVariable.logColorLimits[0],
+          currentVariable.logColorLimits[1]
+        ).length - 1
+      : undefined,
   })
 
   const { theme } = useThemeUI()
