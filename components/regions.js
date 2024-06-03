@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import useStore from '../store'
+import useStore, { variables } from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
@@ -18,6 +18,7 @@ const Regions = () => {
   const currentVariable = useStore((state) => state.currentVariable)
   const efficiencyLineData = useStore((state) => state.efficiencyLineData)
   const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
+  const variableFamily = useStore((state) => state.variableFamily)
 
   const [baseGeojson, setBaseGeojson] = useState(null)
 
@@ -198,9 +199,9 @@ const Regions = () => {
                 [
                   'all',
                   ['boolean', ['feature-state', 'selected'], false],
-                  ['boolean', ['feature-state', 'efficiency'], false],
+                  ['boolean', ['feature-state', 'overview'], false],
                 ],
-                1, // Opacity when selected and efficiency variable is active
+                1, // Opacity when an overview var is selected is active
                 0, // Default opacity
               ],
             },
@@ -322,7 +323,7 @@ const Regions = () => {
           source: 'regions',
           id: selectedRegion,
         },
-        { efficiency: currentVariable.key === 'EFFICIENCY' }
+        { overview: variables[variableFamily].meta.overview }
       )
       toggleLayerVisibilities(false)
     } else {

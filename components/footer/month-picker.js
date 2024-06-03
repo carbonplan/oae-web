@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { Select } from '@carbonplan/components'
 import { useCallback } from 'react'
 
-import useStore from '../../store'
+import useStore, { variables } from '../../store'
 import { Box } from 'theme-ui'
 
 const OFFSETS = {
@@ -14,15 +14,12 @@ const OFFSETS = {
 
 const MonthPicker = ({ sx }) => {
   const { elapsedTime, setElapsedTime } = useStore((state) => ({
-    currentVariable: state.currentVariable,
-    elapsedTime:
-      state.currentVariable.key === 'EFFICIENCY'
-        ? state.overviewElapsedTime
-        : state.detailElapsedTime,
-    setElapsedTime:
-      state.currentVariable.key === 'EFFICIENCY'
-        ? state.setOverviewElapsedTime
-        : state.setDetailElapsedTime,
+    elapsedTime: variables[state.variableFamily].meta.overview
+      ? state.overviewElapsedTime
+      : state.detailElapsedTime,
+    setElapsedTime: variables[state.variableFamily].meta.overview
+      ? state.setOverviewElapsedTime
+      : state.setDetailElapsedTime,
   }))
 
   const injectionSeason = useStore((state) =>

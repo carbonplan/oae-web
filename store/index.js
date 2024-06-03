@@ -57,6 +57,8 @@ export const variables = {
     meta: {
       label: 'Alkalinity',
       threshold: 0.0001,
+      overview: false,
+      hasOptions: true,
     },
     variables: [
       {
@@ -83,6 +85,8 @@ export const variables = {
     meta: {
       label: 'Dissolved inorganic carbon (DIC)',
       threshold: 0.001,
+      overview: false,
+      hasOptions: true,
     },
     variables: [
       {

@@ -146,7 +146,7 @@ const DisplaySection = ({ sx }) => {
             </Box>
           </Box>
 
-          {currentVariable.key !== 'EFFICIENCY' && (
+          {variables[variableFamily].meta.hasOptions && (
             <Box sx={{ mt: 3 }}>
               <TooltipWrapper
                 sx={{ justifyContent: 'flex-start', gap: 2 }}
