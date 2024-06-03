@@ -1,11 +1,13 @@
 import React, { useCallback, useMemo } from 'react'
-import { Box } from 'theme-ui'
+import { Box, Checkbox, Flex, Label } from 'theme-ui'
 import { Column, Filter, Select, Row, Colorbar } from '@carbonplan/components'
 import { useThemedColormap } from '@carbonplan/colormaps'
 
 import TooltipWrapper from './tooltip'
 import Lock from './lock'
 import useStore, { variables } from '../store'
+import { Chart, TickLabels, Ticks } from '@carbonplan/charts'
+import { generateLogTicks } from '../utils/color'
 
 const DESCRIPTIONS = {
   EFFICIENCY: {
@@ -36,11 +38,25 @@ const DisplaySection = ({ sx }) => {
   const setCurrentVariable = useStore((s) => s.setCurrentVariable)
   const variableFamily = useStore((s) => s.variableFamily)
   const setVariableFamily = useStore((s) => s.setVariableFamily)
-  const colormap = useThemedColormap(currentVariable.colormap)
+  const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
+  const setLogScale = useStore((s) => s.setLogScale)
+
+  const min = logScale
+    ? currentVariable.logColorLimits[0]
+    : currentVariable.colorLimits[0]
+  const max = logScale
+    ? currentVariable.logColorLimits[1]
+    : currentVariable.colorLimits[1]
+  const logLabels = logScale ? generateLogTicks(min, max) : null
+  const colormap = logScale
+    ? useThemedColormap(currentVariable.colormap, {
+        count: logLabels.length,
+      }).slice(1, logLabels.length)
+    : useThemedColormap(currentVariable.colormap)
 
   const filterValues = useMemo(() => {
     return variables[variableFamily].variables.reduce(
-      (acc, variable, index) => ({
+      (acc, variable) => ({
         ...acc,
         [variable.label]: currentVariable.label === variable.label,
       }),
@@ -151,20 +167,83 @@ const DisplaySection = ({ sx }) => {
         </Column>
 
         <Column start={1} width={[6, 8, 4, 4]} sx={{ ...sx.label, mt: 4 }}>
-          Color range (
-          <Box as='span' sx={{ textTransform: 'none' }}>
-            {currentVariable.unit}
-          </Box>
-          )
+          <Flex sx={{ justifyContent: 'space-between', height: 25 }}>
+            <Box>
+              Color range (
+              <Box as='span' sx={{ textTransform: 'none' }}>
+                {currentVariable.unit}
+              </Box>
+              )
+            </Box>
+            <Box>
+              {currentVariable.logScale && (
+                <Label
+                  sx={{
+                    cursor: 'pointer',
+                    textTransform: 'none',
+                    color: 'secondary',
+                  }}
+                >
+                  <Checkbox
+                    checked={logScale}
+                    onChange={(e) => setLogScale(e.target.checked)}
+                    sx={{
+                      width: 18,
+                      mr: 1,
+                      mt: '-3px',
+                      color: 'secondary',
+                      transition: 'color 0.15s',
+                      'input:active ~ &': {
+                        bg: 'background',
+                        color: 'primary',
+                      },
+                      'input:focus ~ &': {
+                        bg: 'background',
+                        color: logScale ? 'primary' : 'muted',
+                      },
+                      'input:hover ~ &': {
+                        bg: 'background',
+                        color: 'primary',
+                      },
+                      'input:focus-visible ~ &': {
+                        outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
+                        background: 'rgb(110, 110, 110, 0.625)',
+                      },
+                    }}
+                  />
+                  Log scale
+                </Label>
+              )}
+            </Box>
+          </Flex>
         </Column>
         <Column start={[1]} width={[6, 8, 4, 4]} sx={{ mb: 2 }}>
           <Colorbar
             colormap={colormap}
-            clim={currentVariable.colorLimits}
+            discrete={logScale}
             horizontal
             width={'100%'}
             sx={{ mt: 2 }}
           />
+        </Column>
+      </Row>
+      <Row columns={[6, 8, 4, 4]} sx={{ mt: '9px' }}>
+        <Column start={1} width={[6, 8, 4, 4]} sx={{ ...sx.label, mt: 5 }}>
+          <Chart
+            logx={logScale}
+            x={[min, max]}
+            y={[0, 0]}
+            padding={{ left: 1 }}
+          >
+            <Ticks
+              values={logScale ? logLabels : null}
+              bottom
+              sx={{
+                '&:first-of-type': { ml: '-1px' },
+              }}
+            />
+            <TickLabels values={logScale ? logLabels : null} bottom />
+          </Chart>
         </Column>
       </Row>
     </>

@@ -173,6 +173,8 @@ const Timeseries = ({
   shadeHorizon = false,
   xSelector = false,
   handleXSelectorClick = () => {},
+  logy = false,
+  logLabels = [],
 }) => {
   const regionDataLoading = useStore((s) => s.regionDataLoading)
   const [mousePosition, setMousePosition] = useState(null)
@@ -269,12 +271,13 @@ const Timeseries = ({
       }}
     >
       {renderTimeAndData()}
-      <Chart x={xLimits} y={yLimits} padding={{ top: 30 }}>
+      <Chart x={xLimits} y={yLimits} logy={logy} padding={{ top: 30 }}>
         <Grid vertical horizontal />
         <Ticks left />
         <Ticks bottom values={Array.from({ length: 16 }, (_, i) => i)} />
         <TickLabels
           left
+          values={logy && logLabels}
           format={(d) => {
             if (Math.abs(d) < 0.001 && d !== 0) {
               return d.toExponential(0)

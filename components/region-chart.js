@@ -8,7 +8,7 @@ import { useBreakpointIndex } from '@theme-ui/match-media'
 import { Down, Search, X } from '@carbonplan/icons'
 
 import Timeseries from './timeseries'
-import { getColorForValue } from '../utils/color'
+import { generateLogTicks, getColorForValue } from '../utils/color'
 import { downloadCsv } from '../utils/csv'
 import useStore from '../store'
 
@@ -50,6 +50,7 @@ const RegionChart = ({ sx }) => {
   const setDetailElapsedTime = useStore((s) => s.setDetailElapsedTime)
   const selectedRegion = useStore((s) => s.selectedRegion)
   const regionDataLoading = useStore((s) => s.regionDataLoading)
+  const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
 
   const colormap = useThemedColormap(currentVariable?.colormap)
   const { region } = useRegion()
@@ -114,7 +115,10 @@ const RegionChart = ({ sx }) => {
       ([min, max], [_, value]) => [Math.min(min, value), Math.max(max, value)],
       [Infinity, -Infinity]
     )
-    setMinMax([min, max])
+    const logSafeMinMax = logScale
+      ? [Math.max(currentVariable.logColorLimits[0], min), max]
+      : [min, max]
+    setMinMax(logSafeMinMax)
     return [averages]
   }, [regionData, currentVariable])
 
@@ -134,7 +138,12 @@ const RegionChart = ({ sx }) => {
         id: id,
         color,
         strokeWidth: 2,
-        data: line,
+        data: logScale
+          ? line.map(([x, y]) => [
+              x,
+              y <= 0 ? currentVariable.logColorLimits[0] : y,
+            ])
+          : line,
       }
     })
     return selected
@@ -234,6 +243,12 @@ const RegionChart = ({ sx }) => {
               point={point}
               xSelector={true}
               handleXSelectorClick={handleTimeseriesClick}
+              logy={logScale && minMax[0] > 0} // stale state during switch to log scale
+              logLabels={
+                logScale &&
+                minMax[0] > 0 &&
+                generateLogTicks(minMax[0], minMax[1])
+              }
             />
           </AnimateHeight>
         </>

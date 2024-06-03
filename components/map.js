@@ -6,6 +6,7 @@ import { useThemedColormap } from '@carbonplan/colormaps'
 import useStore, { variables } from '../store'
 import Regions from './regions'
 import RegionPickerWrapper from './region-picker'
+import { generateLogTicks } from '../utils/color'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
@@ -14,61 +15,39 @@ const bands = ['experiment', 'counterfactual']
 const frag = `
     float value;
     bool isDelta = delta == 1.0;
-    bool showDeltaOverBackground = showDeltaOverBackground == 1.0;
+    bool useLogScale = logScale == 1.0;
     float baseValue = 0.0;
     float blendFactor = 0.1;
     vec4 bgc = vec4(0.0);
 
-    if (!isDelta && !showDeltaOverBackground) {
+    if (!isDelta) {
       value = experiment;
       if (value == fillValue) {
         gl_FragColor = vec4(0.0);
         return;
       }
-      float rescaled = (value - clim.x) / (clim.y - clim.x);
-      gl_FragColor = texture2D(colormap, vec2(rescaled, 1.0));
-      gl_FragColor.a = opacity;
-      gl_FragColor.rgb *= gl_FragColor.a;
-      return;
     }
 
-    if (isDelta && !showDeltaOverBackground) {
+    if (isDelta) {
       value = experiment - counterfactual;
       if (value < threshold || value == fillValue) {
         gl_FragColor = vec4(0.0);
         return;
       }
-      float rescaled = (value - clim.x) / (clim.y - clim.x);
-      gl_FragColor = texture2D(colormap, vec2(rescaled, 1.0));
-      gl_FragColor.a = opacity;
-      gl_FragColor.rgb *= gl_FragColor.a;
-      return;
     }
 
-    if (showDeltaOverBackground) {
-      value = experiment - counterfactual;
-      baseValue = experiment;
-      float bgRescaled = (baseValue - clim.x) / (clim.y - clim.x);
-      bgc = texture2D(colormap, vec2(bgRescaled, 1.0));
-      bgc.a = opacity;
-      if (baseValue == fillValue) {
-        gl_FragColor = vec4(0.0);
-        return;
-      }
-      if (value < threshold) {
-        // background color
-        gl_FragColor = vec4(bgc.rgb, bgc.a);
-        gl_FragColor.rgb *= gl_FragColor.a;
-        return;
-      } else {
-        // show grey delta
-        vec4 greyColor = vec4(1, 1, 1, 1.0);
-        vec4 blendedColor = mix(bgc, greyColor, blendFactor * greyColor.a);
-        gl_FragColor = vec4(blendedColor.rgb, blendedColor.a);
-        gl_FragColor.rgb *= gl_FragColor.a;
-        return;
-      }
+    float rescaled;
+    if (useLogScale) {
+      float log10 = log(10.0);
+      rescaled =
+        (log(value)/log10 - log(clim.x)/log10) /
+        (log(clim.y)/log10 - log(clim.x)/log10);
+    } else {
+      rescaled = (value - clim.x) / (clim.y - clim.x);
     }
+    gl_FragColor = texture2D(colormap, vec2(rescaled, 1.0));
+    gl_FragColor.a = opacity;
+    gl_FragColor.rgb *= gl_FragColor.a;
   `
 
 const MapWrapper = ({ children }) => {
@@ -81,9 +60,19 @@ const MapWrapper = ({ children }) => {
   const variableFamily = useStore((s) => s.variableFamily)
   const showRegionPicker = useStore((s) => s.showRegionPicker)
   const setRegionData = useStore((s) => s.setRegionData)
-  const showDeltaOverBackground = useStore((s) => s.showDeltaOverBackground)
+  const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
 
-  const colormap = useThemedColormap(currentVariable.colormap)
+  const colormapLength = logScale
+    ? generateLogTicks(
+        currentVariable.logColorLimits[0],
+        currentVariable.logColorLimits[1]
+      ).length
+    : undefined
+  const colormap = logScale
+    ? useThemedColormap(currentVariable.colormap, {
+        count: colormapLength,
+      }).slice(1, colormapLength)
+    : useThemedColormap(currentVariable.colormap)
 
   const { theme } = useThemeUI()
 
@@ -111,7 +100,11 @@ const MapWrapper = ({ children }) => {
               'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/reshaped_time_pyramid.zarr'
             }
             colormap={colormap}
-            clim={currentVariable.colorLimits}
+            clim={
+              logScale
+                ? currentVariable.logColorLimits
+                : currentVariable.colorLimits
+            }
             mode={'texture'}
             fillValue={9.969209968386869e36}
             regionOptions={{
@@ -130,8 +123,7 @@ const MapWrapper = ({ children }) => {
             }}
             uniforms={{
               delta: currentVariable.delta ? 1.0 : 0.0,
-              showDeltaOverBackground:
-                showDeltaOverBackground && !currentVariable.delta ? 1.0 : 0.0,
+              logScale: logScale ? 1.0 : 0.0,
               threshold: variables[variableFamily].meta.threshold ?? 0.0,
             }}
             frag={frag}
