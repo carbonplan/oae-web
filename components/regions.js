@@ -79,7 +79,18 @@ const Regions = () => {
       fillColorExpression[2].push(threshold, safeColorMap[i])
     }
     return fillColorExpression
-  }, [colorLimits, safeColorMap])
+  }, [colorLimits, currentVariable, safeColorMap])
+
+  useEffect(() => {
+    if (map && map.getSource('regions')) {
+      map.setPaintProperty('regions-fill', 'fill-color', colorExpression)
+      map.setPaintProperty(
+        'selected-region-fill',
+        'fill-color',
+        colorExpression
+      )
+    }
+  }, [map, colorExpression])
 
   const handleMouseMove = (e) => {
     map.getCanvas().style.cursor = 'pointer'
