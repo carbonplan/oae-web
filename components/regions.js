@@ -29,6 +29,23 @@ const Regions = () => {
   const { theme } = useThemeUI()
   const hoveredRegionRef = useRef(hoveredRegion)
 
+  const buildColorExpression = () => {
+    const dataField = 'currentValue'
+    const fillColorExpression = [
+      'case',
+      ['has', dataField],
+      ['step', ['get', dataField], safeColorMap[0]],
+      transparent,
+    ]
+    const totalRange = colorLimits[1] - colorLimits[0]
+    const stepIncrement = totalRange / (safeColorMap.length - 1)
+    for (let i = 1; i < safeColorMap.length; i++) {
+      const threshold = colorLimits[0] + stepIncrement * i
+      fillColorExpression[2].push(threshold, safeColorMap[i])
+    }
+    return fillColorExpression
+  }
+
   useEffect(() => {
     if (!baseGeojson || !efficiencyLineData) return
     // get currentValue from efficiencyLineData for each polygon and assign to new current value property
@@ -45,7 +62,14 @@ const Regions = () => {
       }
     })
     if (map && map.getSource('regions')) {
+      const colorExpression = buildColorExpression()
       map.getSource('regions').setData({ ...baseGeojson, features })
+      map.setPaintProperty('regions-fill', 'fill-color', colorExpression)
+      map.setPaintProperty(
+        'selected-region-fill',
+        'fill-color',
+        colorExpression
+      )
     }
   }, [baseGeojson, overviewElapsedTime, efficiencyLineData])
 
@@ -64,34 +88,6 @@ const Regions = () => {
       ? colormap.map((rgb) => `rgb(${rgb.join(',')})`)
       : colormap
   }, [colormap])
-
-  const colorExpression = useMemo(() => {
-    const dataField = 'currentValue'
-    const fillColorExpression = [
-      'case',
-      ['has', dataField],
-      ['step', ['get', dataField], safeColorMap[0]],
-      transparent,
-    ]
-    const totalRange = colorLimits[1] - colorLimits[0]
-    const stepIncrement = totalRange / (safeColorMap.length - 1)
-    for (let i = 1; i < safeColorMap.length; i++) {
-      const threshold = colorLimits[0] + stepIncrement * i
-      fillColorExpression[2].push(threshold, safeColorMap[i])
-    }
-    return fillColorExpression
-  }, [colorLimits, currentVariable, safeColorMap])
-
-  useEffect(() => {
-    if (map && map.getSource('regions')) {
-      map.setPaintProperty('regions-fill', 'fill-color', colorExpression)
-      map.setPaintProperty(
-        'selected-region-fill',
-        'fill-color',
-        colorExpression
-      )
-    }
-  }, [map, colorExpression])
 
   const handleMouseMove = (e) => {
     map.getCanvas().style.cursor = 'pointer'
@@ -143,7 +139,7 @@ const Regions = () => {
             type: 'fill',
             source: 'regions',
             paint: {
-              'fill-color': colorExpression,
+              'fill-color': transparent,
               'fill-outline-color': transparent,
             },
           })
@@ -192,7 +188,7 @@ const Regions = () => {
             type: 'fill',
             source: 'regions',
             paint: {
-              'fill-color': colorExpression,
+              'fill-color': transparent,
               'fill-outline-color': transparent,
               'fill-opacity': [
                 'case',
