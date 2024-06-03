@@ -4,7 +4,7 @@ import { useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import centroid from '@turf/centroid'
 
-import useStore, { overviewVariable, getInjectionMonth } from '../store'
+import useStore, { getInjectionMonth } from '../store'
 
 const Regions = () => {
   const hoveredRegion = useStore((state) => state.hoveredRegion)
@@ -21,8 +21,8 @@ const Regions = () => {
   const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
   const yearsElapsed = Math.floor(overviewElapsedTime / 12 + 1)
 
-  const colormap = useThemedColormap(overviewVariable.colormap)
-  const colorLimits = overviewVariable.colorLimits
+  const colormap = useThemedColormap(currentVariable.colormap)
+  const colorLimits = currentVariable.colorLimits
 
   const { map } = useMapbox()
   const { theme } = useThemeUI()

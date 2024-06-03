@@ -1,20 +1,57 @@
 import { create } from 'zustand'
 
-export const overviewVariable = {
-  key: 'EFFICIENCY',
-  colorLimits: [0, 1],
-  colormap: 'cool',
-  label: 'Efficiency',
-  unit: 'mole CO₂ / mole alkalinity',
-}
-
 export const variables = {
   EFFICIENCY: {
     meta: {
       label: 'Efficiency',
       threshold: 0.001,
+      overview: true,
+      url: 'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr',
     },
-    variables: [overviewVariable],
+    variables: [
+      {
+        key: 'OAE_efficiency',
+        colorLimits: [0, 1],
+        colormap: 'cool',
+        label: 'Efficiency',
+        unit: 'mole CO₂ / mole alkalinity',
+      },
+    ],
+  },
+  FG_CO2: {
+    meta: {
+      label: 'Spread of CO₂ Uptake',
+      threshold: 0.001,
+      overview: true,
+      hasOptions: true,
+      url: 'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/cumulative_FG_CO2_percent.zarr',
+    },
+    variables: [
+      {
+        key: 'FG_CO2_percent_cumulative',
+        colorLimits: [0, 100],
+        colormap: 'warm',
+        optionIndex: 0,
+        label: '500km',
+        unit: '%',
+      },
+      {
+        key: 'FG_CO2_percent_cumulative',
+        colorLimits: [0, 100],
+        colormap: 'warm',
+        optionIndex: 1,
+        label: '1000km',
+        unit: '%',
+      },
+      {
+        key: 'FG_CO2_percent_cumulative',
+        colorLimits: [0, 100],
+        colormap: 'warm',
+        optionIndex: 2,
+        label: '2000km',
+        unit: '%',
+      },
+    ],
   },
   ALK: {
     meta: {
@@ -97,7 +134,7 @@ const useStore = create((set) => ({
   variableFamily: 'EFFICIENCY',
   setVariableFamily: (variableFamily) => set({ variableFamily }),
 
-  currentVariable: overviewVariable,
+  currentVariable: variables.EFFICIENCY.variables[0],
   setCurrentVariable: (currentVariable) => set({ currentVariable }),
 
   selectedRegion: null,
@@ -121,7 +158,7 @@ const useStore = create((set) => ({
         })
       : set({
           selectedRegion,
-          currentVariable: overviewVariable,
+          currentVariable: variables.EFFICIENCY.variables[0],
           variableFamily: 'EFFICIENCY',
           showRegionPicker: false,
           regionData: null,

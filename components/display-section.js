@@ -14,6 +14,12 @@ const DESCRIPTIONS = {
     region:
       'Carbon removal efficiency of release as a function of region, injection month, and elapsed time.',
   },
+  FG_CO2: {
+    overview:
+      'Spread of CO₂ uptake. Select a region to view other experimental outputs.',
+    region:
+      'Surface flux of CO2 in the atmosphere.Select a region to view other experimental outputs.',
+  },
   ALK: {
     region:
       'Concentration of alkalinity in surface waters. Alkalinity increases the ocean’s ability to absorb carbon.',
@@ -41,6 +47,19 @@ const DisplaySection = ({ sx }) => {
       {}
     )
   }, [variableFamily, currentVariable])
+
+  const selectVariables = useMemo(() => {
+    if (selectedRegion === null) {
+      return Object.keys(variables).reduce((acc, key) => {
+        if (variables[key].meta.overview) {
+          acc[key] = variables[key]
+        }
+        return acc
+      }, {})
+    } else {
+      return variables
+    }
+  }, [selectedRegion])
 
   const handleFamilySelection = useCallback(
     (e) => {
@@ -77,7 +96,7 @@ const DisplaySection = ({ sx }) => {
         <Column start={[3, 3, 2, 2]} width={[4, 6, 3, 3]}>
           <Box sx={{ position: 'relative' }}>
             <Select
-              disabled={!selectedRegion}
+              // disabled={}
               onChange={handleFamilySelection}
               value={variableFamily}
               size='xs'
@@ -85,26 +104,13 @@ const DisplaySection = ({ sx }) => {
                 width: '100%',
                 mr: 2,
                 mb: 1,
-                svg: {
-                  display: selectedRegion ? 'inherit' : 'none',
-                },
-                '&:hover ~ #description': selectedRegion
-                  ? {}
-                  : {
-                      color: 'primary',
-                    },
-                '&:hover ~ .lock-container': selectedRegion
-                  ? {}
-                  : {
-                      color: 'primary',
-                    },
               }}
               sxSelect={{
                 fontFamily: 'mono',
                 width: '100%',
               }}
             >
-              {Object.keys(variables).map((variable) => (
+              {Object.keys(selectVariables).map((variable) => (
                 <option key={variable} value={variable}>
                   {variables[variable].meta.label}
                 </option>
@@ -124,7 +130,6 @@ const DisplaySection = ({ sx }) => {
                 ]
               }
             </Box>
-            <Lock display={!selectedRegion} />
           </Box>
 
           {currentVariable.key !== 'EFFICIENCY' && (

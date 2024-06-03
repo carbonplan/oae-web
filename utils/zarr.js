@@ -49,10 +49,15 @@ export const getChunk = async (get, chunk) => {
   })
 }
 
-export const getTimeSeriesData = (chunk, ids, startYear) => {
+export const getTimeSeriesData = (
+  chunk,
+  ids,
+  startYear,
+  optionIndex = undefined
+) => {
   const timeData = []
   ids.forEach((id, idIndex) => {
-    const line = chunk.pick(null, idIndex, 0)
+    const line = chunk.pick(null, idIndex, 0, optionIndex)
     const idLine = []
     for (let i = 0; i < line.shape[0]; i++) {
       const toYear = startYear + (i + 1) / 12
