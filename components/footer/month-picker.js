@@ -3,7 +3,6 @@ import { Select } from '@carbonplan/components'
 import { useCallback } from 'react'
 
 import useStore from '../../store'
-import Lock from '../lock'
 import { Box } from 'theme-ui'
 
 const OFFSETS = {
@@ -14,20 +13,17 @@ const OFFSETS = {
 }
 
 const MonthPicker = ({ sx }) => {
-  const { currentVariable, elapsedTime, setElapsedTime } = useStore(
-    (state) => ({
-      currentVariable: state.currentVariable,
-      elapsedTime:
-        state.currentVariable.key === 'EFFICIENCY'
-          ? state.overviewElapsedTime
-          : state.detailElapsedTime,
-      setElapsedTime:
-        state.currentVariable.key === 'EFFICIENCY'
-          ? state.setOverviewElapsedTime
-          : state.setDetailElapsedTime,
-    })
-  )
-  const disableMonthSelect = currentVariable.key === 'EFFICIENCY'
+  const { elapsedTime, setElapsedTime } = useStore((state) => ({
+    currentVariable: state.currentVariable,
+    elapsedTime:
+      state.currentVariable.key === 'EFFICIENCY'
+        ? state.overviewElapsedTime
+        : state.detailElapsedTime,
+    setElapsedTime:
+      state.currentVariable.key === 'EFFICIENCY'
+        ? state.setOverviewElapsedTime
+        : state.setDetailElapsedTime,
+  }))
 
   const injectionSeason = useStore((state) =>
     Object.keys(state.injectionSeason).find((k) => state.injectionSeason[k])
@@ -58,12 +54,10 @@ const MonthPicker = ({ sx }) => {
       <Select
         value={elapsedTime % 12}
         size='xs'
-        // disabled={disableMonthSelect}
         sx={{
           svg: {
             width: 12,
             height: 12,
-            display: disableMonthSelect ? 'none' : 'inherit',
           },
           ...sx,
         }}
@@ -85,10 +79,6 @@ const MonthPicker = ({ sx }) => {
           </option>
         ))}
       </Select>
-      {/* <Lock
-        display={disableMonthSelect}
-        sx={{ right: '-2px', top: '1px', svg: { width: 12, height: 12 } }}
-      /> */}
     </Box>
   )
 }

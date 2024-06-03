@@ -4,7 +4,6 @@ import { Column, Filter, Select, Row, Colorbar } from '@carbonplan/components'
 import { useThemedColormap } from '@carbonplan/colormaps'
 
 import TooltipWrapper from './tooltip'
-import Lock from './lock'
 import useStore, { variables } from '../store'
 import { Chart, TickLabels, Ticks } from '@carbonplan/charts'
 import { generateLogTicks } from '../utils/color'
@@ -112,7 +111,6 @@ const DisplaySection = ({ sx }) => {
         <Column start={[3, 3, 2, 2]} width={[4, 6, 3, 3]}>
           <Box sx={{ position: 'relative' }}>
             <Select
-              // disabled={}
               onChange={handleFamilySelection}
               value={variableFamily}
               size='xs'
