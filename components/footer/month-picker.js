@@ -58,7 +58,7 @@ const MonthPicker = ({ sx }) => {
       <Select
         value={elapsedTime % 12}
         size='xs'
-        disabled={disableMonthSelect}
+        // disabled={disableMonthSelect}
         sx={{
           svg: {
             width: 12,
@@ -75,7 +75,6 @@ const MonthPicker = ({ sx }) => {
           textTransform: 'uppercase',
           pr: 20,
           pb: '4px',
-          cursor: disableMonthSelect ? 'not-allowed' : 'cursor',
           background: 'none',
         }}
         onChange={(e) => handleMonthChange(parseInt(e.target.value))}
@@ -86,10 +85,10 @@ const MonthPicker = ({ sx }) => {
           </option>
         ))}
       </Select>
-      <Lock
+      {/* <Lock
         display={disableMonthSelect}
         sx={{ right: '-2px', top: '1px', svg: { width: 12, height: 12 } }}
-      />
+      /> */}
     </Box>
   )
 }
