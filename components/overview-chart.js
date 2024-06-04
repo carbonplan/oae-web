@@ -123,7 +123,10 @@ const OverviewChart = ({ sx }) => {
         csvData[monthIndex][`region_${lineIndex}`] = value
       })
     })
-    downloadCsv(csvData, `${variables[variableFamily].label}-timeseries.csv`)
+    const name = currentVariable.graphLabel
+      ? `${currentVariable.graphLabel} ${currentVariable.label}`
+      : currentVariable.label
+    downloadCsv(csvData, `${name} timeseries.csv`)
   }, [timeData, toMonthsIndex])
 
   return (
@@ -193,7 +196,7 @@ const OverviewChart = ({ sx }) => {
         yLimits={currentVariable.colorLimits}
         yLabels={{
           title: currentVariable.graphLabel
-            ? currentVariable.graphLabel
+            ? `${currentVariable.graphLabel} ${currentVariable.label}`
             : currentVariable.label,
           units: currentVariable.unit,
         }}
