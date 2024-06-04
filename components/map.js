@@ -11,13 +11,18 @@ import { generateLogTicks } from '../utils/color'
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
 const frag = (variable) => `
-    float value = ${variable};
+    if (${variable} == fillValue) {
+      gl_FragColor = vec4(0.0);
+      return;
+    }
+
+    float value = ${variable} * unitConversion;
     bool useLogScale = logScale == 1.0;
     float baseValue = 0.0;
     float blendFactor = 0.1;
     vec4 bgc = vec4(0.0);
 
-    if (value == fillValue || value < threshold) {
+    if (value < threshold) {
       gl_FragColor = vec4(0.0);
       return;
     }
@@ -116,6 +121,7 @@ const MapWrapper = ({ children }) => {
             uniforms={{
               logScale: logScale ? 1.0 : 0.0,
               threshold: variables[variableFamily].meta.threshold ?? 0.0,
+              unitConversion: currentVariable.unitConversion ?? 1.0,
             }}
             frag={frag(variableFamily)}
           />

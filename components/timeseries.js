@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Box, Spinner } from 'theme-ui'
+import { format } from 'd3-format'
 import { alpha } from '@theme-ui/color'
 import {
   AxisLabel,
@@ -16,6 +17,25 @@ import {
 import { Badge } from '@carbonplan/components'
 
 import useStore from '../store'
+
+const formatValue = (value) => {
+  const test = Math.abs(value)
+  if (test === 0) {
+    return 0
+  } else if (test < 0.0001) {
+    return format('.1e')(value)
+  } else if (test < 0.01) {
+    return format('.2')(value)
+  } else if (test < 1) {
+    return format('.2f')(value)
+  } else if (test < 10) {
+    return format('.1f')(value)
+  } else if (test < 10000) {
+    return format('.0f')(value)
+  } else {
+    return format('0.2s')(value)
+  }
+}
 
 const renderPoint = (point) => {
   const { x, y, color } = point
@@ -238,7 +258,6 @@ const Timeseries = ({
     const yValue = xSelectorValue ?? point?.y
     const xValue = mousePosition ?? point?.x
     if (yValue === undefined || xValue === undefined) return null
-    const formattedValue = yValue.toFixed(currentVariable?.delta ? 3 : 1)
     return (
       <Box
         sx={{
@@ -251,7 +270,7 @@ const Timeseries = ({
           pointerEvents: 'none',
         }}
       >
-        ({xYearsMonth(xValue)}, {formattedValue}
+        ({xYearsMonth(xValue)}, {formatValue(yValue)}
         <Box as='span' sx={{ fontSize: 0 }}>
           {currentVariable.unit}
         </Box>
