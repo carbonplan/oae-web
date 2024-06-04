@@ -14,7 +14,7 @@ export const variables = {
         colorLimits: [0, 1],
         colormap: 'cool',
         label: 'Efficiency',
-        unit: '',
+        unit: 'mole CO₂ / mole alkalinity',
       },
     ],
   },
