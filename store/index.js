@@ -94,6 +94,30 @@ export const variables = {
       },
     ],
   },
+  pCO2SURF: {
+    meta: {
+      label: 'pCO₂',
+      threshold: -Infinity,
+    },
+    variables: [
+      {
+        variable: 'pCO2SURF',
+        delta: true,
+        colorLimits: [0, -0.01],
+        colormap: 'warm',
+        label: 'Change',
+        unit: 'µatm',
+      },
+      {
+        variable: 'pCO2SURF',
+        delta: false,
+        colorLimits: [300, 400],
+        colormap: 'warm',
+        label: 'Total',
+        unit: 'µatm',
+      },
+    ],
+  },
   PH: {
     meta: {
       label: 'pH',

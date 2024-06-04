@@ -40,6 +40,10 @@ const DESCRIPTIONS = {
     region:
       'The measurement of acidity, or free hydrogen ions, in surface waters. The lower the pH value, the more acidic the seawater.',
   },
+  pCO2SURF: {
+    region:
+      'The partial pressure of carbon dioxide indicates how much CO₂ is in seawater.',
+  },
 }
 
 const DisplaySection = ({ sx }) => {
