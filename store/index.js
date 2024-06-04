@@ -51,7 +51,9 @@ export const variables = {
       {
         variable: 'DIC',
         delta: true,
+        logScale: true,
         colorLimits: [0, 0.1],
+        logColorLimits: [0.0001, 10],
         colormap: 'warm',
         label: 'change',
         unit: 'mmol/m³',
@@ -63,6 +65,100 @@ export const variables = {
         colormap: 'warm',
         label: 'Total',
         unit: 'mmol/m³',
+      },
+    ],
+  },
+  FG: {
+    meta: {
+      label: 'Flux',
+      threshold: 0.001,
+    },
+    variables: [
+      {
+        variable: 'FG',
+        delta: true,
+        colorLimits: [0, 0.1],
+        colormap: 'warm',
+        label: 'change',
+        unit: 'mmol/m²/d',
+      },
+      {
+        variable: 'FG',
+        delta: false,
+        colorLimits: [1800, 2300],
+        colormap: 'warm',
+        label: 'Total',
+        unit: 'mmol/m²/d',
+      },
+    ],
+  },
+  PH: {
+    meta: {
+      label: 'pH',
+      threshold: 0.001,
+    },
+    variables: [
+      {
+        variable: 'PH',
+        delta: true,
+        colorLimits: [0, 7],
+        colormap: 'warm',
+        label: 'change',
+      },
+      {
+        variable: 'PH',
+        delta: false,
+        colorLimits: [0, 7],
+        colormap: 'warm',
+        label: 'Total',
+      },
+    ],
+  },
+  Omega_arag: {
+    meta: {
+      label: 'Omega_arag',
+      threshold: 0.001,
+    },
+    variables: [
+      {
+        variable: 'Omega_arag',
+        delta: true,
+        colorLimits: [0, 1],
+        colormap: 'warm',
+        label: 'change',
+        // unit: 'mmol/m²/d',
+      },
+      {
+        variable: 'Omega_arag',
+        delta: false,
+        colorLimits: [0, 1],
+        colormap: 'warm',
+        label: 'Total',
+        // unit: 'mmol/m²/d',
+      },
+    ],
+  },
+  Omega_calc: {
+    meta: {
+      label: 'Omega_calc',
+      threshold: 0.001,
+    },
+    variables: [
+      {
+        variable: 'Omega_calc',
+        delta: true,
+        colorLimits: [0, 1],
+        colormap: 'warm',
+        label: 'change',
+        // unit: 'mmol/m²/d',
+      },
+      {
+        variable: 'Omega_calc',
+        delta: false,
+        colorLimits: [0, 1],
+        colormap: 'warm',
+        label: 'Total',
+        // unit: 'mmol/m²/d',
       },
     ],
   },

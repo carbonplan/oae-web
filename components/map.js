@@ -35,7 +35,12 @@ const frag = (variable) => `
     gl_FragColor.a = opacity;
     gl_FragColor.rgb *= gl_FragColor.a;
   `
-
+const MONTH_MAP = {
+  1: 1,
+  2: 4,
+  3: 7,
+  4: 10,
+}
 const MapWrapper = ({ children }) => {
   const setLoading = useStore((s) => s.setLoading)
   const setRegionDataLoading = useStore((s) => s.setRegionDataLoading)
@@ -97,14 +102,14 @@ const MapWrapper = ({ children }) => {
               setData: handleRegionData,
               selector: {
                 band: currentVariable.delta ? 'delta' : 'experimental',
-                polygon_id: 1, // TODO: remove hardcoded ID when all polygons become available in data
-                injection_date: injectionDate,
+                polygon_id: 0, // TODO: remove hardcoded ID when all polygons become available in data
+                injection_date: MONTH_MAP[injectionDate],
               },
             }}
             selector={{
               band: currentVariable.delta ? 'delta' : 'experimental',
-              polygon_id: 1, // TODO: remove hardcoded ID when all polygons become available in data
-              injection_date: injectionDate,
+              polygon_id: 0, // TODO: remove hardcoded ID when all polygons become available in data
+              injection_date: MONTH_MAP[injectionDate],
               year: Math.floor(detailElapsedTime / 12) + 1,
               month: (detailElapsedTime % 12) + 1,
             }}

@@ -24,6 +24,22 @@ const DESCRIPTIONS = {
     region:
       'Dissolved inorganic carbon (DIC) is the sum of inorganic carbon in water. Full water column values shown here.',
   },
+  FG: {
+    region:
+      'The movement of carbon dioxide between the atmosphere and the ocean.',
+  },
+  Omega_arag: {
+    region:
+      'The saturation state of surface seawater with respect to TK. A value of more than 1 indicates supersaturation, which supports the growth of calcifying organisms and indicates a higher likelihood of abiotic mineral precipitation.',
+  },
+  Omega_calc: {
+    region:
+      'The saturation state of surface seawater with respect to calcium carbonate. A value of more than 1 indicates supersaturation, which supports the growth of calcifying organisms and indicates a higher likelihood of abiotic mineral precipitation.',
+  },
+  PH: {
+    region:
+      'The measurement of acidity, or free hydrogen ions, in surface waters. The lower the pH value, the more acidic the seawater.',
+  },
 }
 
 const DisplaySection = ({ sx }) => {
