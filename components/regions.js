@@ -319,7 +319,7 @@ const Regions = () => {
           source: 'regions',
           id: selectedRegion,
         },
-        { overview: variables[variableFamily].meta.overview }
+        { overview: variables[variableFamily].overview }
       )
       toggleLayerVisibilities(false)
     } else {

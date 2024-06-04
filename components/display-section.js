@@ -66,7 +66,7 @@ const DisplaySection = ({ sx }) => {
   const selectVariables = useMemo(() => {
     if (selectedRegion === null) {
       return Object.keys(variables).reduce((acc, key) => {
-        if (variables[key].meta.overview) {
+        if (variables[key].overview) {
           acc[key] = variables[key]
         }
         return acc
@@ -126,7 +126,7 @@ const DisplaySection = ({ sx }) => {
             >
               {Object.keys(selectVariables).map((variable) => (
                 <option key={variable} value={variable}>
-                  {variables[variable].meta.label}
+                  {variables[variable].label}
                 </option>
               ))}
             </Select>
@@ -146,7 +146,7 @@ const DisplaySection = ({ sx }) => {
             </Box>
           </Box>
 
-          {variables[variableFamily].meta.hasOptions && (
+          {variables[variableFamily].hasOptions && (
             <Box sx={{ mt: 3 }}>
               <TooltipWrapper
                 sx={{ justifyContent: 'flex-start', gap: 2 }}

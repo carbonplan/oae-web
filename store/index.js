@@ -2,12 +2,10 @@ import { create } from 'zustand'
 
 export const variables = {
   EFFICIENCY: {
-    meta: {
-      label: 'Efficiency',
-      threshold: 0.001,
-      overview: true,
-      url: 'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr',
-    },
+    label: 'Efficiency',
+    threshold: 0.001,
+    overview: true,
+    url: 'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr',
     variables: [
       {
         key: 'OAE_efficiency',
@@ -19,13 +17,11 @@ export const variables = {
     ],
   },
   FG_CO2: {
-    meta: {
-      label: 'Spread of CO₂ Uptake',
-      threshold: 0.001,
-      overview: true,
-      hasOptions: true,
-      url: 'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/cumulative_FG_CO2_percent.zarr',
-    },
+    label: 'Spread of CO₂ Uptake',
+    threshold: 0.001,
+    overview: true,
+    hasOptions: true,
+    url: 'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/cumulative_FG_CO2_percent.zarr',
     variables: [
       {
         key: 'FG_CO2_percent_cumulative',
@@ -57,12 +53,10 @@ export const variables = {
     ],
   },
   ALK: {
-    meta: {
-      label: 'Alkalinity',
-      threshold: 0.0001,
-      overview: false,
-      hasOptions: true,
-    },
+    label: 'Alkalinity',
+    threshold: 0.0001,
+    overview: false,
+    hasOptions: true,
     variables: [
       {
         variable: 'ALK',
@@ -85,12 +79,10 @@ export const variables = {
     ],
   },
   DIC: {
-    meta: {
-      label: 'Dissolved inorganic carbon (DIC)',
-      threshold: 0.001,
-      overview: false,
-      hasOptions: true,
-    },
+    label: 'Dissolved inorganic carbon (DIC)',
+    threshold: 0.001,
+    overview: false,
+    hasOptions: true,
     variables: [
       {
         variable: 'DIC',

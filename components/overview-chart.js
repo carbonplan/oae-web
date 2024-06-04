@@ -42,7 +42,7 @@ const OverviewChart = ({ sx }) => {
 
   useEffect(() => {
     const fetchTimeSeriesData = async () => {
-      const zarrUrl = variables[variableFamily].meta.url
+      const zarrUrl = variables[variableFamily].url
       const getter = await openZarr(zarrUrl, currentVariable.key)
       const injectionDate =
         Object.values(injectionSeason).findIndex((value) => value) + 1

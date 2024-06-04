@@ -86,10 +86,10 @@ const UnitSlider = ({
 
 const TimeSlider = () => {
   const { elapsedTime, setElapsedTime } = useStore((state) => ({
-    elapsedTime: variables[state.variableFamily].meta.overview
+    elapsedTime: variables[state.variableFamily].overview
       ? state.overviewElapsedTime
       : state.detailElapsedTime,
-    setElapsedTime: variables[state.variableFamily].meta.overview
+    setElapsedTime: variables[state.variableFamily].overview
       ? state.setOverviewElapsedTime
       : state.setDetailElapsedTime,
   }))
