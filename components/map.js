@@ -10,8 +10,6 @@ import { generateLogTicks } from '../utils/color'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
-const bands = ['experiment', 'counterfactual']
-
 const frag = (variable) => `
     float value = ${variable};
     bool useLogScale = logScale == 1.0;
@@ -98,6 +96,7 @@ const MapWrapper = ({ children }) => {
             regionOptions={{
               setData: handleRegionData,
               selector: {
+                band: currentVariable.delta ? 'delta' : 'experimental',
                 polygon_id: 1, // TODO: remove hardcoded ID when all polygons become available in data
                 injection_date: injectionDate,
               },

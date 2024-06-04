@@ -65,52 +65,24 @@ const RegionChart = ({ sx }) => {
     const variableData = regionData[currentVariable.variable]
     if (!variableData) return []
     let averages = []
-    if (currentVariable.delta) {
-      const injected = variableData.experiment
-      const notInjected = variableData.counterfactual
-      if (!injected || !notInjected) return []
+    Array(15)
+      .fill()
+      .map((d, i) => i + 1)
+      .map((year) => {
+        Array(12)
+          .fill()
+          .map((d, i) => i + 1)
+          .map((month) => {
+            const { avg } = getArrayData(
+              variableData[month][year],
+              regionData.coordinates.lat,
+              zoom
+            )
+            const toYear = year - 1 + (month - 1) / 12
+            averages.push([toYear, avg])
+          })
+      })
 
-      Array(15)
-        .fill()
-        .map((d, i) => i + 1)
-        .map((year) => {
-          Array(12)
-            .fill()
-            .map((d, i) => i + 1)
-            .map((month) => {
-              const data = injected[month][year].map(
-                (injectedEl, i) => injectedEl - notInjected[month][year][i]
-              )
-              const { avg } = getArrayData(
-                data,
-                regionData.coordinates.lat,
-                zoom
-              )
-              const toYear = year - 1 + month / 12
-              averages.push([toYear, avg])
-            })
-        })
-    } else if (variableData) {
-      Array(15)
-        .fill()
-        .map((d, i) => i + 1)
-        .map((year) => {
-          Array(12)
-            .fill()
-            .map((d, i) => i + 1)
-            .map((month) => {
-              const { avg } = getArrayData(
-                variableData.experiment[month][year],
-                regionData.coordinates.lat,
-                zoom
-              )
-              const toYear = year - 1 + (month - 1) / 12
-              averages.push([toYear, avg])
-            })
-        })
-    } else {
-      return []
-    }
     const [min, max] = averages.reduce(
       ([min, max], [_, value]) => [Math.min(min, value), Math.max(max, value)],
       [Infinity, -Infinity]
