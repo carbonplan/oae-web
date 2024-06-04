@@ -17,9 +17,9 @@ const DESCRIPTIONS = {
   },
   FG_CO2: {
     overview:
-      'Percentage of additional CO₂ uptake taking place within specified distance from center of injection region. Select a region to view additional experimental outputs.',
+      'Percentage of additional CO₂ uptake taking place within the specified distance from center of the injection region. Select a region to view additional experimental outputs.',
     region:
-      'Percentage of additional CO₂ uptake taking place within specified distance from center of injection region.',
+      'Percentage of additional CO₂ uptake taking place within the specified distance from center of the injection region.',
   },
   ALK: {
     region:
