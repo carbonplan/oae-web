@@ -29,7 +29,7 @@ export const variables = {
         colorLimits: [0, 0.1],
         logColorLimits: [0.0001, 10],
         colormap: 'warm',
-        label: 'change',
+        label: 'Change',
         unit: 'mEq/m³',
       },
       {
@@ -55,7 +55,7 @@ export const variables = {
         colorLimits: [0, 0.01],
         logColorLimits: [0.0001, 10],
         colormap: 'warm',
-        label: 'change',
+        label: 'Change',
         unit: 'mmol/m³',
       },
       {
@@ -79,8 +79,8 @@ export const variables = {
         delta: true,
         colorLimits: [0, 1e-4],
         colormap: 'warm',
-        label: 'change',
-        unit: 'mmol/m²/d',
+        label: 'Change',
+        unit: 'mmol/m²/yr',
       },
       {
         variable: 'FG',
@@ -88,7 +88,7 @@ export const variables = {
         colorLimits: [-0.01, 0.01],
         colormap: 'orangeblue',
         label: 'Total',
-        unit: 'mmol/m²/d',
+        unit: 'mmol/m²/yr',
       },
     ],
   },
@@ -105,7 +105,7 @@ export const variables = {
         colorLimits: [0, 1e-4],
         logColorLimits: [1e-8, 1],
         colormap: 'warm',
-        label: 'change',
+        label: 'Change',
       },
       {
         variable: 'PH',
@@ -127,7 +127,7 @@ export const variables = {
         delta: true,
         colorLimits: [0, 1],
         colormap: 'warm',
-        label: 'change',
+        label: 'Change',
         // unit: 'mmol/m²/d',
       },
       {
@@ -151,7 +151,7 @@ export const variables = {
         delta: true,
         colorLimits: [0, 1],
         colormap: 'warm',
-        label: 'change',
+        label: 'Change',
         // unit: 'mmol/m²/d',
       },
       {
