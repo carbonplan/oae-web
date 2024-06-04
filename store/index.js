@@ -22,6 +22,7 @@ export const variables = {
     overview: true,
     hasOptions: true,
     url: 'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/cumulative_FG_CO2_percent.zarr',
+    optionsTooltip: 'Distance from center of injection region',
     variables: [
       {
         key: 'FG_CO2_percent_cumulative',
@@ -57,6 +58,8 @@ export const variables = {
     threshold: 0.0001,
     overview: false,
     hasOptions: true,
+    optionsTooltip:
+      'View the change in the selected variable, or its total values.',
     variables: [
       {
         variable: 'ALK',
@@ -83,6 +86,8 @@ export const variables = {
     threshold: 0.001,
     overview: false,
     hasOptions: true,
+    optionsTooltip:
+      'View the change in the selected variable, or its total values.',
     variables: [
       {
         variable: 'DIC',

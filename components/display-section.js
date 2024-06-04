@@ -146,11 +146,11 @@ const DisplaySection = ({ sx }) => {
             </Box>
           </Box>
 
-          {variables[variableFamily].hasOptions && (
+          {variables[variableFamily].optionsTooltip && (
             <Box sx={{ mt: 3 }}>
               <TooltipWrapper
                 sx={{ justifyContent: 'flex-start', gap: 2 }}
-                tooltip='View the change in the selected variable, or its total values.'
+                tooltip={variables[variableFamily].optionsTooltip}
               >
                 {Object.keys(filterValues).length && (
                   <Filter
