@@ -91,7 +91,7 @@ const MapWrapper = ({ children }) => {
 
   return (
     <Map zoom={1.5} center={[140, -45]} debug={false} setLoading={setLoading}>
-      {selectedRegion !== null && currentVariable.key !== 'EFFICIENCY' && (
+      {selectedRegion !== null && !variables[variableFamily].overview && (
         <>
           <Raster
             key={variableFamily}
@@ -124,7 +124,7 @@ const MapWrapper = ({ children }) => {
             uniforms={{
               delta: currentVariable.delta ? 1.0 : 0.0,
               logScale: logScale ? 1.0 : 0.0,
-              threshold: variables[variableFamily].meta.threshold ?? 0.0,
+              threshold: variables[variableFamily].threshold ?? 0.0,
             }}
             frag={frag}
           />

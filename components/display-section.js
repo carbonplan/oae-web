@@ -4,7 +4,6 @@ import { Column, Filter, Select, Row, Colorbar } from '@carbonplan/components'
 import { useThemedColormap } from '@carbonplan/colormaps'
 
 import TooltipWrapper from './tooltip'
-import Lock from './lock'
 import useStore, { variables } from '../store'
 import { Chart, TickLabels, Ticks } from '@carbonplan/charts'
 import { generateLogTicks } from '../utils/color'
@@ -12,9 +11,15 @@ import { generateLogTicks } from '../utils/color'
 const DESCRIPTIONS = {
   EFFICIENCY: {
     overview:
-      'Carbon removal efficiency of release as a function of region, injection month, and elapsed time. Select a region to view other experimental outputs.',
+      'Carbon removal efficiency of release as a function of region, injection month, and elapsed time. Select a region to view additional experimental outputs.',
     region:
       'Carbon removal efficiency of release as a function of region, injection month, and elapsed time.',
+  },
+  FG_CO2: {
+    overview:
+      'Percentage of cumulative CO₂ uptake taking place within the specified distance from the center of the injection region. Select a region to view additional experimental outputs.',
+    region:
+      'Percentage of cumulative CO₂ uptake taking place within the specified distance from the center of the injection region.',
   },
   ALK: {
     region:
@@ -58,6 +63,19 @@ const DisplaySection = ({ sx }) => {
     )
   }, [variableFamily, currentVariable])
 
+  const selectVariables = useMemo(() => {
+    if (selectedRegion === null) {
+      return Object.keys(variables).reduce((acc, key) => {
+        if (variables[key].overview) {
+          acc[key] = variables[key]
+        }
+        return acc
+      }, {})
+    } else {
+      return variables
+    }
+  }, [selectedRegion])
+
   const handleFamilySelection = useCallback(
     (e) => {
       setVariableFamily(e.target.value)
@@ -93,7 +111,6 @@ const DisplaySection = ({ sx }) => {
         <Column start={[3, 3, 2, 2]} width={[4, 6, 3, 3]}>
           <Box sx={{ position: 'relative' }}>
             <Select
-              disabled={!selectedRegion}
               onChange={handleFamilySelection}
               value={variableFamily}
               size='xs'
@@ -101,28 +118,15 @@ const DisplaySection = ({ sx }) => {
                 width: '100%',
                 mr: 2,
                 mb: 1,
-                svg: {
-                  display: selectedRegion ? 'inherit' : 'none',
-                },
-                '&:hover ~ #description': selectedRegion
-                  ? {}
-                  : {
-                      color: 'primary',
-                    },
-                '&:hover ~ .lock-container': selectedRegion
-                  ? {}
-                  : {
-                      color: 'primary',
-                    },
               }}
               sxSelect={{
                 fontFamily: 'mono',
                 width: '100%',
               }}
             >
-              {Object.keys(variables).map((variable) => (
+              {Object.keys(selectVariables).map((variable) => (
                 <option key={variable} value={variable}>
-                  {variables[variable].meta.label}
+                  {variables[variable].label}
                 </option>
               ))}
             </Select>
@@ -140,14 +144,13 @@ const DisplaySection = ({ sx }) => {
                 ]
               }
             </Box>
-            <Lock display={!selectedRegion} />
           </Box>
 
-          {currentVariable.key !== 'EFFICIENCY' && (
+          {variables[variableFamily].optionsTooltip && (
             <Box sx={{ mt: 3 }}>
               <TooltipWrapper
                 sx={{ justifyContent: 'flex-start', gap: 2 }}
-                tooltip='View the change in the selected variable, or its total values.'
+                tooltip={variables[variableFamily].optionsTooltip}
               >
                 {Object.keys(filterValues).length && (
                   <Filter

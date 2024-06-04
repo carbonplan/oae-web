@@ -1,26 +1,65 @@
 import { create } from 'zustand'
 
-export const overviewVariable = {
-  key: 'EFFICIENCY',
-  colorLimits: [0, 1],
-  colormap: 'cool',
-  label: 'Efficiency',
-  unit: 'mole CO₂ / mole alkalinity',
-}
-
 export const variables = {
   EFFICIENCY: {
-    meta: {
-      label: 'Efficiency',
-      threshold: 0.001,
-    },
-    variables: [overviewVariable],
+    label: 'Efficiency',
+    threshold: 0.001,
+    overview: true,
+    url: 'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr',
+    variables: [
+      {
+        key: 'OAE_efficiency',
+        colorLimits: [0, 1],
+        colormap: 'cool',
+        label: 'Efficiency',
+        unit: 'mole CO₂ / mole alkalinity',
+      },
+    ],
+  },
+  FG_CO2: {
+    label: 'Spread of CO₂ Uptake',
+    threshold: 0.001,
+    overview: true,
+    hasOptions: true,
+    url: 'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/cumulative_FG_CO2_percent.zarr',
+    optionsTooltip: 'Distance from center of injection region',
+    variables: [
+      {
+        key: 'FG_CO2_percent_cumulative',
+        colorLimits: [0, 100],
+        colormap: 'cool',
+        optionIndex: 0,
+        label: '500 km',
+        graphLabel: 'CO₂ uptake',
+        unit: '%',
+      },
+      {
+        key: 'FG_CO2_percent_cumulative',
+        colorLimits: [0, 100],
+        colormap: 'cool',
+        optionIndex: 1,
+        label: '1000 km',
+        graphLabel: 'CO₂ uptake',
+        unit: '%',
+      },
+      {
+        key: 'FG_CO2_percent_cumulative',
+        colorLimits: [0, 100],
+        colormap: 'cool',
+        optionIndex: 2,
+        label: '2000 km',
+        graphLabel: 'CO₂ uptake',
+        unit: '%',
+      },
+    ],
   },
   ALK: {
-    meta: {
-      label: 'Alkalinity',
-      threshold: 0.0001,
-    },
+    label: 'Alkalinity',
+    threshold: 0.0001,
+    overview: false,
+    hasOptions: true,
+    optionsTooltip:
+      'View the change in the selected variable, or its total values.',
     variables: [
       {
         variable: 'ALK',
@@ -43,10 +82,12 @@ export const variables = {
     ],
   },
   DIC: {
-    meta: {
-      label: 'Dissolved inorganic carbon (DIC)',
-      threshold: 0.001,
-    },
+    label: 'Dissolved inorganic carbon (DIC)',
+    threshold: 0.001,
+    overview: false,
+    hasOptions: true,
+    optionsTooltip:
+      'View the change in the selected variable, or its total values.',
     variables: [
       {
         variable: 'DIC',
@@ -98,7 +139,7 @@ const useStore = create((set) => ({
   variableFamily: 'EFFICIENCY',
   setVariableFamily: (variableFamily) => set({ variableFamily }),
 
-  currentVariable: overviewVariable,
+  currentVariable: variables.EFFICIENCY.variables[0],
   setCurrentVariable: (currentVariable) => set({ currentVariable }),
 
   logScale: false,
@@ -121,7 +162,7 @@ const useStore = create((set) => ({
             return { selectedRegion: null }
           }
 
-          const activeLineData = state.efficiencyLineData[selectedRegion]
+          const activeLineData = state.overviewLineData[selectedRegion]
           return {
             selectedRegion,
             currentVariable: variables.ALK.variables[0],
@@ -131,7 +172,7 @@ const useStore = create((set) => ({
         })
       : set({
           selectedRegion,
-          currentVariable: overviewVariable,
+          currentVariable: variables.EFFICIENCY.variables[0],
           variableFamily: 'EFFICIENCY',
           showRegionPicker: false,
           regionData: null,
@@ -144,8 +185,8 @@ const useStore = create((set) => ({
   setSelectedRegionCenter: (selectedRegionCenter) =>
     set({ selectedRegionCenter }),
 
-  efficiencyLineData: {},
-  setEfficiencyLineData: (efficiencyLineData) => set({ efficiencyLineData }),
+  overviewLineData: {},
+  setOverviewLineData: (overviewLineData) => set({ overviewLineData }),
 
   hoveredRegion: null,
   setHoveredRegion: (hoveredRegion) =>
@@ -154,7 +195,7 @@ const useStore = create((set) => ({
         return {}
       }
 
-      const activeLineData = state.efficiencyLineData[hoveredRegion]
+      const activeLineData = state.overviewLineData[hoveredRegion]
       return { hoveredRegion, activeLineData: activeLineData || null }
     }),
 
