@@ -47,7 +47,9 @@ const DESCRIPTIONS = {
 }
 
 const DisplaySection = ({ sx }) => {
-  const selectedRegion = useStore((state) => state.selectedRegion)
+  const hasSelectedRegion = useStore(
+    (state) => typeof state.selectedRegion === 'number'
+  )
   const currentVariable = useStore((s) => s.currentVariable)
   const setCurrentVariable = useStore((s) => s.setCurrentVariable)
   const variableFamily = useStore((s) => s.variableFamily)
@@ -113,7 +115,7 @@ const DisplaySection = ({ sx }) => {
         <Column start={[3, 3, 2, 2]} width={[4, 6, 3, 3]}>
           <Box sx={{ position: 'relative' }}>
             <Select
-              disabled={!selectedRegion}
+              disabled={!hasSelectedRegion}
               onChange={handleFamilySelection}
               value={variableFamily}
               size='xs'
@@ -122,14 +124,14 @@ const DisplaySection = ({ sx }) => {
                 mr: 2,
                 mb: 1,
                 svg: {
-                  display: selectedRegion ? 'inherit' : 'none',
+                  display: hasSelectedRegion ? 'inherit' : 'none',
                 },
-                '&:hover ~ #description': selectedRegion
+                '&:hover ~ #description': hasSelectedRegion
                   ? {}
                   : {
                       color: 'primary',
                     },
-                '&:hover ~ .lock-container': selectedRegion
+                '&:hover ~ .lock-container': hasSelectedRegion
                   ? {}
                   : {
                       color: 'primary',
@@ -156,11 +158,11 @@ const DisplaySection = ({ sx }) => {
             >
               {
                 DESCRIPTIONS[variableFamily][
-                  selectedRegion ? 'region' : 'overview'
+                  hasSelectedRegion ? 'region' : 'overview'
                 ]
               }
             </Box>
-            <Lock display={!selectedRegion} />
+            <Lock display={!hasSelectedRegion} />
           </Box>
 
           {currentVariable.key !== 'EFFICIENCY' && (

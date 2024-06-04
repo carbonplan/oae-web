@@ -234,10 +234,8 @@ const useStore = create((set) => ({
   setSelectedRegion: (selectedRegion) =>
     selectedRegion !== null
       ? set((state) => {
-          if (selectedRegion !== 301) {
-            alert(
-              'only region 301 (upper mid pacific) is available at this time'
-            )
+          if (selectedRegion > 2) {
+            alert('only regions 0, 1, and 2 are available at this time')
             return { selectedRegion: null }
           }
 

@@ -107,13 +107,13 @@ const MapWrapper = ({ children }) => {
               setData: handleRegionData,
               selector: {
                 band: currentVariable.delta ? 'delta' : 'experimental',
-                polygon_id: 0, // TODO: remove hardcoded ID when all polygons become available in data
+                polygon_id: selectedRegion,
                 injection_date: MONTH_MAP[injectionDate],
               },
             }}
             selector={{
               band: currentVariable.delta ? 'delta' : 'experimental',
-              polygon_id: 0, // TODO: remove hardcoded ID when all polygons become available in data
+              polygon_id: selectedRegion,
               injection_date: MONTH_MAP[injectionDate],
               year: Math.floor(detailElapsedTime / 12) + 1,
               month: (detailElapsedTime % 12) + 1,
