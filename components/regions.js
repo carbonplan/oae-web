@@ -170,20 +170,6 @@ const Regions = () => {
           })
 
           map.addLayer({
-            id: 'regions-selected',
-            type: 'line',
-            source: 'regions',
-            paint: {
-              'line-color': theme.rawColors.primary,
-              'line-width': [
-                'case',
-                ['boolean', ['feature-state', 'selected'], false],
-                2, // Width when hovered
-                0, // Default width
-              ],
-            },
-          })
-          map.addLayer({
             id: 'selected-region-fill',
             type: 'fill',
             source: 'regions',
@@ -199,6 +185,20 @@ const Regions = () => {
                 ],
                 1, // Opacity when an overview var is selected is active
                 0, // Default opacity
+              ],
+            },
+          })
+          map.addLayer({
+            id: 'regions-selected',
+            type: 'line',
+            source: 'regions',
+            paint: {
+              'line-color': theme.rawColors.primary,
+              'line-width': [
+                'case',
+                ['boolean', ['feature-state', 'selected'], false],
+                2, // Width when hovered
+                0, // Default width
               ],
             },
           })
