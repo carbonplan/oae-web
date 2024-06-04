@@ -18,8 +18,8 @@ const OverviewChart = ({ sx }) => {
   const selectedRegion = useStore((state) => state.selectedRegion)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
   const setHoveredRegion = useStore((state) => state.setHoveredRegion)
-  const efficiencyLineData = useStore((state) => state.efficiencyLineData)
-  const setEfficiencyLineData = useStore((state) => state.setEfficiencyLineData)
+  const overviewLineData = useStore((state) => state.overviewLineData)
+  const setOverviewLineData = useStore((state) => state.setOverviewLineData)
   const injectionSeason = useStore((state) => state.injectionSeason)
   const filterToRegionsInView = useStore((state) => state.filterToRegionsInView)
   const setFilterToRegionsInView = useStore(
@@ -85,7 +85,7 @@ const OverviewChart = ({ sx }) => {
         }
       }
     })
-    setEfficiencyLineData(selected)
+    setOverviewLineData(selected)
     if (selectedRegion !== null) {
       setActiveLineData(selected[selectedRegion])
     }
@@ -171,8 +171,7 @@ const OverviewChart = ({ sx }) => {
         <Button
           inverted
           disabled={
-            Object.keys(efficiencyLineData ? efficiencyLineData : {}).length ===
-            0
+            Object.keys(overviewLineData ? overviewLineData : {}).length === 0
           }
           onClick={handleCSVDownload}
           sx={{
@@ -198,7 +197,7 @@ const OverviewChart = ({ sx }) => {
             : currentVariable.label,
           units: currentVariable.unit,
         }}
-        selectedLines={efficiencyLineData}
+        selectedLines={overviewLineData}
         elapsedYears={(overviewElapsedTime + 1) / 12}
         colormap={colormap}
         opacity={0.1}

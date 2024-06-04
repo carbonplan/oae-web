@@ -157,7 +157,7 @@ const useStore = create((set) => ({
             return { selectedRegion: null }
           }
 
-          const activeLineData = state.efficiencyLineData[selectedRegion]
+          const activeLineData = state.overviewLineData[selectedRegion]
           return {
             selectedRegion,
             currentVariable: variables.ALK.variables[0],
@@ -180,8 +180,8 @@ const useStore = create((set) => ({
   setSelectedRegionCenter: (selectedRegionCenter) =>
     set({ selectedRegionCenter }),
 
-  efficiencyLineData: {},
-  setEfficiencyLineData: (efficiencyLineData) => set({ efficiencyLineData }),
+  overviewLineData: {},
+  setOverviewLineData: (overviewLineData) => set({ overviewLineData }),
 
   hoveredRegion: null,
   setHoveredRegion: (hoveredRegion) =>
@@ -190,7 +190,7 @@ const useStore = create((set) => ({
         return {}
       }
 
-      const activeLineData = state.efficiencyLineData[hoveredRegion]
+      const activeLineData = state.overviewLineData[hoveredRegion]
       return { hoveredRegion, activeLineData: activeLineData || null }
     }),
 

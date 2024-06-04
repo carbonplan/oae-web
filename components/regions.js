@@ -16,7 +16,7 @@ const Regions = () => {
   const filterToRegionsInView = useStore((state) => state.filterToRegionsInView)
   const setRegionsInView = useStore((state) => state.setRegionsInView)
   const currentVariable = useStore((state) => state.currentVariable)
-  const efficiencyLineData = useStore((state) => state.efficiencyLineData)
+  const overviewLineData = useStore((state) => state.overviewLineData)
   const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
   const variableFamily = useStore((state) => state.variableFamily)
 
@@ -47,12 +47,12 @@ const Regions = () => {
   }
 
   useEffect(() => {
-    if (!baseGeojson || !efficiencyLineData) return
-    // get currentValue from efficiencyLineData for each polygon and assign to new current value property
+    if (!baseGeojson || !overviewLineData) return
+    // get currentValue from overviewLineData for each polygon and assign to new current value property
     const features = baseGeojson.features.map((feature) => {
       const polygonId = feature.properties.polygon_id
       const currentValue =
-        efficiencyLineData[polygonId]?.data?.[overviewElapsedTime][1]
+        overviewLineData[polygonId]?.data?.[overviewElapsedTime][1]
       return {
         ...feature,
         properties: {
@@ -71,7 +71,7 @@ const Regions = () => {
         colorExpression
       )
     }
-  }, [baseGeojson, overviewElapsedTime, efficiencyLineData])
+  }, [baseGeojson, overviewElapsedTime, overviewLineData])
 
   //reused colors
   const transparent = 'rgba(0, 0, 0, 0)'
