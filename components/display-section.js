@@ -11,15 +11,15 @@ import { generateLogTicks } from '../utils/color'
 const DESCRIPTIONS = {
   EFFICIENCY: {
     overview:
-      'Carbon removal efficiency of release as a function of region, injection month, and elapsed time. Select a region to view other experimental outputs.',
+      'Carbon removal efficiency of release as a function of region, injection month, and elapsed time. Select a region to view additional experimental outputs.',
     region:
       'Carbon removal efficiency of release as a function of region, injection month, and elapsed time.',
   },
   FG_CO2: {
     overview:
-      'Spread of CO₂ uptake. Select a region to view other experimental outputs.',
+      'Percentage of additional CO₂ uptake taking place within specified distance from center of injection region. Select a region to view additional experimental outputs.',
     region:
-      'Surface flux of CO2 in the atmosphere.Select a region to view other experimental outputs.',
+      'Percentage of additional CO₂ uptake taking place within specified distance from center of injection region.',
   },
   ALK: {
     region:
