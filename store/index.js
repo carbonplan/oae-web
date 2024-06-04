@@ -45,14 +45,14 @@ export const variables = {
   DIC: {
     meta: {
       label: 'Dissolved inorganic carbon (DIC)',
-      threshold: 0.001,
+      threshold: 0.00001,
     },
     variables: [
       {
         variable: 'DIC',
         delta: true,
         logScale: true,
-        colorLimits: [0, 0.1],
+        colorLimits: [0, 0.01],
         logColorLimits: [0.0001, 10],
         colormap: 'warm',
         label: 'change',
@@ -71,13 +71,13 @@ export const variables = {
   FG: {
     meta: {
       label: 'Flux',
-      threshold: 0.001,
+      threshold: -Infinity,
     },
     variables: [
       {
         variable: 'FG',
         delta: true,
-        colorLimits: [0, 0.1],
+        colorLimits: [0, 1e-4],
         colormap: 'warm',
         label: 'change',
         unit: 'mmol/m²/d',
@@ -85,8 +85,8 @@ export const variables = {
       {
         variable: 'FG',
         delta: false,
-        colorLimits: [1800, 2300],
-        colormap: 'warm',
+        colorLimits: [-0.01, 0.01],
+        colormap: 'orangeblue',
         label: 'Total',
         unit: 'mmol/m²/d',
       },
@@ -95,20 +95,22 @@ export const variables = {
   PH: {
     meta: {
       label: 'pH',
-      threshold: 0.001,
+      threshold: 1e-8,
     },
     variables: [
       {
         variable: 'PH',
         delta: true,
-        colorLimits: [0, 7],
+        logScale: true,
+        colorLimits: [0, 1e-4],
+        logColorLimits: [1e-8, 1],
         colormap: 'warm',
         label: 'change',
       },
       {
         variable: 'PH',
         delta: false,
-        colorLimits: [0, 7],
+        colorLimits: [7.8, 8.4],
         colormap: 'warm',
         label: 'Total',
       },
