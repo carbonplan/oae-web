@@ -29,6 +29,7 @@ const OverviewChart = ({ sx }) => {
   const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
   const currentVariable = useStore((state) => state.currentVariable)
   const variableFamily = useStore((state) => state.variableFamily)
+  const setActiveLineData = useStore((state) => state.setActiveLineData)
 
   const colormap = useThemedColormap(currentVariable.colormap, { count: 20 }) // low count prevents banding in gradient
   const colorLimits = currentVariable.colorLimits
@@ -85,6 +86,9 @@ const OverviewChart = ({ sx }) => {
       }
     })
     setEfficiencyLineData(selected)
+    if (selectedRegion !== null) {
+      setActiveLineData(selected[selectedRegion])
+    }
   }, [
     timeData,
     regionsInView,
