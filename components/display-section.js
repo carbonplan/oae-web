@@ -182,9 +182,13 @@ const DisplaySection = ({ sx }) => {
             <Box>
               Color range{' '}
               {currentVariable.unit && (
-                <Box as='span' sx={{ textTransform: 'none' }}>
-                  {currentVariable.unit}
-                </Box>
+                <>
+                  (
+                  <Box as='span' sx={{ textTransform: 'none' }}>
+                    {currentVariable.unit}
+                  </Box>
+                  )
+                </>
               )}
             </Box>
             <Box>
