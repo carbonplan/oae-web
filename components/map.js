@@ -12,28 +12,16 @@ const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
 const bands = ['experiment', 'counterfactual']
 
-const frag = `
-    float value;
-    bool isDelta = delta == 1.0;
+const frag = (variable) => `
+    float value = ${variable};
     bool useLogScale = logScale == 1.0;
     float baseValue = 0.0;
     float blendFactor = 0.1;
     vec4 bgc = vec4(0.0);
 
-    if (!isDelta) {
-      value = experiment;
-      if (value == fillValue) {
-        gl_FragColor = vec4(0.0);
-        return;
-      }
-    }
-
-    if (isDelta) {
-      value = experiment - counterfactual;
-      if (value < threshold || value == fillValue) {
-        gl_FragColor = vec4(0.0);
-        return;
-      }
+    if (value == fillValue || value < threshold) {
+      gl_FragColor = vec4(0.0);
+      return;
     }
 
     float rescaled;
@@ -97,7 +85,7 @@ const MapWrapper = ({ children }) => {
             key={variableFamily}
             variable={variableFamily}
             source={
-              'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/reshaped_time_pyramid.zarr'
+              'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store2.zarr'
             }
             colormap={colormap}
             clim={
@@ -110,23 +98,22 @@ const MapWrapper = ({ children }) => {
             regionOptions={{
               setData: handleRegionData,
               selector: {
-                polygon_id: 301, // TODO: remove hardcoded ID when all polygons become available in data
+                polygon_id: 1, // TODO: remove hardcoded ID when all polygons become available in data
                 injection_date: injectionDate,
               },
             }}
             selector={{
-              band: bands,
-              polygon_id: 301, // TODO: remove hardcoded ID when all polygons become available in data
+              band: currentVariable.delta ? 'delta' : 'experimental',
+              polygon_id: 1, // TODO: remove hardcoded ID when all polygons become available in data
               injection_date: injectionDate,
               year: Math.floor(detailElapsedTime / 12) + 1,
               month: (detailElapsedTime % 12) + 1,
             }}
             uniforms={{
-              delta: currentVariable.delta ? 1.0 : 0.0,
               logScale: logScale ? 1.0 : 0.0,
               threshold: variables[variableFamily].meta.threshold ?? 0.0,
             }}
-            frag={frag}
+            frag={frag(variableFamily)}
           />
           {showRegionPicker && <RegionPickerWrapper />}
         </>
