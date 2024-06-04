@@ -123,7 +123,7 @@ const OverviewChart = ({ sx }) => {
         csvData[monthIndex][`region_${lineIndex}`] = value
       })
     })
-    downloadCsv(csvData, `oae-efficiency-timeseries.csv`)
+    downloadCsv(csvData, `${variables[variableFamily].label}-timeseries.csv`)
   }, [timeData, toMonthsIndex])
 
   return (
