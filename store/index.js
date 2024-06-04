@@ -14,7 +14,7 @@ export const variables = {
         colorLimits: [0, 1],
         colormap: 'cool',
         label: 'Efficiency',
-        unit: 'mole CO₂ / mole alkalinity',
+        unit: '',
       },
     ],
   },
@@ -33,6 +33,7 @@ export const variables = {
         colormap: 'warm',
         optionIndex: 0,
         label: '500km',
+        graphLabel: 'CO₂ uptake',
         unit: '%',
       },
       {
@@ -41,6 +42,7 @@ export const variables = {
         colormap: 'warm',
         optionIndex: 1,
         label: '1000km',
+        graphLabel: 'CO₂ uptake',
         unit: '%',
       },
       {
@@ -49,6 +51,7 @@ export const variables = {
         colormap: 'warm',
         optionIndex: 2,
         label: '2000km',
+        graphLabel: 'CO₂ uptake',
         unit: '%',
       },
     ],

@@ -188,7 +188,12 @@ const OverviewChart = ({ sx }) => {
       <Timeseries
         xLimits={[startYear, 15]}
         yLimits={currentVariable.colorLimits}
-        yLabels={{ title: 'OAE efficiency', units: '' }}
+        yLabels={{
+          title: currentVariable.graphLabel
+            ? currentVariable.graphLabel
+            : currentVariable.label,
+          units: currentVariable.unit,
+        }}
         selectedLines={efficiencyLineData}
         elapsedYears={(overviewElapsedTime + 1) / 12}
         colormap={colormap}
