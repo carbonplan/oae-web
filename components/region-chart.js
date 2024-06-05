@@ -11,6 +11,7 @@ import Timeseries from './timeseries'
 import { generateLogTicks, getColorForValue } from '../utils/color'
 import { downloadCsv } from '../utils/csv'
 import useStore from '../store'
+import PlaceholderChart from './placeholder-chart'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 const degToRad = (degrees) => {
@@ -191,7 +192,7 @@ const RegionChart = ({ sx }) => {
   }, [selectedLines])
 
   return (
-    <Box sx={{ mb: 4 }}>
+    <Box sx={{ mb: 4, height: 390 }}>
       {index >= 2 && (
         <>
           <Divider sx={{ mt: 4, mb: 5 }} />
@@ -210,47 +211,51 @@ const RegionChart = ({ sx }) => {
             Time series
           </Button>
 
-          <AnimateHeight duration={250} height={showRegionPicker ? 'auto' : 0}>
-            <Flex sx={{ justifyContent: 'flex-end', mb: 2, height: 15 }}>
-              <Button
-                inverted
-                disabled={selectedLines.length === 0 || regionDataLoading}
-                onClick={handleCSVDownload}
-                sx={{
-                  fontSize: 0,
-                  textTransform: 'uppercase',
-                  fontFamily: 'mono',
-                  '&:disabled': {
-                    color: 'muted',
-                    pointerEvents: 'none',
-                  },
+          {showRegionPicker ? (
+            <>
+              <Flex sx={{ justifyContent: 'flex-end', mb: 2, height: 15 }}>
+                <Button
+                  inverted
+                  disabled={selectedLines.length === 0 || regionDataLoading}
+                  onClick={handleCSVDownload}
+                  sx={{
+                    fontSize: 0,
+                    textTransform: 'uppercase',
+                    fontFamily: 'mono',
+                    '&:disabled': {
+                      color: 'muted',
+                      pointerEvents: 'none',
+                    },
+                  }}
+                >
+                  <Down sx={{ height: 10, width: 10, mr: 1 }} />
+                  Download CSV
+                </Button>
+              </Flex>
+              <Timeseries
+                xLimits={[0, 15]}
+                yLimits={minMax}
+                yLabels={{
+                  title: currentVariable.label ?? '',
+                  units: currentVariable.unit ?? '',
                 }}
-              >
-                <Down sx={{ height: 10, width: 10, mr: 1 }} />
-                Download CSV
-              </Button>
-            </Flex>
-            <Timeseries
-              xLimits={[0, 15]}
-              yLimits={minMax}
-              yLabels={{
-                title: currentVariable.label ?? '',
-                units: currentVariable.unit ?? '',
-              }}
-              selectedLines={selectedLines}
-              elapsedYears={elapsedYears}
-              handleClick={handleTimeseriesClick}
-              point={point}
-              xSelector={true}
-              handleXSelectorClick={handleTimeseriesClick}
-              logy={logScale && minMax[0] > 0} // stale state during switch to log scale
-              logLabels={
-                logScale &&
-                minMax[0] > 0 &&
-                generateLogTicks(minMax[0], minMax[1])
-              }
-            />
-          </AnimateHeight>
+                selectedLines={selectedLines}
+                elapsedYears={elapsedYears}
+                handleClick={handleTimeseriesClick}
+                point={point}
+                xSelector={true}
+                handleXSelectorClick={handleTimeseriesClick}
+                logy={logScale && minMax[0] > 0} // stale state during switch to log scale
+                logLabels={
+                  logScale &&
+                  minMax[0] > 0 &&
+                  generateLogTicks(minMax[0], minMax[1])
+                }
+              />
+            </>
+          ) : (
+            <PlaceholderChart />
+          )}
         </>
       )}
     </Box>
