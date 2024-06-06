@@ -174,46 +174,46 @@ export const variables = {
       },
     ],
   },
-  Omega_arag: {
-    label: 'Omega_arag',
-    threshold: 0.001,
-    variables: [
-      {
-        variable: 'Omega_arag',
-        delta: true,
-        colorLimits: [0, 1],
-        colormap: 'warm',
-        label: 'Change',
-      },
-      {
-        variable: 'Omega_arag',
-        delta: false,
-        colorLimits: [0, 1],
-        colormap: 'warm',
-        label: 'Total',
-      },
-    ],
-  },
-  Omega_calc: {
-    label: 'Omega_calc',
-    threshold: 0.001,
-    variables: [
-      {
-        variable: 'Omega_calc',
-        delta: true,
-        colorLimits: [0, 1],
-        colormap: 'warm',
-        label: 'Change',
-      },
-      {
-        variable: 'Omega_calc',
-        delta: false,
-        colorLimits: [0, 1],
-        colormap: 'warm',
-        label: 'Total',
-      },
-    ],
-  },
+  // Omega_arag: {
+  //   label: 'Omega_arag',
+  //   threshold: 0.001,
+  //   variables: [
+  //     {
+  //       variable: 'Omega_arag',
+  //       delta: true,
+  //       colorLimits: [0, 1],
+  //       colormap: 'warm',
+  //       label: 'Change',
+  //     },
+  //     {
+  //       variable: 'Omega_arag',
+  //       delta: false,
+  //       colorLimits: [0, 1],
+  //       colormap: 'warm',
+  //       label: 'Total',
+  //     },
+  //   ],
+  // },
+  // Omega_calc: {
+  //   label: 'Omega_calc',
+  //   threshold: 0.001,
+  //   variables: [
+  //     {
+  //       variable: 'Omega_calc',
+  //       delta: true,
+  //       colorLimits: [0, 1],
+  //       colormap: 'warm',
+  //       label: 'Change',
+  //     },
+  //     {
+  //       variable: 'Omega_calc',
+  //       delta: false,
+  //       colorLimits: [0, 1],
+  //       colormap: 'warm',
+  //       label: 'Total',
+  //     },
+  //   ],
+  // },
 }
 
 const monthMap = {
