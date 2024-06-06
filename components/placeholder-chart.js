@@ -20,22 +20,21 @@ const PlaceholderChart = () => {
           top: 0,
           fontFamily: 'mono',
           fontSize: 1,
-          color: 'muted',
-          pointerEvents: 'none',
+          color: 'hinted',
         }}
       >
         (0, 0)
       </Box>
       <Chart x={[0, 15]} y={[0, 1]} padding={{ top: 30 }} sx={{ mt: 10 }}>
         <Grid horizontal vertical sx={{ borderColor: 'hinted' }} />
-        <AxisLabel sx={{ fontSize: 0, color: 'muted' }} left arrow={false}>
+        <AxisLabel sx={{ fontSize: 0, color: 'hinted' }} left arrow={false}>
           Variable
         </AxisLabel>
-        <AxisLabel arrow={false} sx={{ fontSize: 0, color: 'muted' }} bottom>
+        <AxisLabel arrow={false} sx={{ fontSize: 0, color: 'hinted' }} bottom>
           Time
         </AxisLabel>
         <TickLabels
-          sx={{ color: 'muted' }}
+          sx={{ color: 'hinted' }}
           left
           format={(d) => {
             if (Math.abs(d) < 0.001 && d !== 0) {
@@ -44,19 +43,21 @@ const PlaceholderChart = () => {
             return d
           }}
         />
-        <TickLabels sx={{ color: 'muted' }} bottom values={[0, 5, 10, 15]} />
+        <TickLabels sx={{ color: 'hinted' }} bottom values={[0, 5, 10, 15]} />
       </Chart>
       <Box
         sx={{
-          top: '-60%',
-          left: '33%',
-          position: 'relative',
-          maxWidth: '60%',
+          position: 'absolute',
+          top: '46.5%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          textAlign: 'center',
+          maxWidth: '200px',
           fontSize: [0, 0, 0, 1],
           color: 'secondary',
         }}
       >
-        Select the search icon above to create
+        Click on the search icon above to generate a time series
       </Box>
     </Box>
   )
