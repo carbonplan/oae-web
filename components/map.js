@@ -85,10 +85,6 @@ const MapWrapper = ({ children }) => {
     }
   }
 
-  console.log(
-    'rendering map',
-    selectedRegion !== null && !variables[variableFamily].overview
-  )
   return (
     <Map zoom={1.5} center={[140, -45]} debug={false} setLoading={setLoading}>
       {selectedRegion !== null && !variables[variableFamily].overview && (
