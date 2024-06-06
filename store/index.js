@@ -20,7 +20,6 @@ export const variables = {
     label: 'Spread of CO₂ Uptake',
     threshold: 0.001,
     overview: true,
-    hasOptions: true,
     url: 'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/cumulative_FG_CO2_percent.zarr',
     optionsTooltip: 'Distance from center of injection region',
     variables: [
@@ -56,10 +55,8 @@ export const variables = {
   ALK: {
     label: 'Alkalinity',
     threshold: 0.0001,
-    overview: false,
-    hasOptions: true,
     optionsTooltip:
-      'View the change in the selected variable, or its total values.',
+      'View the change in alkalinity, or the total alkalinity value.',
     variables: [
       {
         variable: 'ALK',
@@ -84,10 +81,7 @@ export const variables = {
   DIC: {
     label: 'Dissolved inorganic carbon (DIC)',
     threshold: 0.00001,
-    overview: false,
-    hasOptions: true,
-    optionsTooltip:
-      'View the change in the selected variable, or its total values.',
+    optionsTooltip: 'View the change in DIC, or the total DIC value.',
     variables: [
       {
         variable: 'DIC',
@@ -112,6 +106,7 @@ export const variables = {
   FG: {
     label: 'Flux',
     threshold: -Infinity,
+    optionsTooltip: 'View the change in CO₂ flux, or the total flux value.',
     variables: [
       {
         variable: 'FG',
@@ -136,6 +131,7 @@ export const variables = {
   pCO2SURF: {
     label: 'pCO₂',
     threshold: -Infinity,
+    optionsTooltip: 'View the change in pCO₂, or the total pCO₂ value.',
     variables: [
       {
         variable: 'pCO2SURF',
@@ -158,6 +154,7 @@ export const variables = {
   PH: {
     label: 'pH',
     threshold: 1e-8,
+    optionsTooltip: 'View the change in pH, or the total pH value.',
     variables: [
       {
         variable: 'PH',
