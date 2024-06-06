@@ -154,27 +154,25 @@ const MapWrapper = ({ children }) => {
           }}
         >
           <Box>REGION {String(selectedRegion).padStart(3, '0')}</Box>
-          {selectedRegion !== null && (
-            <Button
-              onClick={() => setSelectedRegion(null)}
-              size='sm'
-              sx={{
-                ml: 2,
-                fontSize: [1, 1, 1, 2],
-                borderLeft: '1px solid',
-                borderColor: 'secondary',
-              }}
-              suffix={
-                <X
-                  sx={{
-                    ml: 2,
-                    // mb: ['3px', '3px', '3px', 0],
-                    height: 16,
-                  }}
-                />
-              }
-            ></Button>
-          )}
+          <Button
+            onClick={() => setSelectedRegion(null)}
+            size='sm'
+            sx={{
+              ml: 2,
+              fontSize: [1, 1, 1, 2],
+              borderLeft: '1px solid',
+              borderColor: 'secondary',
+            }}
+            suffix={
+              <X
+                sx={{
+                  ml: 2,
+                  // mb: ['3px', '3px', '3px', 0],
+                  height: 16,
+                }}
+              />
+            }
+          ></Button>
         </Flex>
       )}
 
