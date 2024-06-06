@@ -1,14 +1,13 @@
 import React, { useMemo } from 'react'
 import { Map, Line, Raster, Fill } from '@carbonplan/maps'
-import { Box, Flex, useThemeUI } from 'theme-ui'
+import { useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
 
 import useStore, { variables } from '../store'
 import Regions from './regions'
 import RegionPickerWrapper from './region-picker'
 import { generateLogTicks } from '../utils/color'
-import { Button } from '@carbonplan/components'
-import { X } from '@carbonplan/icons'
+import RegionCloser from './region-closer'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
@@ -56,8 +55,6 @@ const MapWrapper = ({ children }) => {
   const setLoading = useStore((s) => s.setLoading)
   const setRegionDataLoading = useStore((s) => s.setRegionDataLoading)
   const selectedRegion = useStore((s) => s.selectedRegion)
-  const setSelectedRegion = useStore((s) => s.setSelectedRegion)
-  const hoveredRegion = useStore((s) => s.hoveredRegion)
   const detailElapsedTime = useStore((s) => s.detailElapsedTime)
   const injectionSeason = useStore((s) => s.injectionSeason)
   const currentVariable = useStore((s) => s.currentVariable)
@@ -135,46 +132,7 @@ const MapWrapper = ({ children }) => {
           {showRegionPicker && <RegionPickerWrapper />}
         </>
       )}
-      {selectedRegion !== null && (
-        <Flex
-          sx={{
-            alignItems: 'center',
-            position: 'absolute',
-            left: ['50%', '50%', '66%', '66%'],
-            top: ['unset', 'unset', '12px', '9px'],
-            bottom: ['135px', '135px', 'unset', 'unset'],
-            transform: 'translate(-50%, 0)',
-            background: 'muted',
-            fontFamily: 'mono',
-            fontSize: [1, 1, 1, 2],
-            height: [32, 32, 32, 36],
-            py: 2,
-            px: 3,
-            borderRadius: 40,
-          }}
-        >
-          <Box>REGION {String(selectedRegion).padStart(3, '0')}</Box>
-          <Button
-            onClick={() => setSelectedRegion(null)}
-            size='sm'
-            sx={{
-              ml: 2,
-              fontSize: [1, 1, 1, 2],
-              borderLeft: '1px solid',
-              borderColor: 'secondary',
-            }}
-            suffix={
-              <X
-                sx={{
-                  ml: 2,
-                  // mb: ['3px', '3px', '3px', 0],
-                  height: 16,
-                }}
-              />
-            }
-          ></Button>
-        </Flex>
-      )}
+      {selectedRegion !== null && <RegionCloser />}
 
       <Fill
         color={theme.rawColors.background}
