@@ -52,7 +52,7 @@ const PlaceholderChart = () => {
           left: '50%',
           transform: 'translate(-50%, -50%)',
           textAlign: 'center',
-          maxWidth: '200px',
+          width: [180, 180, 180, 210],
           fontSize: [0, 0, 0, 1],
           color: 'secondary',
         }}
