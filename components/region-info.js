@@ -52,13 +52,11 @@ const RegionInfo = ({ sx }) => {
         >
           <Flex sx={{ gap: 2, alignItems: 'flex-start' }}>
             <Box sx={{ ...sx.heading }}>Region</Box>
-            {selectedRegion !== null || hoveredRegion !== null ? (
-              <Badge sx={{ mt: '-1px' }}>
-                {String(selectedRegion ?? hoveredRegion).padStart(3, '0')}
-              </Badge>
-            ) : (
-              <Box as={'span'}>{' - '}</Box>
-            )}
+            <Badge sx={{ mt: '-1px' }}>
+              {String(
+                selectedRegion ?? hoveredRegion !== null ? hoveredRegion : '---'
+              ).padStart(3, '0')}
+            </Badge>
           </Flex>
           <Box sx={{ fontSize: [0, 0, 0, 1], color: 'primary' }}>
             {selectedRegion !== null ? (
