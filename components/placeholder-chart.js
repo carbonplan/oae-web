@@ -3,7 +3,7 @@ import { Box } from 'theme-ui'
 import { AxisLabel, Chart, Grid, TickLabels, Ticks } from '@carbonplan/charts'
 import useStore from '../store'
 import { Button } from '@carbonplan/components'
-import { RotatingArrow } from '@carbonplan/icons'
+import { Search } from '@carbonplan/icons'
 
 const PlaceholderChart = () => {
   const setShowRegionPicker = useStore((s) => s.setShowRegionPicker)
@@ -62,7 +62,8 @@ const PlaceholderChart = () => {
         <Button
           onClick={() => setShowRegionPicker(true)}
           size='xs'
-          suffix={<RotatingArrow />}
+          inverted
+          suffix={<Search sx={{ mb: 1 }} />}
         >
           create
         </Button>
