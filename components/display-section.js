@@ -145,9 +145,8 @@ const DisplaySection = ({ sx }) => {
               }
             </Box>
           </Box>
-
-          {variables[variableFamily].optionsTooltip && (
-            <Box sx={{ mt: 3 }}>
+          <Box sx={{ mt: 3, height: 30 }}>
+            {variables[variableFamily].optionsTooltip && (
               <TooltipWrapper
                 sx={{ justifyContent: 'flex-start', gap: 2 }}
                 tooltip={variables[variableFamily].optionsTooltip}
@@ -160,8 +159,8 @@ const DisplaySection = ({ sx }) => {
                   />
                 )}
               </TooltipWrapper>
-            </Box>
-          )}
+            )}
+          </Box>
         </Column>
 
         <Column start={1} width={[6, 8, 4, 4]} sx={{ ...sx.label, mt: 4 }}>
