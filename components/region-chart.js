@@ -192,7 +192,7 @@ const RegionChart = ({ sx }) => {
   }, [selectedLines])
 
   return (
-    <Box sx={{ mb: 4, height: 390 }}>
+    <Box sx={{ mb: 4, height: index >= 2 ? 390 : 0 }}>
       {index >= 2 && (
         <>
           <Divider sx={{ mt: 4, mb: 5 }} />
