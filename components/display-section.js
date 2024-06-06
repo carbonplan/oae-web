@@ -124,8 +124,12 @@ const DisplaySection = ({ sx }) => {
                 width: '100%',
               }}
             >
-              {Object.keys(selectVariables).map((variable) => (
-                <option key={variable} value={variable}>
+              {Object.keys(variables).map((variable) => (
+                <option
+                  disabled={!selectVariables[variable]}
+                  key={variable}
+                  value={variable}
+                >
                   {variables[variable].label}
                 </option>
               ))}
