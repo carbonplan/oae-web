@@ -52,7 +52,7 @@ export const variables = {
         variable: 'DIC',
         delta: true,
         logScale: true,
-        colorLimits: [0, 0.01],
+        colorLimits: [0, 0.1],
         logColorLimits: [0.0001, 10],
         colormap: 'warm',
         label: 'Change',
@@ -61,7 +61,7 @@ export const variables = {
       {
         variable: 'DIC',
         delta: false,
-        colorLimits: [1800, 2300],
+        colorLimits: [400000, 1400000],
         colormap: 'warm',
         label: 'Total',
         unit: 'mmol/m²',
