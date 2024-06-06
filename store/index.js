@@ -262,11 +262,6 @@ const useStore = create((set) => ({
   setSelectedRegion: (selectedRegion) =>
     selectedRegion !== null
       ? set((state) => {
-          if (selectedRegion > 2) {
-            alert('only regions 0, 1, and 2 are available at this time')
-            return { selectedRegion: null }
-          }
-
           const activeLineData = state.overviewLineData[selectedRegion]
           return {
             selectedRegion,
