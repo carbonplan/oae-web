@@ -85,9 +85,13 @@ const MapWrapper = ({ children }) => {
     }
   }
 
+  console.log(
+    'rendering map',
+    selectedRegion !== null && !variables[variableFamily].overview
+  )
   return (
     <Map zoom={1.5} center={[140, -45]} debug={false} setLoading={setLoading}>
-      {selectedRegion !== null && currentVariable.key !== 'EFFICIENCY' && (
+      {selectedRegion !== null && !variables[variableFamily].overview && (
         <>
           <Raster
             key={variableFamily}
@@ -120,7 +124,7 @@ const MapWrapper = ({ children }) => {
             }}
             uniforms={{
               logScale: logScale ? 1.0 : 0.0,
-              threshold: variables[variableFamily].meta.threshold ?? 0.0,
+              threshold: variables[variableFamily].threshold ?? 0.0,
               unitConversion: currentVariable.unitConversion ?? 1.0,
             }}
             frag={frag(variableFamily)}

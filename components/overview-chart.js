@@ -5,22 +5,21 @@ import { useThemedColormap } from '@carbonplan/colormaps'
 import { Button } from '@carbonplan/components'
 import { Down } from '@carbonplan/icons'
 
-import useStore, { overviewVariable } from '../store'
+import useStore, { variables } from '../store'
 import Timeseries from './timeseries'
-import { openZarr, getChunk, getTimeSeriesData, loadZarr } from '../utils/zarr'
+import { openZarr, getChunk, getTimeSeriesData } from '../utils/zarr'
 import { downloadCsv } from '../utils/csv'
 import { getColorForValue } from '../utils/color'
-const zarrUrl =
-  'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
+const ids = Array.from({ length: 690 }, (_, i) => i)
 
 const OverviewChart = ({ sx }) => {
   const selectedRegion = useStore((state) => state.selectedRegion)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
   const setHoveredRegion = useStore((state) => state.setHoveredRegion)
-  const efficiencyLineData = useStore((state) => state.efficiencyLineData)
-  const setEfficiencyLineData = useStore((state) => state.setEfficiencyLineData)
+  const overviewLineData = useStore((state) => state.overviewLineData)
+  const setOverviewLineData = useStore((state) => state.setOverviewLineData)
   const injectionSeason = useStore((state) => state.injectionSeason)
   const filterToRegionsInView = useStore((state) => state.filterToRegionsInView)
   const setFilterToRegionsInView = useStore(
@@ -28,9 +27,12 @@ const OverviewChart = ({ sx }) => {
   )
   const regionsInView = useStore((state) => state.regionsInView)
   const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
+  const currentVariable = useStore((state) => state.currentVariable)
+  const variableFamily = useStore((state) => state.variableFamily)
+  const setActiveLineData = useStore((state) => state.setActiveLineData)
 
-  const colormap = useThemedColormap(overviewVariable.colormap, { count: 20 }) // low count prevents banding in gradient
-  const colorLimits = overviewVariable.colorLimits
+  const colormap = useThemedColormap(currentVariable.colormap, { count: 20 }) // low count prevents banding in gradient
+  const colorLimits = currentVariable.colorLimits
   const [timeData, setTimeData] = useState([])
   const startYear = 0
 
@@ -40,19 +42,25 @@ const OverviewChart = ({ sx }) => {
 
   useEffect(() => {
     const fetchTimeSeriesData = async () => {
-      const variable = 'OAE_efficiency'
-      const idZarr = await loadZarr(zarrUrl, 'polygon_id')
-      const ids = idZarr.data
-      const getter = await openZarr(zarrUrl, variable)
+      const zarrUrl = variables[variableFamily].url
+      const getter = await openZarr(zarrUrl, currentVariable.key)
       const injectionDate =
         Object.values(injectionSeason).findIndex((value) => value) + 1
       const injectionChunkIndex = injectionDate - 1
-      const raw = await getChunk(getter, [0, 0, injectionChunkIndex])
-      const timeSeriesData = getTimeSeriesData(raw, ids, startYear)
+      const raw =
+        currentVariable.optionIndex !== undefined
+          ? await getChunk(getter, [0, 0, injectionChunkIndex, 0])
+          : await getChunk(getter, [0, 0, injectionChunkIndex])
+      const timeSeriesData = getTimeSeriesData(
+        raw,
+        ids,
+        startYear,
+        currentVariable.optionIndex
+      )
       setTimeData(timeSeriesData)
     }
     fetchTimeSeriesData()
-  }, [injectionSeason])
+  }, [injectionSeason, currentVariable])
 
   useEffect(() => {
     let selected = {}
@@ -77,7 +85,10 @@ const OverviewChart = ({ sx }) => {
         }
       }
     })
-    setEfficiencyLineData(selected)
+    setOverviewLineData(selected)
+    if (selectedRegion !== null) {
+      setActiveLineData(selected[selectedRegion])
+    }
   }, [
     timeData,
     regionsInView,
@@ -112,7 +123,10 @@ const OverviewChart = ({ sx }) => {
         csvData[monthIndex][`region_${lineIndex}`] = value
       })
     })
-    downloadCsv(csvData, `oae-efficiency-timeseries.csv`)
+    const name = currentVariable.graphLabel
+      ? `${currentVariable.graphLabel} ${currentVariable.label}`
+      : currentVariable.label
+    downloadCsv(csvData, `${name} timeseries.csv`)
   }, [timeData, toMonthsIndex])
 
   return (
@@ -160,8 +174,7 @@ const OverviewChart = ({ sx }) => {
         <Button
           inverted
           disabled={
-            Object.keys(efficiencyLineData ? efficiencyLineData : {}).length ===
-            0
+            Object.keys(overviewLineData ? overviewLineData : {}).length === 0
           }
           onClick={handleCSVDownload}
           sx={{
@@ -180,9 +193,14 @@ const OverviewChart = ({ sx }) => {
       </Flex>
       <Timeseries
         xLimits={[startYear, 15]}
-        yLimits={[0, 1]}
-        yLabels={{ title: 'OAE efficiency', units: '' }}
-        selectedLines={efficiencyLineData}
+        yLimits={currentVariable.colorLimits}
+        yLabels={{
+          title: currentVariable.graphLabel
+            ? `${currentVariable.graphLabel} ${currentVariable.label}`
+            : currentVariable.label,
+          units: currentVariable.unit,
+        }}
+        selectedLines={overviewLineData}
         elapsedYears={(overviewElapsedTime + 1) / 12}
         colormap={colormap}
         opacity={0.1}
