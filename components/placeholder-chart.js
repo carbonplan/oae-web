@@ -1,13 +1,8 @@
 import React from 'react'
 import { Box } from 'theme-ui'
 import { AxisLabel, Chart, Grid, TickLabels, Ticks } from '@carbonplan/charts'
-import useStore from '../store'
-import { Button } from '@carbonplan/components'
-import { Search } from '@carbonplan/icons'
 
 const PlaceholderChart = () => {
-  const setShowRegionPicker = useStore((s) => s.setShowRegionPicker)
-
   return (
     <Box
       sx={{
@@ -54,19 +49,14 @@ const PlaceholderChart = () => {
       <Box
         sx={{
           top: '-60%',
-          left: '50%',
+          left: '33%',
           position: 'relative',
-          zIndex: 10000,
+          maxWidth: '60%',
+          fontSize: [0, 0, 0, 1],
+          color: 'secondary',
         }}
       >
-        <Button
-          onClick={() => setShowRegionPicker(true)}
-          size='xs'
-          inverted
-          suffix={<Search sx={{ mb: 1 }} />}
-        >
-          create
-        </Button>
+        Select the search icon above to create
       </Box>
     </Box>
   )
