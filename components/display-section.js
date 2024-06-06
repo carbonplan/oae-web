@@ -137,7 +137,7 @@ const DisplaySection = ({ sx }) => {
             <Box
               id='description'
               sx={{
-                fontSize: 0,
+                fontSize: [0, 0, 0, 1],
                 color: 'secondary',
                 transition: 'all 0.2s',
               }}
