@@ -11,6 +11,7 @@ import Timeseries from './timeseries'
 import { generateLogTicks, getColorForValue } from '../utils/color'
 import { downloadCsv } from '../utils/csv'
 import useStore from '../store'
+import { formatValue } from '../utils/format'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 const degToRad = (degrees) => {
@@ -136,7 +137,7 @@ const RegionChart = ({ sx }) => {
       x: elapsedYears,
       y,
       color,
-      text: y.toFixed(currentVariable.delta ? 3 : 1),
+      text: formatValue(y),
     }
   }, [elapsedYears, selectedLines, lineAverageValue, colormap, currentVariable])
 

@@ -25,7 +25,7 @@ export const generateLogTicks = (min, max) => {
   const maxExp = Math.floor(Math.log10(max))
   const ticks = []
   for (let exp = minExp; exp <= maxExp; exp++) {
-    ticks.push(Number(Math.pow(10, exp).toFixed(Math.abs(exp))))
+    ticks.push(Number(Math.pow(10, exp)))
   }
   return ticks
 }

@@ -7,6 +7,7 @@ import TooltipWrapper from './tooltip'
 import useStore, { variables } from '../store'
 import { Chart, TickLabels, Ticks } from '@carbonplan/charts'
 import { generateLogTicks } from '../utils/color'
+import { formatValue } from '../utils/format'
 
 const DESCRIPTIONS = {
   EFFICIENCY: {
@@ -266,7 +267,12 @@ const DisplaySection = ({ sx }) => {
                 '&:first-of-type': { ml: '-1px' },
               }}
             />
-            <TickLabels values={logScale ? logLabels : null} bottom />
+            <TickLabels
+              values={logScale ? logLabels : null}
+              format={(d) => formatValue(d, { 0.001: '.0e' })}
+              sx={{ textTransform: 'none' }}
+              bottom
+            />
           </Chart>
         </Column>
       </Row>
