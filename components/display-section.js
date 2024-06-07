@@ -147,8 +147,12 @@ const DisplaySection = ({ sx }) => {
                 width: '100%',
               }}
             >
-              {Object.keys(selectVariables).map((variable) => (
-                <option key={variable} value={variable}>
+              {Object.keys(variables).map((variable) => (
+                <option
+                  disabled={!selectVariables[variable]}
+                  key={variable}
+                  value={variable}
+                >
                   {variables[variable].label}
                 </option>
               ))}
@@ -156,7 +160,7 @@ const DisplaySection = ({ sx }) => {
             <Box
               id='description'
               sx={{
-                fontSize: 0,
+                fontSize: [0, 0, 0, 1],
                 color: 'secondary',
                 transition: 'all 0.2s',
               }}
@@ -168,10 +172,9 @@ const DisplaySection = ({ sx }) => {
               }
             </Box>
           </Box>
-
-          {Object.keys(filterValues).length &&
-            variables[variableFamily].optionsTooltip && (
-              <Box sx={{ mt: 3 }}>
+          <Box sx={{ mt: 3 }}>
+            {Object.keys(filterValues).length &&
+              variables[variableFamily].optionsTooltip && (
                 <TooltipWrapper
                   sx={{ justifyContent: 'flex-start', gap: 2 }}
                   tooltip={variables[variableFamily].optionsTooltip}
@@ -182,8 +185,8 @@ const DisplaySection = ({ sx }) => {
                     setValues={handleVariableSelection}
                   />
                 </TooltipWrapper>
-              </Box>
-            )}
+              )}
+          </Box>
         </Column>
 
         <Column start={1} width={[6, 8, 4, 4]} sx={{ ...sx.label, mt: 4 }}>
