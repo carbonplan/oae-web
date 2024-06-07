@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Box, Spinner } from 'theme-ui'
-import { format } from 'd3-format'
 import { alpha } from '@theme-ui/color'
 import {
   AxisLabel,
