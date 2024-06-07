@@ -7,6 +7,7 @@ import TooltipWrapper from './tooltip'
 import useStore, { variables } from '../store'
 import { Chart, TickLabels, Ticks } from '@carbonplan/charts'
 import { generateLogTicks } from '../utils/color'
+import { formatValue } from '../utils/format'
 
 const DESCRIPTIONS = {
   EFFICIENCY: {
@@ -29,10 +30,32 @@ const DESCRIPTIONS = {
     region:
       'Dissolved inorganic carbon (DIC) is the sum of inorganic carbon in water. Full water column values shown here.',
   },
+  FG: {
+    region:
+      'The movement of carbon dioxide between the atmosphere and the ocean.',
+  },
+  Omega_arag: {
+    region:
+      'The saturation state of surface seawater with respect to TK. A value of more than 1 indicates supersaturation, which supports the growth of calcifying organisms and indicates a higher likelihood of abiotic mineral precipitation.',
+  },
+  Omega_calc: {
+    region:
+      'The saturation state of surface seawater with respect to calcium carbonate. A value of more than 1 indicates supersaturation, which supports the growth of calcifying organisms and indicates a higher likelihood of abiotic mineral precipitation.',
+  },
+  PH: {
+    region:
+      'The measurement of acidity, or free hydrogen ions, in surface waters. The lower the pH value, the more acidic the seawater.',
+  },
+  pCO2SURF: {
+    region:
+      'The partial pressure of carbon dioxide indicates how much CO₂ is in seawater.',
+  },
 }
 
 const DisplaySection = ({ sx }) => {
-  const selectedRegion = useStore((state) => state.selectedRegion)
+  const hasSelectedRegion = useStore(
+    (state) => typeof state.selectedRegion === 'number'
+  )
   const currentVariable = useStore((s) => s.currentVariable)
   const setCurrentVariable = useStore((s) => s.setCurrentVariable)
   const variableFamily = useStore((s) => s.variableFamily)
@@ -64,7 +87,7 @@ const DisplaySection = ({ sx }) => {
   }, [variableFamily, currentVariable])
 
   const selectVariables = useMemo(() => {
-    if (selectedRegion === null) {
+    if (!hasSelectedRegion) {
       return Object.keys(variables).reduce((acc, key) => {
         if (variables[key].overview) {
           acc[key] = variables[key]
@@ -74,7 +97,7 @@ const DisplaySection = ({ sx }) => {
     } else {
       return variables
     }
-  }, [selectedRegion])
+  }, [hasSelectedRegion])
 
   const handleFamilySelection = useCallback(
     (e) => {
@@ -144,37 +167,41 @@ const DisplaySection = ({ sx }) => {
             >
               {
                 DESCRIPTIONS[variableFamily][
-                  selectedRegion ? 'region' : 'overview'
+                  hasSelectedRegion ? 'region' : 'overview'
                 ]
               }
             </Box>
           </Box>
           <Box sx={{ mt: 3 }}>
-            {variables[variableFamily].optionsTooltip && (
-              <TooltipWrapper
-                sx={{ justifyContent: 'flex-start', gap: 2 }}
-                tooltip={variables[variableFamily].optionsTooltip}
-              >
-                {Object.keys(filterValues).length && (
+            {Object.keys(filterValues).length &&
+              variables[variableFamily].optionsTooltip && (
+                <TooltipWrapper
+                  sx={{ justifyContent: 'flex-start', gap: 2 }}
+                  tooltip={variables[variableFamily].optionsTooltip}
+                >
                   <Filter
                     key={variableFamily}
                     values={filterValues}
                     setValues={handleVariableSelection}
                   />
-                )}
-              </TooltipWrapper>
-            )}
+                </TooltipWrapper>
+              )}
           </Box>
         </Column>
 
         <Column start={1} width={[6, 8, 4, 4]} sx={{ ...sx.label, mt: 4 }}>
           <Flex sx={{ justifyContent: 'space-between', height: 25 }}>
             <Box>
-              Color range (
-              <Box as='span' sx={{ textTransform: 'none' }}>
-                {currentVariable.unit}
-              </Box>
-              )
+              Color range{' '}
+              {currentVariable.unit && (
+                <>
+                  (
+                  <Box as='span' sx={{ textTransform: 'none' }}>
+                    {currentVariable.unit}
+                  </Box>
+                  )
+                </>
+              )}
             </Box>
             <Box>
               {currentVariable.logScale && (
@@ -243,7 +270,12 @@ const DisplaySection = ({ sx }) => {
                 '&:first-of-type': { ml: '-1px' },
               }}
             />
-            <TickLabels values={logScale ? logLabels : null} bottom />
+            <TickLabels
+              values={logScale ? logLabels : null}
+              format={(d) => formatValue(d, { 0.001: '.0e' })}
+              sx={{ textTransform: 'none' }}
+              bottom
+            />
           </Chart>
         </Column>
       </Row>

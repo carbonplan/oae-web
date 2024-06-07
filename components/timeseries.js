@@ -16,6 +16,7 @@ import {
 import { Badge } from '@carbonplan/components'
 
 import useStore from '../store'
+import { formatValue } from '../utils/format'
 
 const renderPoint = (point) => {
   const { x, y, color } = point
@@ -154,7 +155,7 @@ const OverviewBadge = () => {
   const data = activeLineData.data[overviewElapsedTime]
   const x = data[0]
   const y = data[1]
-  const point = { x, y, color, text: data[1].toFixed(2) }
+  const point = { x, y, color, text: formatValue(y) }
   return renderDataBadge(point)
 }
 
@@ -238,7 +239,6 @@ const Timeseries = ({
     const yValue = xSelectorValue ?? point?.y
     const xValue = mousePosition ?? point?.x
     if (yValue === undefined || xValue === undefined) return null
-    const formattedValue = yValue.toFixed(currentVariable?.delta ? 3 : 1)
     return (
       <Box
         sx={{
@@ -251,7 +251,7 @@ const Timeseries = ({
           pointerEvents: 'none',
         }}
       >
-        ({xYearsMonth(xValue)}, {formattedValue}
+        ({xYearsMonth(xValue)}, {formatValue(yValue)}
         <Box as='span' sx={{ fontSize: 0 }}>
           {currentVariable.unit}
         </Box>

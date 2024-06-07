@@ -38,7 +38,7 @@ const OverviewChart = ({ sx }) => {
 
   const { theme } = useThemeUI()
 
-  const disableFilter = !!selectedRegion
+  const disableFilter = typeof selectedRegion === 'number'
 
   useEffect(() => {
     const fetchTimeSeriesData = async () => {
@@ -204,8 +204,8 @@ const OverviewChart = ({ sx }) => {
         elapsedYears={(overviewElapsedTime + 1) / 12}
         colormap={colormap}
         opacity={0.1}
-        handleClick={selectedRegion ? undefined : handleClick}
-        handleHover={selectedRegion ? undefined : handleHover}
+        handleClick={disableFilter ? undefined : handleClick}
+        handleHover={disableFilter ? undefined : handleHover}
         shadeHorizon
         showActive
       />

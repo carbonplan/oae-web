@@ -8,10 +8,11 @@ import { useBreakpointIndex } from '@theme-ui/match-media'
 import { Down, Search, X } from '@carbonplan/icons'
 
 import Timeseries from './timeseries'
+import PlaceholderChart from './placeholder-chart'
+import useStore from '../store'
 import { generateLogTicks, getColorForValue } from '../utils/color'
 import { downloadCsv } from '../utils/csv'
-import useStore from '../store'
-import PlaceholderChart from './placeholder-chart'
+import { formatValue } from '../utils/format'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 const degToRad = (degrees) => {
@@ -27,7 +28,7 @@ const areaOfPixelProjected = (lat, zoom) => {
 const isValidElement = (el) =>
   el !== 0 && el !== 9.969209968386869e36 && !isNaN(el)
 
-const getArrayData = (arr, lats, zoom) => {
+const getArrayData = (arr, lats, zoom, unitConversion) => {
   const areas = lats
     .filter((l, i) => isValidElement(arr[i]))
     .map((lat) => areaOfPixelProjected(lat, zoom))
@@ -36,7 +37,7 @@ const getArrayData = (arr, lats, zoom) => {
     .filter((el) => isValidElement(el))
     .reduce(
       (accum, el, i) => ({
-        avg: accum.avg + el * (areas[i] / totalArea),
+        avg: accum.avg + el * unitConversion * (areas[i] / totalArea),
       }),
       { avg: 0 }
     )
@@ -64,54 +65,28 @@ const RegionChart = ({ sx }) => {
   const toLineData = useMemo(() => {
     if (!regionData) return []
     const variableData = regionData[currentVariable.variable]
+    const unitConversion = currentVariable.unitConversion ?? 1
     if (!variableData) return []
     let averages = []
-    if (currentVariable.delta) {
-      const injected = variableData.experiment
-      const notInjected = variableData.counterfactual
-      if (!injected || !notInjected) return []
+    Array(15)
+      .fill()
+      .map((d, i) => i + 1)
+      .map((year) => {
+        Array(12)
+          .fill()
+          .map((d, i) => i + 1)
+          .map((month) => {
+            const { avg } = getArrayData(
+              variableData[month][year],
+              regionData.coordinates.lat,
+              zoom,
+              unitConversion
+            )
+            const toYear = year - 1 + (month - 1) / 12
+            averages.push([toYear, avg])
+          })
+      })
 
-      Array(15)
-        .fill()
-        .map((d, i) => i + 1)
-        .map((year) => {
-          Array(12)
-            .fill()
-            .map((d, i) => i + 1)
-            .map((month) => {
-              const data = injected[month][year].map(
-                (injectedEl, i) => injectedEl - notInjected[month][year][i]
-              )
-              const { avg } = getArrayData(
-                data,
-                regionData.coordinates.lat,
-                zoom
-              )
-              const toYear = year - 1 + month / 12
-              averages.push([toYear, avg])
-            })
-        })
-    } else if (variableData) {
-      Array(15)
-        .fill()
-        .map((d, i) => i + 1)
-        .map((year) => {
-          Array(12)
-            .fill()
-            .map((d, i) => i + 1)
-            .map((month) => {
-              const { avg } = getArrayData(
-                variableData.experiment[month][year],
-                regionData.coordinates.lat,
-                zoom
-              )
-              const toYear = year - 1 + (month - 1) / 12
-              averages.push([toYear, avg])
-            })
-        })
-    } else {
-      return []
-    }
     const [min, max] = averages.reduce(
       ([min, max], [_, value]) => [Math.min(min, value), Math.max(max, value)],
       [Infinity, -Infinity]
@@ -163,7 +138,7 @@ const RegionChart = ({ sx }) => {
       x: elapsedYears,
       y,
       color,
-      text: y.toFixed(currentVariable.delta ? 3 : 1),
+      text: formatValue(y),
     }
   }, [elapsedYears, selectedLines, lineAverageValue, colormap, currentVariable])
 

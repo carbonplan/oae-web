@@ -11,6 +11,8 @@ const RegionInfo = ({ sx }) => {
   const selectedRegion = useStore((state) => state.selectedRegion)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
 
+  const hasSelectedRegion = selectedRegion !== null
+
   const handleClear = () => {
     setSelectedRegion(null)
   }
@@ -37,7 +39,7 @@ const RegionInfo = ({ sx }) => {
             stroke: 'primary',
           },
         }}
-        onClick={selectedRegion ? handleClear : null}
+        onClick={hasSelectedRegion ? handleClear : null}
       >
         <SidebarDivider sx={{ mb: 0 }} />
 
@@ -59,7 +61,7 @@ const RegionInfo = ({ sx }) => {
             </Badge>
           </Flex>
           <Box sx={{ fontSize: [0, 0, 0, 1], color: 'primary' }}>
-            {selectedRegion !== null ? (
+            {hasSelectedRegion ? (
               <Flex sx={{ alignItems: 'center' }}>
                 <Box
                   id='guide'

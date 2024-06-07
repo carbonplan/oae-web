@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useMemo } from 'react'
 import { RegionPicker, useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 
@@ -9,13 +9,13 @@ const RegionPickerWrapper = () => {
   const { theme } = useThemeUI()
   const { map } = useMapbox()
 
-  const isCenterInView = useCallback(
-    (center) => {
-      const bounds = map.getBounds()
-      return bounds.contains(center)
-    },
-    [map]
-  )
+  const isCenterInView = useMemo(() => {
+    if (!selectedRegionCenter) {
+      return false
+    }
+    const bounds = map.getBounds()
+    return bounds.contains(selectedRegionCenter)
+  }, [selectedRegionCenter, map])
 
   return (
     <RegionPicker
@@ -24,9 +24,7 @@ const RegionPickerWrapper = () => {
       fontFamily={theme.fonts.mono}
       fontSize={'14px'}
       maxRadius={2000}
-      initialCenter={
-        isCenterInView(selectedRegionCenter) ? selectedRegionCenter : null
-      }
+      initialCenter={isCenterInView ? selectedRegionCenter : null}
     />
   )
 }
