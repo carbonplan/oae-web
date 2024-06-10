@@ -111,11 +111,11 @@ export const variables = {
       {
         variable: 'FG',
         delta: true,
-        colorLimits: [0, 1e-2],
+        colorLimits: [0, -1e-2],
         colormap: 'warm',
         label: 'Change',
         unit: 'mol/m²/yr',
-        unitConversion: 315.36,
+        unitConversion: -315.36,
       },
       {
         variable: 'FG',
@@ -125,7 +125,7 @@ export const variables = {
         flipColormap: true,
         label: 'Total',
         unit: 'mol/m²/yr',
-        unitConversion: 315.36,
+        unitConversion: -315.36,
       },
     ],
   },
