@@ -122,6 +122,7 @@ export const variables = {
         delta: false,
         colorLimits: [-5, 5],
         colormap: 'orangeblue',
+        flipColormap: true,
         label: 'Total',
         unit: 'mol/m²/yr',
         unitConversion: 315.36,

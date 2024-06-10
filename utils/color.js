@@ -1,3 +1,8 @@
+import { useThemedColormap } from '@carbonplan/colormaps'
+import { useMemo } from 'react'
+
+import useStore from '../store'
+
 export const getColorForValue = (
   value,
   colormap,
@@ -28,4 +33,32 @@ export const generateLogTicks = (min, max) => {
     ticks.push(Number(Math.pow(10, exp)))
   }
   return ticks
+}
+
+export const useVariableColormap = () => {
+  const currentVariable = useStore((s) => s.currentVariable)
+  const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
+
+  const min = logScale
+    ? currentVariable.logColorLimits[0]
+    : currentVariable.colorLimits[0]
+  const max = logScale
+    ? currentVariable.logColorLimits[1]
+    : currentVariable.colorLimits[1]
+  const logLabels = logScale ? generateLogTicks(min, max) : null
+  const colormapBase = logScale
+    ? useThemedColormap(currentVariable.colormap, {
+        count: logLabels.length,
+      }).slice(1, logLabels.length)
+    : useThemedColormap(currentVariable.colormap)
+
+  const colormap = useMemo(() => {
+    if (currentVariable.flipColormap) {
+      return [...colormapBase].reverse()
+    } else {
+      return colormapBase
+    }
+  }, [colormapBase, currentVariable.flipColormap])
+
+  return colormap
 }

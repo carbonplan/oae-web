@@ -1,12 +1,11 @@
 import React, { useMemo } from 'react'
 import { Map, Line, Raster, Fill } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
-import { useThemedColormap } from '@carbonplan/colormaps'
 
 import useStore, { variables } from '../store'
 import Regions from './regions'
 import RegionPickerWrapper from './region-picker'
-import { generateLogTicks } from '../utils/color'
+import { useVariableColormap } from '../utils/color'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
@@ -57,19 +56,7 @@ const MapWrapper = ({ children }) => {
   const showRegionPicker = useStore((s) => s.showRegionPicker)
   const setRegionData = useStore((s) => s.setRegionData)
   const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
-
-  const colormapLength = logScale
-    ? generateLogTicks(
-        currentVariable.logColorLimits[0],
-        currentVariable.logColorLimits[1]
-      ).length
-    : undefined
-  const colormap = logScale
-    ? useThemedColormap(currentVariable.colormap, {
-        count: colormapLength,
-      }).slice(1, colormapLength)
-    : useThemedColormap(currentVariable.colormap)
-
+  const colormap = useVariableColormap()
   const { theme } = useThemeUI()
 
   const injectionDate = useMemo(() => {

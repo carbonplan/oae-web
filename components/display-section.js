@@ -1,12 +1,11 @@
 import React, { useCallback, useMemo } from 'react'
 import { Box, Checkbox, Flex, Label } from 'theme-ui'
 import { Column, Filter, Select, Row, Colorbar } from '@carbonplan/components'
-import { useThemedColormap } from '@carbonplan/colormaps'
 
 import TooltipWrapper from './tooltip'
 import useStore, { variables } from '../store'
 import { Chart, TickLabels, Ticks } from '@carbonplan/charts'
-import { generateLogTicks } from '../utils/color'
+import { generateLogTicks, useVariableColormap } from '../utils/color'
 import { formatValue } from '../utils/format'
 
 const DESCRIPTIONS = {
@@ -32,7 +31,7 @@ const DESCRIPTIONS = {
   },
   FG: {
     region:
-      'The movement of carbon dioxide between the atmosphere and the ocean.',
+      'The movement of carbon dioxide between the atmosphere and the ocean. Negative values indicate ocean CO₂ uptake.',
   },
   Omega_arag: {
     region:
@@ -70,11 +69,7 @@ const DisplaySection = ({ sx }) => {
     ? currentVariable.logColorLimits[1]
     : currentVariable.colorLimits[1]
   const logLabels = logScale ? generateLogTicks(min, max) : null
-  const colormap = logScale
-    ? useThemedColormap(currentVariable.colormap, {
-        count: logLabels.length,
-      }).slice(1, logLabels.length)
-    : useThemedColormap(currentVariable.colormap)
+  const colormap = useVariableColormap()
 
   const filterValues = useMemo(() => {
     return variables[variableFamily].variables.reduce(
