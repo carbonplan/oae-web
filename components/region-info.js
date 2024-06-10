@@ -56,7 +56,9 @@ const RegionInfo = ({ sx }) => {
             <Box sx={{ ...sx.heading }}>Region</Box>
             <Badge sx={{ mt: '-1px' }}>
               {String(
-                selectedRegion ?? hoveredRegion !== null ? hoveredRegion : '---'
+                (selectedRegion ?? hoveredRegion) !== null
+                  ? selectedRegion ?? hoveredRegion
+                  : '---'
               ).padStart(3, '0')}
             </Badge>
           </Flex>
