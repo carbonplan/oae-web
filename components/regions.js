@@ -3,7 +3,6 @@ import useStore, { variables } from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
-import centroid from '@turf/centroid'
 
 const Regions = () => {
   const hoveredRegion = useStore((state) => state.hoveredRegion)
@@ -108,12 +107,7 @@ const Regions = () => {
     if (e.features.length > 0) {
       const feature = e.features[0]
       const polygonId = feature.properties.polygon_id
-      let center // handle multipolygons on the dateline
-      if (feature.geometry.type === 'Polygon') {
-        center = centroid(feature.geometry).geometry.coordinates
-      } else {
-        center = [e.lngLat.lng, e.lngLat.lat]
-      }
+      const center = [e.lngLat.lng, e.lngLat.lat]
       setSelectedRegion(polygonId)
       setSelectedRegionCenter(center)
     }
