@@ -9,13 +9,10 @@ const RegionPickerWrapper = () => {
   const { theme } = useThemeUI()
   const { map } = useMapbox()
 
-  const isCenterInView = useMemo(() => {
-    if (!selectedRegionCenter) {
-      return false
-    }
-    const bounds = map.getBounds()
-    return bounds.contains(selectedRegionCenter)
-  }, [selectedRegionCenter, map])
+  if (selectedRegionCenter) {
+    const isCenterInView = map.getBounds().contains(selectedRegionCenter)
+    if (!isCenterInView) map.flyTo({ center: selectedRegionCenter })
+  }
 
   return (
     <RegionPicker
@@ -24,7 +21,7 @@ const RegionPickerWrapper = () => {
       fontFamily={theme.fonts.mono}
       fontSize={'14px'}
       maxRadius={2000}
-      initialCenter={isCenterInView ? selectedRegionCenter : null}
+      initialCenter={selectedRegionCenter ? selectedRegionCenter : null}
     />
   )
 }

@@ -5,8 +5,7 @@ import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import mapboxgl from 'mapbox-gl'
-import { centroid, bbox, polygonToLine, nearestPointOnLine } from '@turf/turf'
-import { X } from '@carbonplan/icons'
+import { bbox, polygonToLine, nearestPointOnLine } from '@turf/turf'
 
 import CloseIcon from './close-icon'
 import React from 'react'
@@ -153,12 +152,7 @@ const Regions = () => {
     if (e.features.length > 0) {
       const feature = e.features[0]
       const polygonId = feature.properties.polygon_id
-      let center // handle multipolygons on the dateline
-      if (feature.geometry.type === 'Polygon') {
-        center = centroid(feature.geometry).geometry.coordinates
-      } else {
-        center = [e.lngLat.lng, e.lngLat.lat]
-      }
+      const center = [e.lngLat.lng, e.lngLat.lat]
       setSelectedRegion(polygonId)
       setSelectedRegionCenter(center)
     }

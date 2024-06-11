@@ -105,13 +105,15 @@ export const variables = {
   },
   FG: {
     label: 'Flux',
-    threshold: -Infinity,
     optionsTooltip: 'View the change in CO₂ flux, or the total flux value.',
     variables: [
       {
         variable: 'FG',
         delta: true,
+        logScale: true,
         colorLimits: [0, -1e-2],
+        logColorLimits: [-1e-5, -1],
+        threshold: -1e-6,
         colormap: 'warm',
         label: 'Change',
         unit: 'mol/m²/yr',
@@ -131,13 +133,15 @@ export const variables = {
   },
   pCO2SURF: {
     label: 'pCO₂',
-    threshold: -Infinity,
     optionsTooltip: 'View the change in pCO₂, or the total pCO₂ value.',
     variables: [
       {
         variable: 'pCO2SURF',
         delta: true,
+        logScale: true,
+        threshold: -1e-6,
         colorLimits: [0, -0.01],
+        logColorLimits: [-1e-5, -1],
         colormap: 'warm',
         label: 'Change',
         unit: 'µatm',
@@ -162,7 +166,7 @@ export const variables = {
         delta: true,
         logScale: true,
         colorLimits: [0, 1e-4],
-        logColorLimits: [1e-8, 1],
+        logColorLimits: [1e-8, 0.1],
         colormap: 'warm',
         label: 'Change',
       },
@@ -280,6 +284,7 @@ const useStore = create((set) => ({
           hoveredRegion: null,
           activeLineData: null,
           logScale: false,
+          selectedRegionCenter: null,
         }),
 
   selectedRegionCenter: null,

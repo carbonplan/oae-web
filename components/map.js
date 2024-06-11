@@ -21,7 +21,11 @@ const frag = (variable) => `
     float blendFactor = 0.1;
     vec4 bgc = vec4(0.0);
 
-    if (value < threshold) {
+    if (threshold > 0.0 && value < threshold) {
+      gl_FragColor = vec4(0.0);
+      return;
+    }
+    if (threshold < 0.0 && value > threshold) {
       gl_FragColor = vec4(0.0);
       return;
     }
@@ -30,8 +34,8 @@ const frag = (variable) => `
     if (useLogScale) {
       float log10 = log(10.0);
       rescaled =
-        (log(value)/log10 - log(clim.x)/log10) /
-        (log(clim.y)/log10 - log(clim.x)/log10);
+        (log(abs(value))/log10 - log(abs(clim.x))/log10) /
+        (log(abs(clim.y))/log10 - log(abs(clim.x))/log10);
     } else {
       rescaled = (value - clim.x) / (clim.y - clim.x);
     }
@@ -107,7 +111,10 @@ const MapWrapper = ({ children }) => {
             }}
             uniforms={{
               logScale: logScale ? 1.0 : 0.0,
-              threshold: variables[variableFamily].threshold ?? 0.0,
+              threshold:
+                currentVariable.threshold ??
+                variables[variableFamily].threshold ??
+                0.0,
               unitConversion: currentVariable.unitConversion ?? 1.0,
             }}
             frag={frag(variableFamily)}
