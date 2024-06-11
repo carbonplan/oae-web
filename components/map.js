@@ -6,6 +6,7 @@ import useStore, { variables } from '../store'
 import Regions from './regions'
 import RegionPickerWrapper from './region-picker'
 import { useVariableColormap } from '../utils/color'
+import CloseIcon from './close-icon'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 
@@ -133,6 +134,7 @@ const MapWrapper = ({ children }) => {
         variable={'land'}
       />
       <Regions />
+      {selectedRegion !== null && <CloseIcon />}
       {children}
     </Map>
   )

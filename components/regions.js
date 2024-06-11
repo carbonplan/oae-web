@@ -4,16 +4,7 @@ import useStore, { variables } from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
-import mapboxgl from 'mapbox-gl'
-import {
-  bbox,
-  polygonToLine,
-  nearestPointOnLine,
-  centerOfMass,
-} from '@turf/turf'
-
-import CloseIcon from './close-icon'
-import React from 'react'
+import { centerOfMass } from '@turf/turf'
 
 const Regions = () => {
   const hoveredRegion = useStore((s) => s.hoveredRegion)
@@ -97,44 +88,6 @@ const Regions = () => {
       ? colormap.map((rgb) => `rgb(${rgb.join(',')})`)
       : colormap
   }, [colormap])
-
-  // const addCloseIconToPolygon = () => {
-  //   if (closeMarker?.remove) {
-  //     closeMarker.remove()
-  //   }
-  //   const polygon = baseGeojson.features.find(
-  //     (f) => f.properties.polygon_id === selectedRegion
-  //   )
-  //   if (!polygon) return
-
-  //   const boundingBox = bbox(polygon)
-  //   const northEastCorner = [boundingBox[2], boundingBox[3]]
-  //   const polygonAsLine = polygonToLine(polygon)
-  //   const northEastPointOfPolygon = nearestPointOnLine(
-  //     polygonAsLine,
-  //     northEastCorner
-  //   )
-  //   const iconPosition = northEastPointOfPolygon.geometry.coordinates
-
-  //   const el = document.createElement('div')
-  //   const root = createRoot(el)
-  //   root.render(
-  //     <CloseIcon
-  //       onClick={(e) => {
-  //         e.stopPropagation()
-  //         setSelectedRegion(null)
-  //       }}
-  //       theme={theme}
-  //     />
-  //   )
-
-  //   const marker = new mapboxgl.Marker(el).setLngLat([
-  //     iconPosition[0],
-  //     iconPosition[1],
-  //   ])
-  //   marker.addTo(map)
-  //   setCloseMarker(marker)
-  // }
 
   const handleMouseMove = (e) => {
     map.getCanvas().style.cursor = 'pointer'
@@ -348,7 +301,6 @@ const Regions = () => {
       source: 'regions',
     })
     if (selectedRegion !== null) {
-      // addCloseIconToPolygon()
       map.setFeatureState(
         {
           source: 'regions',
@@ -366,10 +318,6 @@ const Regions = () => {
       )
       toggleLayerVisibilities(false)
     } else {
-      // if (closeMarker?.remove) {
-      //   closeMarker.remove()
-      //   setCloseMarker(null)
-      // }
       toggleLayerVisibilities(true)
     }
   }, [selectedRegion, map, currentVariable, toggleLayerVisibilities])
@@ -415,10 +363,6 @@ const Regions = () => {
         'line-color',
         theme.rawColors.primary
       )
-      // if (closeMarker?.remove && selectedRegion !== null) {
-      //   // re-add close icon with new theme
-      //   addCloseIconToPolygon()
-      // }
     }
   }, [map, theme])
 
