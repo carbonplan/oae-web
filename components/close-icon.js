@@ -10,19 +10,17 @@ const CloseIcon = () => {
   const regionGeojson = useStore((s) => s.regionGeojson)
   const selectedRegion = useStore((s) => s.selectedRegion)
   const setSelectedRegion = useStore((s) => s.setSelectedRegion)
+  const selectedRegionGeojson = useStore((s) => s.selectedRegionGeojson)
 
   const { map } = useMapbox()
   const element = useRef()
 
   const iconPosition = useMemo(() => {
-    const polygon = regionGeojson.features.find(
-      (f) => f.properties.polygon_id === selectedRegion
-    )
-    if (!polygon) return
+    if (!selectedRegionGeojson) return
 
-    const boundingBox = bbox(polygon)
+    const boundingBox = bbox(selectedRegionGeojson)
     const northEastCorner = [boundingBox[2], boundingBox[3]]
-    const polygonAsLine = polygonToLine(polygon)
+    const polygonAsLine = polygonToLine(selectedRegionGeojson)
     const northEastPointOfPolygon = nearestPointOnLine(
       polygonAsLine,
       northEastCorner
