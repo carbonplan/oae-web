@@ -99,7 +99,7 @@ const RegionInfo = ({ sx }) => {
                   mt: '-5px',
                 }}
               >
-                Select a model run on the map
+                Select a polygon on the map
               </Box>
             )}
           </Box>
