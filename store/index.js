@@ -279,6 +279,7 @@ const useStore = create((set) => ({
           hoveredRegion: null,
           activeLineData: null,
           logScale: false,
+          selectedRegionCenter: null,
         }),
 
   selectedRegionCenter: null,
