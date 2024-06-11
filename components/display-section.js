@@ -11,7 +11,7 @@ import { formatValue } from '../utils/format'
 const DESCRIPTIONS = {
   EFFICIENCY: {
     overview:
-      'Carbon removal efficiency of release as a function of region, injection month, and elapsed time. Select a region to view additional experimental outputs.',
+      'CO₂ removed per unit of alkalinity added. Higher values indicate more efficient carbon removal. Select a region to view additional experimental outputs.',
     region:
       'Carbon removal efficiency of release as a function of region, injection month, and elapsed time.',
   },
@@ -35,11 +35,11 @@ const DESCRIPTIONS = {
   },
   Omega_arag: {
     region:
-      'The saturation state of surface seawater with respect to TK. A value of more than 1 indicates supersaturation, which supports the growth of calcifying organisms and indicates a higher likelihood of abiotic mineral precipitation.',
+      'The saturation state of surface seawater with respect to aragonite . Aragonite is a type of calcium carbonate (CaCO₃) that is precipitated by many shell-forming marine organisms. A value of more than 1 indicates supersaturation, which supports the growth of calcifying organisms and indicates a higher likelihood of abiotic mineral precipitation.',
   },
   Omega_calc: {
     region:
-      'The saturation state of surface seawater with respect to calcium carbonate. A value of more than 1 indicates supersaturation, which supports the growth of calcifying organisms and indicates a higher likelihood of abiotic mineral precipitation.',
+      'The saturation state of surface seawater with respect to calcite, which is a type of calcium carbonate (CaCO₃). A value greater than 1 indicates supersaturation, which supports the growth of calcifying organisms and indicates a higher likelihood of abiotic mineral precipitation.',
   },
   PH: {
     region:
@@ -47,7 +47,7 @@ const DESCRIPTIONS = {
   },
   pCO2SURF: {
     region:
-      'The partial pressure of carbon dioxide indicates how much CO₂ is in seawater.',
+      'The partial pressure of carbon dioxide at the ocean surface, a measure of how much CO₂ is dissolved in seawater. Ocean carbon uptake happens when the surface ocean pCO₂ is lower than the partial pressure of CO₂ in the overlying atmosphere',
   },
 }
 

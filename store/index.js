@@ -17,11 +17,12 @@ export const variables = {
     ],
   },
   FG_CO2: {
-    label: 'Spread of CO₂ Uptake',
+    label: 'Spread of CO₂ uptake',
     threshold: 0.001,
     overview: true,
     url: 'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/cumulative_FG_CO2_percent.zarr',
-    optionsTooltip: 'Distance from center of injection region',
+    optionsTooltip:
+      'View the percentage of cumulative CO₂ uptake taking place within 500 km, 1000 km, or 2000 km of the injection center.',
     variables: [
       {
         key: 'FG_CO2_percent_cumulative',
@@ -53,7 +54,7 @@ export const variables = {
     ],
   },
   ALK: {
-    label: 'Alkalinity',
+    label: 'Surface alkalinity',
     threshold: 0.0001,
     optionsTooltip:
       'View the change in alkalinity, or the total alkalinity value.',
@@ -78,33 +79,33 @@ export const variables = {
       },
     ],
   },
-  DIC: {
-    label: 'Dissolved inorganic carbon (DIC)',
-    threshold: 0.00001,
-    optionsTooltip: 'View the change in DIC, or the total DIC value.',
+  pCO2SURF: {
+    label: 'Partial pressure of CO₂ (pCO₂)',
+    optionsTooltip: 'View the change in pCO₂, or the total pCO₂ value.',
     variables: [
       {
-        variable: 'DIC',
+        variable: 'pCO2SURF',
         delta: true,
         logScale: true,
-        colorLimits: [0, 0.1],
-        logColorLimits: [0.0001, 10],
+        threshold: -1e-6,
+        colorLimits: [0, -0.01],
+        logColorLimits: [-1e-5, -1],
         colormap: 'warm',
         label: 'Change',
-        unit: 'mmol/m²',
+        unit: 'µatm',
       },
       {
-        variable: 'DIC',
+        variable: 'pCO2SURF',
         delta: false,
-        colorLimits: [400000, 1400000],
+        colorLimits: [300, 400],
         colormap: 'warm',
         label: 'Total',
-        unit: 'mmol/m²',
+        unit: 'µatm',
       },
     ],
   },
   FG: {
-    label: 'Flux',
+    label: 'CO₂ flux',
     optionsTooltip: 'View the change in CO₂ flux, or the total flux value.',
     variables: [
       {
@@ -131,28 +132,28 @@ export const variables = {
       },
     ],
   },
-  pCO2SURF: {
-    label: 'pCO₂',
-    optionsTooltip: 'View the change in pCO₂, or the total pCO₂ value.',
+  DIC: {
+    label: 'Dissolved inorganic carbon (DIC)',
+    threshold: 0.00001,
+    optionsTooltip: 'View the change in DIC, or the total DIC value.',
     variables: [
       {
-        variable: 'pCO2SURF',
+        variable: 'DIC',
         delta: true,
         logScale: true,
-        threshold: -1e-6,
-        colorLimits: [0, -0.01],
-        logColorLimits: [-1e-5, -1],
+        colorLimits: [0, 0.1],
+        logColorLimits: [0.0001, 10],
         colormap: 'warm',
         label: 'Change',
-        unit: 'µatm',
+        unit: 'mmol/m²',
       },
       {
-        variable: 'pCO2SURF',
+        variable: 'DIC',
         delta: false,
-        colorLimits: [300, 400],
+        colorLimits: [400000, 1400000],
         colormap: 'warm',
         label: 'Total',
-        unit: 'µatm',
+        unit: 'mmol/m²',
       },
     ],
   },
