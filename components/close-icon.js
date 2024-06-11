@@ -19,8 +19,8 @@ const CloseIcon = ({ onClick, theme, sx = {} }) => {
         '&:hover': {
           color: theme.rawColors.primary,
         },
-        ml: 3,
-        mb: 3,
+        ml: 2,
+        mb: 2,
         ...sx,
       }}
       onClick={onClick}
