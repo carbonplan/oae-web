@@ -340,7 +340,10 @@ const Regions = () => {
       )
       const center = centerOfMass(selectedPolygon).geometry.coordinates
       setSelectedRegionCenter(center)
-      map.flyTo({ center })
+      setTimeout(() => {
+        // timeout prevents warnings with flushSync during react render
+        map.jumpTo({ center }) // flyTo is choppy in this case
+      }, 0)
     }
   }, [
     selectedRegion,
