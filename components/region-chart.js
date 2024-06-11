@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { Box, Divider, Flex } from 'theme-ui'
 import { Button } from '@carbonplan/components'
-import AnimateHeight from 'react-animate-height'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import { useRegion } from '@carbonplan/maps'
 import { useBreakpointIndex } from '@theme-ui/match-media'
