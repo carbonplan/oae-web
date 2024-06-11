@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { createRoot } from 'react-dom/client'
 import useStore, { variables } from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
