@@ -51,6 +51,7 @@ const CloseIcon = () => {
           borderRadius: '50%',
           width: 16,
           height: 16,
+          textAlign: 'center',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -62,7 +63,7 @@ const CloseIcon = () => {
         }}
         onClick={() => setSelectedRegion(null)}
       >
-        <X height={10} width={10} sx={{ mb: 1 }} />
+        <X height={10} width={10} sx={{ display: 'flex' }} />
       </Button>
     </div>
   )
