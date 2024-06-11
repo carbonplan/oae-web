@@ -97,12 +97,13 @@ const Regions = () => {
   }, [colormap])
 
   const addCloseIconToPolygon = () => {
-    const polygon = baseGeojson.features.find(
-      (f) => f.properties.polygon_id === selectedRegion
-    )
     if (closeMarker?.remove) {
       closeMarker.remove()
     }
+    const polygon = baseGeojson.features.find(
+      (f) => f.properties.polygon_id === selectedRegion
+    )
+    if (!polygon) return
 
     const boundingBox = bbox(polygon)
     const northEastCorner = [boundingBox[2], boundingBox[3]]
@@ -397,7 +398,7 @@ const Regions = () => {
         theme.rawColors.primary
       )
       if (closeMarker?.remove && selectedRegion !== null) {
-        closeMarker.remove()
+        // re-add close icon with new theme
         addCloseIconToPolygon()
       }
     }
