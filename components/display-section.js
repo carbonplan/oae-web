@@ -145,24 +145,19 @@ const DisplaySection = ({ sx }) => {
               <optgroup label='Overview variables'>
                 {Object.keys(variables).map((variable) =>
                   variables[variable].overview ? (
-                    <option
-                      disabled={!selectVariables[variable]}
-                      key={variable}
-                      value={variable}
-                    >
+                    <option key={variable} value={variable}>
                       {variables[variable].label}
                     </option>
                   ) : null
                 )}
               </optgroup>
-              <optgroup label='Region-specific variables'>
+              <optgroup
+                label='Region-specific variables'
+                disabled={!hasSelectedRegion}
+              >
                 {Object.keys(variables).map((variable) =>
                   !variables[variable].overview ? (
-                    <option
-                      disabled={!selectVariables[variable]}
-                      key={variable}
-                      value={variable}
-                    >
+                    <option key={variable} value={variable}>
                       {variables[variable].label}
                     </option>
                   ) : null
