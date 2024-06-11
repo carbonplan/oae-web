@@ -5,28 +5,31 @@ import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import mapboxgl from 'mapbox-gl'
-import { bbox, polygonToLine, nearestPointOnLine } from '@turf/turf'
+import {
+  bbox,
+  polygonToLine,
+  nearestPointOnLine,
+  centerOfMass,
+} from '@turf/turf'
 
 import CloseIcon from './close-icon'
 import React from 'react'
 
 const Regions = () => {
-  const hoveredRegion = useStore((state) => state.hoveredRegion)
-  const setHoveredRegion = useStore((state) => state.setHoveredRegion)
-  const selectedRegion = useStore((state) => state.selectedRegion)
-  const setSelectedRegion = useStore((state) => state.setSelectedRegion)
-  const setSelectedRegionCenter = useStore(
-    (state) => state.setSelectedRegionCenter
-  )
-  const filterToRegionsInView = useStore((state) => state.filterToRegionsInView)
-  const setRegionsInView = useStore((state) => state.setRegionsInView)
-  const currentVariable = useStore((state) => state.currentVariable)
-  const overviewLineData = useStore((state) => state.overviewLineData)
-  const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
-  const variableFamily = useStore((state) => state.variableFamily)
-
-  const [baseGeojson, setBaseGeojson] = useState(null)
-  const [closeMarker, setCloseMarker] = useState(null)
+  const hoveredRegion = useStore((s) => s.hoveredRegion)
+  const setHoveredRegion = useStore((s) => s.setHoveredRegion)
+  const selectedRegion = useStore((s) => s.selectedRegion)
+  const setSelectedRegion = useStore((s) => s.setSelectedRegion)
+  const selectedRegionCenter = useStore((s) => s.selectedRegionCenter)
+  const setSelectedRegionCenter = useStore((s) => s.setSelectedRegionCenter)
+  const filterToRegionsInView = useStore((s) => s.filterToRegionsInView)
+  const setRegionsInView = useStore((s) => s.setRegionsInView)
+  const currentVariable = useStore((s) => s.currentVariable)
+  const overviewLineData = useStore((s) => s.overviewLineData)
+  const regionGeojson = useStore((s) => s.regionGeojson)
+  const setRegionGeojson = useStore((s) => s.setRegionGeojson)
+  const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
+  const variableFamily = useStore((s) => s.variableFamily)
 
   const colormap = useThemedColormap(currentVariable.colormap)
   const colorLimits = currentVariable.colorLimits
@@ -53,9 +56,9 @@ const Regions = () => {
   }
 
   useEffect(() => {
-    if (!baseGeojson || !overviewLineData) return
+    if (!regionGeojson || !overviewLineData) return
     // get currentValue from overviewLineData for each polygon and assign to new current value property
-    const features = baseGeojson.features.map((feature) => {
+    const features = regionGeojson.features.map((feature) => {
       const polygonId = feature.properties.polygon_id
       const currentValue =
         overviewLineData[polygonId]?.data?.[overviewElapsedTime][1]
@@ -69,7 +72,7 @@ const Regions = () => {
     })
     if (map && map.getSource('regions')) {
       const colorExpression = buildColorExpression()
-      map.getSource('regions').setData({ ...baseGeojson, features })
+      map.getSource('regions').setData({ ...regionGeojson, features })
       map.setPaintProperty('regions-fill', 'fill-color', colorExpression)
       map.setPaintProperty(
         'selected-region-fill',
@@ -77,7 +80,7 @@ const Regions = () => {
         colorExpression
       )
     }
-  }, [baseGeojson, overviewElapsedTime, overviewLineData])
+  }, [regionGeojson, overviewElapsedTime, overviewLineData])
 
   //reused colors
   const transparent = 'rgba(0, 0, 0, 0)'
@@ -95,43 +98,43 @@ const Regions = () => {
       : colormap
   }, [colormap])
 
-  const addCloseIconToPolygon = () => {
-    if (closeMarker?.remove) {
-      closeMarker.remove()
-    }
-    const polygon = baseGeojson.features.find(
-      (f) => f.properties.polygon_id === selectedRegion
-    )
-    if (!polygon) return
+  // const addCloseIconToPolygon = () => {
+  //   if (closeMarker?.remove) {
+  //     closeMarker.remove()
+  //   }
+  //   const polygon = baseGeojson.features.find(
+  //     (f) => f.properties.polygon_id === selectedRegion
+  //   )
+  //   if (!polygon) return
 
-    const boundingBox = bbox(polygon)
-    const northEastCorner = [boundingBox[2], boundingBox[3]]
-    const polygonAsLine = polygonToLine(polygon)
-    const northEastPointOfPolygon = nearestPointOnLine(
-      polygonAsLine,
-      northEastCorner
-    )
-    const iconPosition = northEastPointOfPolygon.geometry.coordinates
+  //   const boundingBox = bbox(polygon)
+  //   const northEastCorner = [boundingBox[2], boundingBox[3]]
+  //   const polygonAsLine = polygonToLine(polygon)
+  //   const northEastPointOfPolygon = nearestPointOnLine(
+  //     polygonAsLine,
+  //     northEastCorner
+  //   )
+  //   const iconPosition = northEastPointOfPolygon.geometry.coordinates
 
-    const el = document.createElement('div')
-    const root = createRoot(el)
-    root.render(
-      <CloseIcon
-        onClick={(e) => {
-          e.stopPropagation()
-          setSelectedRegion(null)
-        }}
-        theme={theme}
-      />
-    )
+  //   const el = document.createElement('div')
+  //   const root = createRoot(el)
+  //   root.render(
+  //     <CloseIcon
+  //       onClick={(e) => {
+  //         e.stopPropagation()
+  //         setSelectedRegion(null)
+  //       }}
+  //       theme={theme}
+  //     />
+  //   )
 
-    const marker = new mapboxgl.Marker(el).setLngLat([
-      iconPosition[0],
-      iconPosition[1],
-    ])
-    marker.addTo(map)
-    setCloseMarker(marker)
-  }
+  //   const marker = new mapboxgl.Marker(el).setLngLat([
+  //     iconPosition[0],
+  //     iconPosition[1],
+  //   ])
+  //   marker.addTo(map)
+  //   setCloseMarker(marker)
+  // }
 
   const handleMouseMove = (e) => {
     map.getCanvas().style.cursor = 'pointer'
@@ -162,7 +165,7 @@ const Regions = () => {
     fetch('/regions.geojson')
       .then((response) => response.json())
       .then((data) => {
-        setBaseGeojson(data)
+        setRegionGeojson(data)
         try {
           if (!map.getSource('regions')) {
             map.addSource('regions', {
@@ -345,7 +348,7 @@ const Regions = () => {
       source: 'regions',
     })
     if (selectedRegion !== null) {
-      addCloseIconToPolygon()
+      // addCloseIconToPolygon()
       map.setFeatureState(
         {
           source: 'regions',
@@ -363,10 +366,10 @@ const Regions = () => {
       )
       toggleLayerVisibilities(false)
     } else {
-      if (closeMarker?.remove) {
-        closeMarker.remove()
-        setCloseMarker(null)
-      }
+      // if (closeMarker?.remove) {
+      //   closeMarker.remove()
+      //   setCloseMarker(null)
+      // }
       toggleLayerVisibilities(true)
     }
   }, [selectedRegion, map, currentVariable, toggleLayerVisibilities])
@@ -383,6 +386,27 @@ const Regions = () => {
   }, [map, handleRegionsInView, filterToRegionsInView])
 
   useEffect(() => {
+    // get center and fly to selected region when selected via time series
+    if (selectedRegion && !selectedRegionCenter) {
+      const selectedPolygon = regionGeojson.features.find(
+        (feature) => feature.properties.polygon_id === selectedRegion
+      )
+      const center = centerOfMass(selectedPolygon).geometry.coordinates
+      setSelectedRegionCenter(center)
+      setTimeout(() => {
+        // timeout prevents warnings with flushSync during react render
+        map.jumpTo({ center }) // flyTo is choppy in this case
+      }, 0)
+    }
+  }, [
+    selectedRegion,
+    selectedRegionCenter,
+    regionGeojson,
+    map,
+    setSelectedRegionCenter,
+  ])
+
+  useEffect(() => {
     if (map && map.getSource('regions') && map.getLayer('regions-line')) {
       map.setPaintProperty('regions-line', 'line-color', lineColor)
       map.setPaintProperty('regions-hover', 'line-color', lineHighlightColor)
@@ -391,10 +415,10 @@ const Regions = () => {
         'line-color',
         theme.rawColors.primary
       )
-      if (closeMarker?.remove && selectedRegion !== null) {
-        // re-add close icon with new theme
-        addCloseIconToPolygon()
-      }
+      // if (closeMarker?.remove && selectedRegion !== null) {
+      //   // re-add close icon with new theme
+      //   addCloseIconToPolygon()
+      // }
     }
   }, [map, theme])
 
