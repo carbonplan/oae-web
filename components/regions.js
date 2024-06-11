@@ -106,10 +106,13 @@ const Regions = () => {
     }
 
     const boundingBox = bbox(polygon)
-    const NE = [boundingBox[2], boundingBox[3]]
+    const northEastCorner = [boundingBox[2], boundingBox[3]]
     const polygonAsLine = polygonToLine(polygon)
-    const NorthEastPoint = nearestPointOnLine(polygonAsLine, NE)
-    const iconPosition = NorthEastPoint.geometry.coordinates
+    const northEastPointOfPolygon = nearestPointOnLine(
+      polygonAsLine,
+      northEastCorner
+    )
+    const iconPosition = northEastPointOfPolygon.geometry.coordinates
 
     const el = document.createElement('div')
     const root = createRoot(el)
