@@ -100,9 +100,8 @@ const Regions = () => {
     const polygon = baseGeojson.features.find(
       (f) => f.properties.polygon_id === selectedRegion
     )
-    if (closeMarker && closeMarker.remove) {
+    if (closeMarker?.remove) {
       closeMarker.remove()
-      setCloseMarker(null)
     }
 
     const boundingBox = bbox(polygon)
@@ -369,7 +368,7 @@ const Regions = () => {
       )
       toggleLayerVisibilities(false)
     } else {
-      if (closeMarker) {
+      if (closeMarker?.remove) {
         closeMarker.remove()
         setCloseMarker(null)
       }
@@ -397,7 +396,7 @@ const Regions = () => {
         'line-color',
         theme.rawColors.primary
       )
-      if (closeMarker && selectedRegion !== null) {
+      if (closeMarker?.remove && selectedRegion !== null) {
         closeMarker.remove()
         addCloseIconToPolygon()
       }
