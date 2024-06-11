@@ -111,7 +111,9 @@ export const variables = {
       {
         variable: 'FG',
         delta: true,
+        logScale: true,
         colorLimits: [0, -1e-2],
+        logColorLimits: [-1e-5, -1],
         colormap: 'warm',
         label: 'Change',
         unit: 'mol/m²/yr',

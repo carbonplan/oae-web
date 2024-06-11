@@ -26,11 +26,12 @@ export const getColorForValue = (
 }
 
 export const generateLogTicks = (min, max) => {
-  const minExp = Math.ceil(Math.log10(min))
-  const maxExp = Math.floor(Math.log10(max))
+  const factor = min < 0 && max < 0 ? -1 : 1
+  const minExp = Math.ceil(Math.log10(Math.abs(min)))
+  const maxExp = Math.floor(Math.log10(Math.abs(max)))
   const ticks = []
   for (let exp = minExp; exp <= maxExp; exp++) {
-    ticks.push(Number(Math.pow(10, exp)))
+    ticks.push(factor * Number(Math.pow(10, exp)))
   }
   return ticks
 }
