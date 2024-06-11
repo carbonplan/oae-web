@@ -227,7 +227,7 @@ const Timeseries = ({
       <Rect
         id='x-selector'
         x={[year, year + 1]}
-        y={[0, yLimits[1]]}
+        y={[yLimits[0], yLimits[1]]}
         color={color}
         opacity={0.1}
       />
@@ -305,7 +305,7 @@ const Timeseries = ({
           {shadeHorizon && (
             <Rect
               x={[elapsedYears, 15]}
-              y={[0, yLimits[1]]}
+              y={[yLimits[0], yLimits[1]]}
               color='muted'
               pointerEvents='none'
               style={{
