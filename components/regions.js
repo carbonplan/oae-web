@@ -1,9 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createRoot } from 'react-dom/client'
 import useStore, { variables } from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
-import centroid from '@turf/centroid'
+import mapboxgl from 'mapbox-gl'
+import { centroid, bbox, polygonToLine, nearestPointOnLine } from '@turf/turf'
+import { X } from '@carbonplan/icons'
+
+import CloseIcon from './close-icon'
+import React from 'react'
 
 const Regions = () => {
   const hoveredRegion = useStore((state) => state.hoveredRegion)
@@ -21,6 +27,7 @@ const Regions = () => {
   const variableFamily = useStore((state) => state.variableFamily)
 
   const [baseGeojson, setBaseGeojson] = useState(null)
+  const [closeMarker, setCloseMarker] = useState(null)
 
   const colormap = useThemedColormap(currentVariable.colormap)
   const colorLimits = currentVariable.colorLimits
@@ -88,6 +95,41 @@ const Regions = () => {
       ? colormap.map((rgb) => `rgb(${rgb.join(',')})`)
       : colormap
   }, [colormap])
+
+  const addCloseIconToPolygon = () => {
+    const polygon = baseGeojson.features.find(
+      (f) => f.properties.polygon_id === selectedRegion
+    )
+    if (closeMarker && closeMarker.remove) {
+      closeMarker.remove()
+      setCloseMarker(null)
+    }
+
+    const boundingBox = bbox(polygon)
+    const NE = [boundingBox[2], boundingBox[3]]
+    const polygonAsLine = polygonToLine(polygon)
+    const NorthEastPoint = nearestPointOnLine(polygonAsLine, NE)
+    const iconPosition = NorthEastPoint.geometry.coordinates
+
+    const el = document.createElement('div')
+    const root = createRoot(el)
+    root.render(
+      <CloseIcon
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedRegion(null)
+        }}
+        theme={theme}
+      />
+    )
+
+    const marker = new mapboxgl.Marker(el).setLngLat([
+      iconPosition[0],
+      iconPosition[1],
+    ])
+    marker.addTo(map)
+    setCloseMarker(marker)
+  }
 
   const handleMouseMove = (e) => {
     map.getCanvas().style.cursor = 'pointer'
@@ -306,6 +348,7 @@ const Regions = () => {
       source: 'regions',
     })
     if (selectedRegion !== null) {
+      addCloseIconToPolygon()
       map.setFeatureState(
         {
           source: 'regions',
@@ -323,6 +366,10 @@ const Regions = () => {
       )
       toggleLayerVisibilities(false)
     } else {
+      if (closeMarker) {
+        closeMarker.remove()
+        setCloseMarker(null)
+      }
       toggleLayerVisibilities(true)
     }
   }, [selectedRegion, map, currentVariable, toggleLayerVisibilities])
@@ -347,6 +394,10 @@ const Regions = () => {
         'line-color',
         theme.rawColors.primary
       )
+      if (closeMarker && selectedRegion !== null) {
+        closeMarker.remove()
+        addCloseIconToPolygon()
+      }
     }
   }, [map, theme])
 
