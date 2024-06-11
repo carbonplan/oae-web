@@ -290,6 +290,9 @@ const useStore = create((set) => ({
   overviewLineData: {},
   setOverviewLineData: (overviewLineData) => set({ overviewLineData }),
 
+  regionGeojson: null,
+  setRegionGeojson: (regionGeojson) => set({ regionGeojson }),
+
   hoveredRegion: null,
   setHoveredRegion: (hoveredRegion) =>
     set((state) => {
