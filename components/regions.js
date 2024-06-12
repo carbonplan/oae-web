@@ -335,7 +335,7 @@ const Regions = () => {
 
   useEffect(() => {
     // get center and fly to selected region when selected via time series
-    if (selectedRegion && !selectedRegionCenter) {
+    if (typeof selectedRegion === 'number' && !selectedRegionCenter) {
       const center = centerOfMass(selectedRegionGeojson).geometry.coordinates
       setSelectedRegionCenter(center)
       setTimeout(() => {
