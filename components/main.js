@@ -57,12 +57,6 @@ const Main = () => {
     }
   }, [index])
 
-  useEffect(() => {
-    if (index < 2 && selectedRegion) {
-      setExpanded(true)
-    }
-  }, [index, selectedRegion])
-
   return (
     <>
       <Header expanded={expanded} setExpanded={setExpanded} />
@@ -76,13 +70,7 @@ const Main = () => {
       >
         {index >= 2 ? (
           <>
-            <Sidebar
-              expanded={expanded}
-              setExpanded={setExpanded}
-              side='left'
-              width={4}
-              footer={<Footer />}
-            >
+            <Sidebar expanded={true} side='left' width={4} footer={<Footer />}>
               <>
                 <Intro />
                 <RegionInfo sx={sx} />
@@ -128,7 +116,7 @@ const Main = () => {
             <Footer />
           </>
         )}
-        <MapWrapper index={index}></MapWrapper>
+        <MapWrapper />
       </Box>
     </>
   )

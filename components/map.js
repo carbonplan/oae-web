@@ -1,11 +1,10 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo } from 'react'
 import { Map, Line, Raster, Fill } from '@carbonplan/maps'
 import { Box, useThemeUI } from 'theme-ui'
 
 import useStore, { variables } from '../store'
 import Regions from './regions'
 import RegionPickerWrapper from './region-picker'
-import ResizeHandler from './resize-handler'
 import { useVariableColormap } from '../utils/color'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
@@ -50,8 +49,7 @@ const MONTH_MAP = {
   3: 7,
   4: 10,
 }
-const MapWrapper = ({ children, index }) => {
-  const expanded = useStore((s) => s.expanded)
+const MapWrapper = ({ children }) => {
   const setLoading = useStore((s) => s.setLoading)
   const setRegionDataLoading = useStore((s) => s.setRegionDataLoading)
   const selectedRegion = useStore((s) => s.selectedRegion)
@@ -66,8 +64,6 @@ const MapWrapper = ({ children, index }) => {
   const colormap = useVariableColormap()
   const { theme } = useThemeUI()
 
-  const mapWrapper = useRef(null)
-
   const injectionDate = useMemo(() => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
   }, [injectionSeason])
@@ -81,20 +77,12 @@ const MapWrapper = ({ children, index }) => {
     }
   }
 
-  const getWidth = () => {
-    if (index >= 2 && expanded) {
-      return '66%'
-    }
-    return '100%'
-  }
-
   return (
     <Box
-      ref={mapWrapper}
       sx={{
         position: 'absolute',
         right: 0,
-        width: getWidth(),
+        width: ['100%', '100%', '66%', '66%'],
         height: '100%',
       }}
     >
@@ -155,7 +143,6 @@ const MapWrapper = ({ children, index }) => {
         />
 
         <Regions />
-        <ResizeHandler mapRef={mapWrapper} />
         {children}
       </Map>
     </Box>
