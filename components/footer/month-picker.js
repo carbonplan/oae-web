@@ -13,14 +13,21 @@ const OFFSETS = {
 }
 
 const MonthPicker = ({ sx }) => {
-  const { elapsedTime, setElapsedTime } = useStore((state) => ({
-    elapsedTime: variables[state.variableFamily].overview
-      ? state.overviewElapsedTime
-      : state.detailElapsedTime,
-    setElapsedTime: variables[state.variableFamily].overview
-      ? state.setOverviewElapsedTime
-      : state.setDetailElapsedTime,
-  }))
+  const elapsedTime = useStore((state) => {
+    if (variables[state.variableFamily].overview) {
+      return state.overviewElapsedTime
+    } else {
+      return state.detailElapsedTime
+    }
+  })
+
+  const setElapsedTime = useStore((state) => {
+    if (variables[state.variableFamily].overview) {
+      return state.setOverviewElapsedTime
+    } else {
+      return state.setDetailElapsedTime
+    }
+  })
 
   const injectionSeason = useStore((state) =>
     Object.keys(state.injectionSeason).find((k) => state.injectionSeason[k])
