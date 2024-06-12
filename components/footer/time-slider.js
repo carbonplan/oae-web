@@ -90,12 +90,12 @@ const TimeSlider = () => {
       ? state.overviewElapsedTime
       : state.detailElapsedTime
   })
-
   const setElapsedTime = useStore((state) => {
     return variables[state.variableFamily].overview
       ? state.setOverviewElapsedTime
       : state.setDetailElapsedTime
   })
+
   const handleYearChange = useCallback(
     (year) => {
       const months = elapsedTime % 12
