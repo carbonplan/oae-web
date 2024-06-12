@@ -134,7 +134,7 @@ const MapWrapper = ({ children }) => {
         variable={'land'}
       />
       <Regions />
-      {selectedRegion !== null && <CloseIcon />}
+      {typeof selectedRegion === 'number' && <CloseIcon />}
       {children}
     </Map>
   )
