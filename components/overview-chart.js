@@ -130,47 +130,48 @@ const OverviewChart = ({ sx }) => {
   }, [timeData, toMonthsIndex])
 
   return (
-    <>
+    <Box sx={{ mb: 5 }}>
       <Divider sx={{ mt: 4, mb: 5 }} />
       <Box sx={sx.heading}>Time series</Box>
-      <Label
-        sx={{
-          color: disableFilter ? 'muted' : 'secondary',
-          cursor: 'pointer',
-          fontSize: 1,
-          fontFamily: 'mono',
-          py: 1,
-        }}
-      >
-        <Checkbox
-          disabled={disableFilter}
-          checked={filterToRegionsInView}
-          onChange={(e) => setFilterToRegionsInView(e.target.checked)}
+
+      <Flex sx={{ justifyContent: 'space-between' }}>
+        <Label
           sx={{
-            width: 18,
-            mr: 1,
-            mt: '-3px',
+            color: disableFilter ? 'muted' : 'secondary',
             cursor: 'pointer',
-            color: 'muted',
-            transition: 'color 0.15s',
-            'input:active ~ &': { bg: 'background', color: 'primary' },
-            'input:focus ~ &': {
-              bg: 'background',
-              color: filterToRegionsInView ? 'primary' : 'muted',
-            },
-            'input:hover ~ &': {
-              bg: 'background',
-              color: disableFilter ? 'muted' : 'primary',
-            },
-            'input:focus-visible ~ &': {
-              outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
-              background: 'rgb(110, 110, 110, 0.625)',
-            },
+            fontSize: 1,
+            fontFamily: 'mono',
+            py: 1,
           }}
-        />
-        Filter to map view
-      </Label>
-      <Flex sx={{ justifyContent: 'flex-end', height: 15 }}>
+        >
+          <Checkbox
+            disabled={disableFilter}
+            checked={filterToRegionsInView}
+            onChange={(e) => setFilterToRegionsInView(e.target.checked)}
+            sx={{
+              width: 18,
+              mr: 1,
+              mt: '-3px',
+              cursor: 'pointer',
+              color: 'muted',
+              transition: 'color 0.15s',
+              'input:active ~ &': { bg: 'background', color: 'primary' },
+              'input:focus ~ &': {
+                bg: 'background',
+                color: filterToRegionsInView ? 'primary' : 'muted',
+              },
+              'input:hover ~ &': {
+                bg: 'background',
+                color: disableFilter ? 'muted' : 'primary',
+              },
+              'input:focus-visible ~ &': {
+                outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
+                background: 'rgb(110, 110, 110, 0.625)',
+              },
+            }}
+          />
+          Filter to map view
+        </Label>
         <Button
           inverted
           disabled={
@@ -179,6 +180,9 @@ const OverviewChart = ({ sx }) => {
           onClick={handleCSVDownload}
           sx={{
             fontSize: 0,
+            width: '120px',
+            mb: 1,
+            textAlign: 'right',
             textTransform: 'uppercase',
             fontFamily: 'mono',
             '&:disabled': {
@@ -209,7 +213,7 @@ const OverviewChart = ({ sx }) => {
         shadeHorizon
         showActive
       />
-    </>
+    </Box>
   )
 }
 
