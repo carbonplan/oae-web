@@ -67,7 +67,7 @@ export const variables = {
         logColorLimits: [0.0001, 10],
         colormap: 'warm',
         label: 'Change',
-        unit: 'mEq/m²',
+        unit: 'mEq/m³',
       },
       {
         variable: 'ALK',
@@ -75,7 +75,7 @@ export const variables = {
         colorLimits: [2000, 2800],
         colormap: 'warm',
         label: 'Total',
-        unit: 'mEq/m²',
+        unit: 'mEq/m³',
       },
     ],
   },
