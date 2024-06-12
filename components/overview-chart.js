@@ -130,7 +130,7 @@ const OverviewChart = ({ sx }) => {
   }, [timeData, toMonthsIndex])
 
   return (
-    <Box sx={{ mb: 5 }}>
+    <Box sx={{ mb: 4 }}>
       <Divider sx={{ mt: 4, mb: 5 }} />
       <Box sx={sx.heading}>Time series</Box>
 
