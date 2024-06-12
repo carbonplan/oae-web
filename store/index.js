@@ -105,7 +105,7 @@ export const variables = {
     ],
   },
   FG: {
-    label: 'CO₂ flux',
+    label: 'Air-sea CO₂ flux',
     optionsTooltip: 'View the change in CO₂ flux, or the total flux value.',
     variables: [
       {
