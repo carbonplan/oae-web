@@ -5,12 +5,12 @@ import useStore from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { Marker } from 'mapbox-gl'
 import { bbox, nearestPointOnLine, polygonToLine } from '@turf/turf'
+import { adjustLongitudeWorldCopy } from '../utils/format'
 
 const CloseIcon = () => {
-  const regionGeojson = useStore((s) => s.regionGeojson)
-  const selectedRegion = useStore((s) => s.selectedRegion)
   const setSelectedRegion = useStore((s) => s.setSelectedRegion)
   const selectedRegionGeojson = useStore((s) => s.selectedRegionGeojson)
+  const selectedRegionCenter = useStore((s) => s.selectedRegionCenter)
 
   const { map } = useMapbox()
   const element = useRef()
@@ -26,8 +26,13 @@ const CloseIcon = () => {
       northEastCorner
     )
     const iconPosition = northEastPointOfPolygon.geometry.coordinates
-    return iconPosition
-  }, [selectedRegion, regionGeojson])
+
+    const adjustedCoordinates = adjustLongitudeWorldCopy(
+      iconPosition,
+      selectedRegionCenter // based on click, so has correct world copy longitude
+    )
+    return adjustedCoordinates
+  }, [selectedRegionGeojson, selectedRegionCenter])
 
   useEffect(() => {
     if (!map || !iconPosition || !element.current) return

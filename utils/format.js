@@ -18,3 +18,14 @@ export const formatValue = (value, options = {}) => {
     return format(options.default ?? '0.2s')(value)
   }
 }
+
+export const adjustLongitudeWorldCopy = (rawCoords, clickCoords) => {
+  let adjustedLongitude = rawCoords[0]
+  const diff = rawCoords[0] - clickCoords[0]
+  if (diff < -180) {
+    adjustedLongitude += 360
+  } else if (diff > 180) {
+    adjustedLongitude -= 360
+  }
+  return [adjustedLongitude, rawCoords[1]]
+}
