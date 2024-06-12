@@ -180,7 +180,7 @@ const OverviewChart = ({ sx }) => {
           onClick={handleCSVDownload}
           sx={{
             fontSize: 0,
-            width: '120px',
+            minWidth: '120px',
             mb: 1,
             textAlign: 'right',
             textTransform: 'uppercase',
