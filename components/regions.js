@@ -334,7 +334,7 @@ const Regions = () => {
 
   useEffect(() => {
     // get center and fly to selected region when selected via time series
-    if (selectedRegion && !selectedRegionCenter) {
+    if (typeof selectedRegion === 'number' && !selectedRegionCenter) {
       const selectedPolygon = regionGeojson.features.find(
         (feature) => feature.properties.polygon_id === selectedRegion
       )
