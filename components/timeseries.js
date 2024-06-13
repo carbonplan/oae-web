@@ -272,8 +272,9 @@ const Timeseries = ({
     >
       {renderTimeAndData()}
       <Chart x={xLimits} y={yLimits} logy={logy} padding={{ top: 30 }}>
-        <Grid vertical horizontal />
-        <Ticks left />
+        <Grid vertical />
+        <Grid horizontal values={logy && logLabels} />
+        <Ticks left values={logy && logLabels} />
         <Ticks bottom values={Array.from({ length: 16 }, (_, i) => i)} />
         <TickLabels left values={logy && logLabels} />
         <TickLabels bottom values={[0, 5, 10, 15]} />
