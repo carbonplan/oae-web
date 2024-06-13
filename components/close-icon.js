@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useEffect } from 'react'
+import React, { useMemo, useRef, useEffect, useState } from 'react'
 import { X } from '@carbonplan/icons'
 import { Button } from '@carbonplan/components'
 import useStore from '../store'
@@ -7,6 +7,8 @@ import { Marker } from 'mapbox-gl'
 import { bbox, nearestPointOnLine, polygonToLine } from '@turf/turf'
 import { adjustLongitudeWorldCopy } from '../utils/format'
 
+const getSize = (zoom) => Math.round(zoom * 2 + 13)
+
 const CloseIcon = () => {
   const setSelectedRegion = useStore((s) => s.setSelectedRegion)
   const selectedRegionGeojson = useStore((s) => s.selectedRegionGeojson)
@@ -14,6 +16,8 @@ const CloseIcon = () => {
 
   const { map } = useMapbox()
   const element = useRef()
+
+  const [size, setSize] = useState(getSize(map.getZoom()))
 
   const iconPosition = useMemo(() => {
     if (!selectedRegionGeojson) return
@@ -36,13 +40,18 @@ const CloseIcon = () => {
 
   useEffect(() => {
     if (!map || !iconPosition || !element.current) return
-    const marker = new Marker(element.current, {
-      offset: [6, -6],
-    })
+    const marker = new Marker(element.current)
     marker.setLngLat([iconPosition[0], iconPosition[1]])
     marker.addTo(map)
+    const updateSize = () => {
+      setSize(getSize(map.getZoom()))
+    }
+    map.on('zoom', updateSize)
 
-    return () => marker.remove()
+    return () => {
+      marker.remove()
+      map.off('zoom', updateSize)
+    }
   }, [map, iconPosition, element])
 
   return (
@@ -52,12 +61,13 @@ const CloseIcon = () => {
         sx={{
           cursor: 'pointer',
           borderRadius: '50%',
-          width: 16,
-          height: 16,
+          width: size,
+          height: size,
           textAlign: 'center',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          zIndex: 1,
           backgroundColor: 'primary',
           color: 'secondary',
           '&:hover': {
@@ -66,7 +76,11 @@ const CloseIcon = () => {
         }}
         onClick={() => setSelectedRegion(null)}
       >
-        <X height={10} width={10} sx={{ display: 'flex' }} />
+        <X
+          height={Math.round(size / 2 + 2)}
+          width={Math.round(size / 2 + 2)}
+          sx={{ display: 'flex' }}
+        />
       </Button>
     </div>
   )
