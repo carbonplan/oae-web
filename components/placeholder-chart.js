@@ -54,7 +54,7 @@ const PlaceholderChart = () => {
           textAlign: 'center',
           width: [180, 180, 180, 210],
           fontSize: [0, 0, 0, 1],
-          color: 'secondary',
+          color: 'primary',
         }}
       >
         Click on the search icon above to generate a time series

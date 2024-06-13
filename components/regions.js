@@ -338,10 +338,13 @@ const Regions = () => {
     if (typeof selectedRegion === 'number' && !selectedRegionCenter) {
       const center = centerOfMass(selectedRegionGeojson).geometry.coordinates
       setSelectedRegionCenter(center)
-      setTimeout(() => {
-        // timeout prevents warnings with flushSync during react render
-        map.jumpTo({ center }) // flyTo is choppy in this case
-      }, 0)
+      const bounds = map.getBounds()
+      if (!bounds.contains(center)) {
+        setTimeout(() => {
+          // timeout prevents warnings with flushSync during react render
+          map.jumpTo({ center }) // flyTo is choppy in this case
+        }, 0)
+      }
     }
   }, [
     selectedRegion,
