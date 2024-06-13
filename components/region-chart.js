@@ -118,7 +118,7 @@ const RegionChart = ({ sx }) => {
         id: id,
         color,
         strokeWidth: 2,
-        data: logScale ? line.map(([x, y]) => [x, y]) : line,
+        data: line,
       }
     })
     return selected
