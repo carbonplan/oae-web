@@ -6,6 +6,7 @@ import useStore, { variables } from '../store'
 import Regions from './regions'
 import RegionPickerWrapper from './region-picker'
 import { useVariableColormap } from '../utils/color'
+import CloseIcon from './close-icon'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 const width = 4 // width of sidebar
@@ -152,6 +153,7 @@ const MapWrapper = ({ children }) => {
         />
 
         <Regions />
+        {typeof selectedRegion === 'number' && <CloseIcon />}
         {children}
       </Map>
     </Box>
