@@ -71,7 +71,8 @@ const CloseIcon = () => {
           backgroundColor: 'primary',
           color: 'secondary',
           '&:hover': {
-            color: 'background',
+            backgroundColor: 'secondary',
+            color: 'primary',
           },
         }}
         onClick={() => setSelectedRegion(null)}
