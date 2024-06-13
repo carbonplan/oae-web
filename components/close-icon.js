@@ -58,10 +58,10 @@ const CloseIcon = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: 'muted',
+          backgroundColor: 'primary',
           color: 'secondary',
           '&:hover': {
-            color: 'primary',
+            color: 'background',
           },
         }}
         onClick={() => setSelectedRegion(null)}
