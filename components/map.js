@@ -8,6 +8,7 @@ import RegionPickerWrapper from './region-picker'
 import { useVariableColormap } from '../utils/color'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
+const width = 4 // width of sidebar
 
 const frag = (variable) => `
     if (${variable} == fillValue) {
@@ -76,13 +77,21 @@ const MapWrapper = ({ children }) => {
       setRegionDataLoading(false)
     }
   }
-
   return (
     <Box
       sx={{
         position: 'absolute',
         right: 0,
-        width: ['100%', '100%', '66%', '66%'],
+        left: [
+          0,
+          0,
+          `calc(100vw - (${12 - width} * (100vw - 13 * 32px) / 12 + ${
+            12 - width
+          } * 32px))`,
+          `calc(100vw - (${12 - width} * (100vw - 13 * 48px) / 12 + ${
+            12 - width
+          } * 48px))`,
+        ],
         height: '100%',
       }}
     >
