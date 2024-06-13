@@ -50,11 +50,12 @@ const RegionInfo = ({ sx }) => {
             color: 'primary',
             pt: 3,
             pb: '9px',
+            gap: 2,
           }}
         >
           <Flex sx={{ gap: 2, alignItems: 'flex-start' }}>
             <Box sx={{ ...sx.heading }}>Region</Box>
-            <Badge sx={{ mt: '-1px' }}>
+            <Badge sx={{ mt: '-1px', flexShrink: 0 }}>
               {String(
                 (selectedRegion ?? hoveredRegion) !== null
                   ? selectedRegion ?? hoveredRegion
@@ -99,7 +100,7 @@ const RegionInfo = ({ sx }) => {
                   mt: '-5px',
                 }}
               >
-                Select a polygon on the map
+                Select a polygon region on the map
               </Box>
             )}
           </Box>
