@@ -17,6 +17,9 @@ export const getLogSafeMinMax = (min, max, colorLimits) => {
 }
 
 export const generateLogTicks = (min, max) => {
+  if (min === 0 && max === 0) {
+    return []
+  }
   const factor = min < 0 && max < 0 ? -1 : 1
   const minExp = Math.ceil(Math.log10(Math.abs(min)))
   const maxExp = Math.floor(Math.log10(Math.abs(max)))
