@@ -31,10 +31,12 @@ const CloseIcon = () => {
     )
     const iconPosition = northEastPointOfPolygon.geometry.coordinates
 
-    const adjustedCoordinates = adjustLongitudeWorldCopy(
-      iconPosition,
-      selectedRegionCenter // based on click, so has correct world copy longitude
-    )
+    const adjustedCoordinates = selectedRegionCenter
+      ? adjustLongitudeWorldCopy(
+          iconPosition,
+          selectedRegionCenter // based on click, so has correct world copy longitude
+        )
+      : iconPosition
     return adjustedCoordinates
   }, [selectedRegionGeojson, selectedRegionCenter])
 

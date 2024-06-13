@@ -20,6 +20,7 @@ export const formatValue = (value, options = {}) => {
 }
 
 export const adjustLongitudeWorldCopy = (rawCoords, clickCoords) => {
+  if (!clickCoords) return rawCoords
   let adjustedLongitude = rawCoords[0]
   const diff = rawCoords[0] - clickCoords[0]
   if (diff < -180) {
