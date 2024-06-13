@@ -73,6 +73,7 @@ const OverviewChart = ({ sx }) => {
         const color = getColorForValue(
           regionData[overviewElapsedTime][1],
           colormap,
+          currentVariable.colormap,
           colorLimits
         )
         const alphaColor = alpha(color, 0.1)(theme)

@@ -106,6 +106,7 @@ const RegionChart = ({ sx }) => {
       const color = getColorForValue(
         avgValueForLine,
         colormap,
+        currentVariable.colormap,
         currentVariable.colorLimits,
         50
       )
@@ -130,6 +131,7 @@ const RegionChart = ({ sx }) => {
     const color = getColorForValue(
       lineAverageValue,
       colormap,
+      currentVariable.colormap,
       currentVariable.colorLimits,
       50
     )

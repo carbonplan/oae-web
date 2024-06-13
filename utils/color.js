@@ -6,18 +6,29 @@ import useStore from '../store'
 export const getColorForValue = (
   value,
   colormap,
+  colormapName,
   colorLimits,
   minIndex = 0
 ) => {
   let scaledValue = (value - colorLimits[0]) / (colorLimits[1] - colorLimits[0])
   scaledValue = Math.max(0, Math.min(1, scaledValue))
-  const index = Math.max(
+  let index = Math.max(
     minIndex,
     Math.floor(scaledValue * (colormap.length - 1))
   )
   if (!colormap[index]) {
-    return 'rgba(0,0,0,0)'
+    return 'primary'
   }
+
+  // handle divergent colormap
+  if (colormapName === 'orangeblue') {
+    // if in middle third of colormap
+    if (index > colormap.length / 3 && index < (colormap.length * 2) / 3) {
+      // use ends of colormap
+      index = index < colormap.length / 2 ? 0 : colormap.length - 1
+    }
+  }
+
   // convert rgb array to string
   if (colormap[index]?.length === 3) {
     return `rgb(${colormap[index].join(',')})`
