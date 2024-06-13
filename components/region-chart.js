@@ -9,9 +9,13 @@ import { Down, Search, X } from '@carbonplan/icons'
 import Timeseries from './timeseries'
 import PlaceholderChart from './placeholder-chart'
 import useStore from '../store'
-import { generateLogTicks, getColorForValue } from '../utils/color'
-import { downloadCsv } from '../utils/csv'
-import { formatValue } from '../utils/format'
+import {
+  generateLogTicks,
+  getColorForValue,
+  downloadCsv,
+  formatValue,
+  getLogSafeMinMax,
+} from '../utils'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 const degToRad = (degrees) => {
@@ -91,7 +95,7 @@ const RegionChart = ({ sx }) => {
       [Infinity, -Infinity]
     )
     const logSafeMinMax = logScale
-      ? [Math.max(currentVariable.logColorLimits[0], min), max]
+      ? getLogSafeMinMax(min, max, currentVariable.logColorLimits)
       : [min, max]
     setMinMax(logSafeMinMax)
     return [averages]
@@ -114,12 +118,7 @@ const RegionChart = ({ sx }) => {
         id: id,
         color,
         strokeWidth: 2,
-        data: logScale
-          ? line.map(([x, y]) => [
-              x,
-              y <= 0 ? currentVariable.logColorLimits[0] : y,
-            ])
-          : line,
+        data: logScale ? line.map(([x, y]) => [x, y]) : line,
       }
     })
     return selected
@@ -167,6 +166,7 @@ const RegionChart = ({ sx }) => {
     )
   }, [selectedLines])
 
+  console.log(minMax, currentVariable.logColorLimits)
   return (
     <Box sx={{ mb: 4, height: [0, 0, 390, 390] }}>
       {index >= 2 && (
@@ -221,12 +221,8 @@ const RegionChart = ({ sx }) => {
                 point={point}
                 xSelector={true}
                 handleXSelectorClick={handleTimeseriesClick}
-                logy={logScale && minMax[0] > 0} // stale state during switch to log scale
-                logLabels={
-                  logScale &&
-                  minMax[0] > 0 &&
-                  generateLogTicks(minMax[0], minMax[1])
-                }
+                logy={logScale} // stale state during switch to log scale
+                logLabels={logScale && generateLogTicks(minMax[0], minMax[1])}
               />
             </>
           ) : (

@@ -5,8 +5,7 @@ import { Column, Filter, Select, Row, Colorbar } from '@carbonplan/components'
 import TooltipWrapper from './tooltip'
 import useStore, { variables } from '../store'
 import { Chart, TickLabels, Ticks } from '@carbonplan/charts'
-import { generateLogTicks, useVariableColormap } from '../utils/color'
-import { formatValue } from '../utils/format'
+import { generateLogTicks, useVariableColormap, formatValue } from '../utils'
 
 const DESCRIPTIONS = {
   EFFICIENCY: {
