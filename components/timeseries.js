@@ -276,7 +276,7 @@ const Timeseries = ({
         <Grid horizontal values={logy && logLabels} />
         <Ticks left values={logy && logLabels} />
         <Ticks bottom values={Array.from({ length: 16 }, (_, i) => i)} />
-        <TickLabels left values={logy && logLabels} />
+        <TickLabels left values={logy && logLabels} format={formatValue} />
         <TickLabels bottom values={[0, 5, 10, 15]} />
         <AxisLabel units={yLabels.units} sx={{ fontSize: 0 }} left>
           {yLabels.title}
