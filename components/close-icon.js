@@ -37,7 +37,7 @@ const CloseIcon = () => {
   useEffect(() => {
     if (!map || !iconPosition || !element.current) return
     const marker = new Marker(element.current, {
-      offset: [5, -5],
+      offset: [6, -6],
     })
     marker.setLngLat([iconPosition[0], iconPosition[1]])
     marker.addTo(map)
