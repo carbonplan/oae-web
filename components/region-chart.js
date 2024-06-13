@@ -166,7 +166,6 @@ const RegionChart = ({ sx }) => {
     )
   }, [selectedLines])
 
-  console.log(minMax, currentVariable.logColorLimits)
   return (
     <Box sx={{ mb: 4, height: [0, 0, 390, 390] }}>
       {index >= 2 && (
