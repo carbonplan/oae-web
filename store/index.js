@@ -142,7 +142,7 @@ export const variables = {
         delta: true,
         logScale: true,
         colorLimits: [0, 0.001],
-        logColorLimits: [0.00001, 1],
+        logColorLimits: [0.00001, 0.1],
         colormap: 'warm',
         label: 'Change',
         unit: 'mol/m²',
