@@ -5,7 +5,7 @@ import { useThemeUI } from 'theme-ui'
 import useStore, { variables } from '../store'
 import Regions from './regions'
 import RegionPickerWrapper from './region-picker'
-import { useVariableColormap } from '../utils/color'
+import { useVariableColormap } from '../utils'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 

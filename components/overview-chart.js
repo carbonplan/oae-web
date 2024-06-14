@@ -7,9 +7,13 @@ import { Down } from '@carbonplan/icons'
 
 import useStore, { variables } from '../store'
 import Timeseries from './timeseries'
-import { openZarr, getChunk, getTimeSeriesData } from '../utils/zarr'
-import { downloadCsv } from '../utils/csv'
-import { getColorForValue } from '../utils/color'
+import {
+  openZarr,
+  getChunk,
+  getTimeSeriesData,
+  downloadCsv,
+  getColorForValue,
+} from '../utils'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 const ids = Array.from({ length: 690 }, (_, i) => i)

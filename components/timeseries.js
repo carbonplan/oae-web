@@ -16,7 +16,7 @@ import {
 import { Badge } from '@carbonplan/components'
 
 import useStore from '../store'
-import { formatValue } from '../utils/format'
+import { formatValue } from '../utils'
 
 const renderPoint = (point) => {
   const { x, y, color } = point
