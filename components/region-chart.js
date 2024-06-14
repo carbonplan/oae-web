@@ -110,9 +110,8 @@ const RegionChart = ({ sx }) => {
       const color = getColorForValue(
         avgValueForLine,
         colormap,
-        currentVariable.colormap,
-        currentVariable.colorLimits,
-        50
+        currentVariable,
+        { colorAdjustments: true }
       )
       selected[id] = {
         id: id,
@@ -130,9 +129,8 @@ const RegionChart = ({ sx }) => {
     const color = getColorForValue(
       lineAverageValue,
       colormap,
-      currentVariable.colormap,
-      currentVariable.colorLimits,
-      50
+      currentVariable,
+      { colorAdjustments: true }
     )
     return {
       x: elapsedYears,

@@ -36,7 +36,6 @@ const OverviewChart = ({ sx }) => {
   const setActiveLineData = useStore((state) => state.setActiveLineData)
 
   const colormap = useThemedColormap(currentVariable.colormap, { count: 20 }) // low count prevents banding in gradient
-  const colorLimits = currentVariable.colorLimits
   const [timeData, setTimeData] = useState([])
   const startYear = 0
 
@@ -77,8 +76,7 @@ const OverviewChart = ({ sx }) => {
         const color = getColorForValue(
           regionData[overviewElapsedTime][1],
           colormap,
-          currentVariable.colormap,
-          colorLimits
+          currentVariable
         )
         const alphaColor = alpha(color, 0.1)(theme)
         selected[index] = {
