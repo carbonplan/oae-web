@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { Box, Checkbox, Divider, Flex, Label, useThemeUI } from 'theme-ui'
 import { alpha } from '@theme-ui/color'
 import { useThemedColormap } from '@carbonplan/colormaps'
@@ -38,7 +38,6 @@ const OverviewChart = ({ sx }) => {
   const setRegionDataLoading = useStore((state) => state.setRegionDataLoading)
 
   const colormap = useThemedColormap(currentVariable.colormap, { count: 20 }) // low count prevents banding in gradient
-  const [timeData, setTimeData] = useState([])
   const startYear = 0
 
   const { theme } = useThemeUI()
@@ -69,7 +68,6 @@ const OverviewChart = ({ sx }) => {
         startYear,
         currentVariable.optionIndex
       )
-      setTimeData(timeSeriesData) // used for CSV download
 
       const transformed = timeSeriesData.reduce((acc, regionData, index) => {
         acc[index] = {
@@ -136,21 +134,21 @@ const OverviewChart = ({ sx }) => {
   )
 
   const handleCSVDownload = useCallback(() => {
-    const totalMonths = timeData[0].length
+    const totalMonths = 180
     const csvData = Array.from({ length: totalMonths }, (_, index) => ({
       month: index + 1,
     }))
-    timeData.forEach((line, lineIndex) => {
-      line.forEach(([year, value]) => {
+    Object.values(selectedLines).forEach((line) => {
+      line.data.forEach(([year, value]) => {
         const monthIndex = toMonthsIndex(year, 0)
-        csvData[monthIndex][`region_${lineIndex}`] = value
+        csvData[monthIndex][`region_${line.id}`] = value
       })
     })
     const name = currentVariable.graphLabel
       ? `${currentVariable.graphLabel} ${currentVariable.label}`
       : currentVariable.label
     downloadCsv(csvData, `${name} timeseries.csv`)
-  }, [timeData, toMonthsIndex])
+  }, [selectedLines, toMonthsIndex])
 
   return (
     <Box sx={{ mb: 4 }}>
