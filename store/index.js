@@ -275,7 +275,8 @@ const useStore = create((set) => ({
           }_${
             Object.values(state.injectionSeason).findIndex((value) => value) + 1
           }`
-          const activeLineData = state.overviewLineData[dataKey][selectedRegion]
+          const activeLineData =
+            state.overviewLineData[dataKey]?.[selectedRegion] || null
           const selectedRegionGeojson = state.regionGeojson.features.find(
             (f) => f.properties.polygon_id === selectedRegion
           )
@@ -322,7 +323,8 @@ const useStore = create((set) => ({
       const dataKey = `${state.currentVariable.key}_${
         state.currentVariable.label
       }_${Object.values(state.injectionSeason).findIndex((value) => value) + 1}`
-      const activeLineData = state.overviewLineData[dataKey][hoveredRegion]
+      const activeLineData =
+        state.overviewLineData[dataKey]?.[hoveredRegion] || null
       return { hoveredRegion, activeLineData: activeLineData || null }
     }),
 
