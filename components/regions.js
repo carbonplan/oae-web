@@ -20,6 +20,7 @@ const Regions = () => {
   const setRegionGeojson = useStore((s) => s.setRegionGeojson)
   const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
   const variableFamily = useStore((s) => s.variableFamily)
+  const selectedRegionGeojson = useStore((s) => s.selectedRegionGeojson)
 
   const colormap = useThemedColormap(currentVariable.colormap)
   const colorLimits = currentVariable.colorLimits
@@ -335,15 +336,15 @@ const Regions = () => {
   useEffect(() => {
     // get center and fly to selected region when selected via time series
     if (typeof selectedRegion === 'number' && !selectedRegionCenter) {
-      const selectedPolygon = regionGeojson.features.find(
-        (feature) => feature.properties.polygon_id === selectedRegion
-      )
-      const center = centerOfMass(selectedPolygon).geometry.coordinates
+      const center = centerOfMass(selectedRegionGeojson).geometry.coordinates
       setSelectedRegionCenter(center)
-      setTimeout(() => {
-        // timeout prevents warnings with flushSync during react render
-        map.jumpTo({ center }) // flyTo is choppy in this case
-      }, 0)
+      const bounds = map.getBounds()
+      if (!bounds.contains(center)) {
+        setTimeout(() => {
+          // timeout prevents warnings with flushSync during react render
+          map.jumpTo({ center }) // flyTo is choppy in this case
+        }, 0)
+      }
     }
   }, [
     selectedRegion,

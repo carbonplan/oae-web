@@ -1,13 +1,15 @@
 import React, { useMemo } from 'react'
 import { Map, Line, Raster, Fill } from '@carbonplan/maps'
-import { useThemeUI } from 'theme-ui'
+import { Box, useThemeUI } from 'theme-ui'
 
-import useStore, { variables } from '../store'
 import Regions from './regions'
 import RegionPickerWrapper from './region-picker'
+import CloseIcon from './close-icon'
+import useStore, { variables } from '../store'
 import { useVariableColormap } from '../utils'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
+const width = 4 // width of sidebar
 
 const frag = (variable) => `
     if (${variable} == fillValue) {
@@ -60,6 +62,7 @@ const MapWrapper = ({ children }) => {
   const showRegionPicker = useStore((s) => s.showRegionPicker)
   const setRegionData = useStore((s) => s.setRegionData)
   const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
+
   const colormap = useVariableColormap()
   const { theme } = useThemeUI()
 
@@ -75,66 +78,85 @@ const MapWrapper = ({ children }) => {
       setRegionDataLoading(false)
     }
   }
-
   return (
-    <Map zoom={1.5} center={[140, -45]} debug={false} setLoading={setLoading}>
-      {selectedRegion !== null && !variables[variableFamily].overview && (
-        <>
-          <Raster
-            key={variableFamily}
-            variable={variableFamily}
-            source={
-              'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store2.zarr'
-            }
-            colormap={colormap}
-            clim={
-              logScale
-                ? currentVariable.logColorLimits
-                : currentVariable.colorLimits
-            }
-            mode={'texture'}
-            fillValue={9.969209968386869e36}
-            regionOptions={{
-              setData: handleRegionData,
-              selector: {
+    <Box
+      sx={{
+        position: 'absolute',
+        right: 0,
+        left: [
+          0,
+          0,
+          `calc(100vw - (${12 - width} * (100vw - 13 * 32px) / 12 + ${
+            12 - width
+          } * 32px))`,
+          `calc(100vw - (${12 - width} * (100vw - 13 * 48px) / 12 + ${
+            12 - width
+          } * 48px))`,
+        ],
+        height: '100%',
+      }}
+    >
+      <Map zoom={1.5} center={[140, -45]} debug={false} setLoading={setLoading}>
+        {selectedRegion !== null && !variables[variableFamily].overview && (
+          <>
+            <Raster
+              key={variableFamily}
+              variable={variableFamily}
+              source={
+                'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store2.zarr'
+              }
+              colormap={colormap}
+              clim={
+                logScale
+                  ? currentVariable.logColorLimits
+                  : currentVariable.colorLimits
+              }
+              mode={'texture'}
+              fillValue={9.969209968386869e36}
+              regionOptions={{
+                setData: handleRegionData,
+                selector: {
+                  band: currentVariable.delta ? 'delta' : 'experimental',
+                  polygon_id: selectedRegion,
+                  injection_date: MONTH_MAP[injectionDate],
+                },
+              }}
+              selector={{
                 band: currentVariable.delta ? 'delta' : 'experimental',
                 polygon_id: selectedRegion,
                 injection_date: MONTH_MAP[injectionDate],
-              },
-            }}
-            selector={{
-              band: currentVariable.delta ? 'delta' : 'experimental',
-              polygon_id: selectedRegion,
-              injection_date: MONTH_MAP[injectionDate],
-              year: Math.floor(detailElapsedTime / 12) + 1,
-              month: (detailElapsedTime % 12) + 1,
-            }}
-            uniforms={{
-              logScale: logScale ? 1.0 : 0.0,
-              threshold:
-                currentVariable.threshold ??
-                variables[variableFamily].threshold ??
-                0.0,
-              unitConversion: currentVariable.unitConversion ?? 1.0,
-            }}
-            frag={frag(variableFamily)}
-          />
-          {showRegionPicker && <RegionPickerWrapper />}
-        </>
-      )}
-      <Fill
-        color={theme.rawColors.background}
-        source={bucket + 'basemaps/land'}
-        variable={'land'}
-      />
-      <Line
-        color={theme.rawColors.secondary}
-        source={bucket + 'basemaps/land'}
-        variable={'land'}
-      />
-      <Regions />
-      {children}
-    </Map>
+                year: Math.floor(detailElapsedTime / 12) + 1,
+                month: (detailElapsedTime % 12) + 1,
+              }}
+              uniforms={{
+                logScale: logScale ? 1.0 : 0.0,
+                threshold:
+                  currentVariable.threshold ??
+                  variables[variableFamily].threshold ??
+                  0.0,
+                unitConversion: currentVariable.unitConversion ?? 1.0,
+              }}
+              frag={frag(variableFamily)}
+            />
+            {showRegionPicker && <RegionPickerWrapper />}
+          </>
+        )}
+        <Fill
+          color={theme.rawColors.background}
+          source={bucket + 'basemaps/land'}
+          variable={'land'}
+        />
+        <Line
+          color={theme.rawColors.secondary}
+          source={bucket + 'basemaps/land'}
+          variable={'land'}
+        />
+
+        <Regions />
+        {typeof selectedRegion === 'number' && <CloseIcon />}
+        {children}
+      </Map>
+    </Box>
   )
 }
 

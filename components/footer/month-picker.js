@@ -14,21 +14,15 @@ const OFFSETS = {
 
 const MonthPicker = ({ sx }) => {
   const elapsedTime = useStore((state) => {
-    if (variables[state.variableFamily].overview) {
-      return state.overviewElapsedTime
-    } else {
-      return state.detailElapsedTime
-    }
+    return variables[state.variableFamily].overview
+      ? state.overviewElapsedTime
+      : state.detailElapsedTime
   })
-
   const setElapsedTime = useStore((state) => {
-    if (variables[state.variableFamily].overview) {
-      return state.setOverviewElapsedTime
-    } else {
-      return state.setDetailElapsedTime
-    }
+    return variables[state.variableFamily].overview
+      ? state.setOverviewElapsedTime
+      : state.setDetailElapsedTime
   })
-
   const injectionSeason = useStore((state) =>
     Object.keys(state.injectionSeason).find((k) => state.injectionSeason[k])
   )
