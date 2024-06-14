@@ -16,7 +16,7 @@ import {
 import { Badge } from '@carbonplan/components'
 
 import useStore from '../store'
-import { formatValue } from '../utils/format'
+import { formatValue } from '../utils'
 
 const renderPoint = (point) => {
   const { x, y, color } = point
@@ -227,7 +227,7 @@ const Timeseries = ({
       <Rect
         id='x-selector'
         x={[year, year + 1]}
-        y={[0, yLimits[1]]}
+        y={[yLimits[0], yLimits[1]]}
         color={color}
         opacity={0.1}
       />
@@ -272,10 +272,11 @@ const Timeseries = ({
     >
       {renderTimeAndData()}
       <Chart x={xLimits} y={yLimits} logy={logy} padding={{ top: 30 }}>
-        <Grid vertical horizontal />
-        <Ticks left />
+        <Grid vertical />
+        <Grid horizontal values={logy && logLabels} />
+        <Ticks left values={logy && logLabels} />
         <Ticks bottom values={Array.from({ length: 16 }, (_, i) => i)} />
-        <TickLabels left values={logy && logLabels} />
+        <TickLabels left values={logy && logLabels} format={formatValue} />
         <TickLabels bottom values={[0, 5, 10, 15]} />
         <AxisLabel units={yLabels.units} sx={{ fontSize: 0 }} left>
           {yLabels.title}
@@ -305,7 +306,7 @@ const Timeseries = ({
           {shadeHorizon && (
             <Rect
               x={[elapsedYears, 15]}
-              y={[0, yLimits[1]]}
+              y={[yLimits[0], yLimits[1]]}
               color='muted'
               pointerEvents='none'
               style={{

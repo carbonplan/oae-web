@@ -2,11 +2,11 @@ import React, { useMemo } from 'react'
 import { Map, Line, Raster, Fill } from '@carbonplan/maps'
 import { Box, useThemeUI } from 'theme-ui'
 
-import useStore, { variables } from '../store'
 import Regions from './regions'
 import RegionPickerWrapper from './region-picker'
-import { useVariableColormap } from '../utils/color'
 import CloseIcon from './close-icon'
+import useStore, { variables } from '../store'
+import { useVariableColormap } from '../utils'
 
 const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 const width = 4 // width of sidebar

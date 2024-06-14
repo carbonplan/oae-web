@@ -7,9 +7,13 @@ import { Down } from '@carbonplan/icons'
 
 import useStore, { variables } from '../store'
 import Timeseries from './timeseries'
-import { openZarr, getChunk, getTimeSeriesData } from '../utils/zarr'
-import { downloadCsv } from '../utils/csv'
-import { getColorForValue } from '../utils/color'
+import {
+  openZarr,
+  getChunk,
+  getTimeSeriesData,
+  downloadCsv,
+  getColorForValue,
+} from '../utils'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 const ids = Array.from({ length: 690 }, (_, i) => i)
@@ -32,7 +36,6 @@ const OverviewChart = ({ sx }) => {
   const setActiveLineData = useStore((state) => state.setActiveLineData)
 
   const colormap = useThemedColormap(currentVariable.colormap, { count: 20 }) // low count prevents banding in gradient
-  const colorLimits = currentVariable.colorLimits
   const [timeData, setTimeData] = useState([])
   const startYear = 0
 
@@ -73,7 +76,7 @@ const OverviewChart = ({ sx }) => {
         const color = getColorForValue(
           regionData[overviewElapsedTime][1],
           colormap,
-          colorLimits
+          currentVariable
         )
         const alphaColor = alpha(color, 0.1)(theme)
         selected[index] = {
