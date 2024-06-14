@@ -332,9 +332,8 @@ const useStore = create((set) => ({
   setFilterToRegionsInView: (filterToRegionsInView) =>
     set({ filterToRegionsInView }),
 
-  regionsInView: undefined,
-  setRegionsInView: (regionsInView) =>
-    set({ regionsInView: new Set(regionsInView) }),
+  regionsInView: [],
+  setRegionsInView: (regionsInView) => set({ regionsInView }),
 
   injectionSeason: {
     JAN: true,

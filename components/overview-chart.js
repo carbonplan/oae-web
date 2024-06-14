@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Box, Checkbox, Divider, Flex, Label, useThemeUI } from 'theme-ui'
 import { alpha } from '@theme-ui/color'
 import { useThemedColormap } from '@carbonplan/colormaps'
@@ -44,6 +44,8 @@ const OverviewChart = ({ sx }) => {
   const disableFilter = typeof selectedRegion === 'number'
 
   useEffect(() => {
+    setActiveLineData(null)
+    setOverviewLineData({})
     const fetchTimeSeriesData = async () => {
       const zarrUrl = variables[variableFamily].url
       const getter = await openZarr(zarrUrl, currentVariable.key)
@@ -60,45 +62,41 @@ const OverviewChart = ({ sx }) => {
         startYear,
         currentVariable.optionIndex
       )
-      setTimeData(timeSeriesData)
+      setTimeData(timeSeriesData) // used for CSV download
+
+      const transformed = timeSeriesData.map((regionData, index) => ({
+        id: index,
+        color: alpha(
+          getColorForValue(
+            regionData[overviewElapsedTime][1],
+            colormap,
+            currentVariable
+          ),
+          0.1
+        )(theme),
+        activeColor: theme.rawColors?.primary,
+        strokeWidth: 2,
+        data: regionData,
+      }))
+      setOverviewLineData(transformed)
     }
     fetchTimeSeriesData()
-  }, [injectionSeason, currentVariable])
+  }, [injectionSeason, currentVariable, variableFamily])
 
-  useEffect(() => {
-    let selected = {}
-    const targetIndexes = filterToRegionsInView
-      ? regionsInView || []
-      : Object.keys(timeData) || []
-    targetIndexes.forEach((index) => {
-      const regionData = timeData[index]
+  const selected = useMemo(() => {
+    if (!filterToRegionsInView) return overviewLineData
+    const selected = {}
+    regionsInView.forEach((regionId) => {
+      const regionData = overviewLineData[regionId]
       if (regionData) {
-        const color = getColorForValue(
-          regionData[overviewElapsedTime][1],
-          colormap,
-          currentVariable
-        )
-        const alphaColor = alpha(color, 0.1)(theme)
-        selected[index] = {
-          id: index,
-          color: alphaColor,
-          activeColor: theme.rawColors?.primary,
-          strokeWidth: 2,
-          data: regionData,
-        }
+        selected[regionId] = regionData
       }
     })
-    setOverviewLineData(selected)
     if (selectedRegion !== null) {
       setActiveLineData(selected[selectedRegion])
     }
-  }, [
-    timeData,
-    regionsInView,
-    filterToRegionsInView,
-    overviewElapsedTime,
-    theme,
-  ])
+    return selected
+  }, [regionsInView, filterToRegionsInView, overviewLineData])
 
   const handleClick = useCallback(
     (e) => {
@@ -177,9 +175,7 @@ const OverviewChart = ({ sx }) => {
         </Label>
         <Button
           inverted
-          disabled={
-            Object.keys(overviewLineData ? overviewLineData : {}).length === 0
-          }
+          disabled={Object.keys(selected ? selected : {}).length === 0}
           onClick={handleCSVDownload}
           sx={{
             fontSize: 0,
@@ -207,7 +203,7 @@ const OverviewChart = ({ sx }) => {
             : currentVariable.label,
           units: currentVariable.unit,
         }}
-        selectedLines={overviewLineData}
+        selectedLines={selected}
         elapsedYears={(overviewElapsedTime + 1) / 12}
         colormap={colormap}
         opacity={0.1}
