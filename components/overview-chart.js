@@ -24,7 +24,10 @@ const OverviewChart = ({ sx }) => {
   const setHoveredRegion = useStore((state) => state.setHoveredRegion)
   const overviewLineData = useStore((state) => state.overviewLineData)
   const setOverviewLineData = useStore((state) => state.setOverviewLineData)
-  const injectionSeason = useStore((state) => state.injectionSeason)
+  const injectionDate = useStore(
+    (state) =>
+      Object.values(state.injectionSeason).findIndex((value) => value) + 1
+  )
   const filterToRegionsInView = useStore((state) => state.filterToRegionsInView)
   const setFilterToRegionsInView = useStore(
     (state) => state.setFilterToRegionsInView
@@ -44,7 +47,7 @@ const OverviewChart = ({ sx }) => {
 
   const disableFilter = typeof selectedRegion === 'number'
 
-  const dataKey = `${currentVariable.key}_${currentVariable.label}`
+  const dataKey = `${currentVariable.key}_${currentVariable.label}_${injectionDate}`
 
   useEffect(() => {
     const fetchTimeSeriesData = async () => {
@@ -55,8 +58,6 @@ const OverviewChart = ({ sx }) => {
       setRegionDataLoading(true)
       const zarrUrl = variables[variableFamily].url
       const getter = await openZarr(zarrUrl, currentVariable.key)
-      const injectionDate =
-        Object.values(injectionSeason).findIndex((value) => value) + 1
       const injectionChunkIndex = injectionDate - 1
       const raw =
         currentVariable.optionIndex !== undefined
@@ -95,7 +96,7 @@ const OverviewChart = ({ sx }) => {
       setRegionDataLoading(false)
     }
     fetchTimeSeriesData()
-  }, [injectionSeason, currentVariable, variableFamily, dataKey])
+  }, [injectionDate, currentVariable, variableFamily, dataKey])
 
   const selectedLines = useMemo(() => {
     const lineData = overviewLineData[dataKey]

@@ -17,7 +17,11 @@ const Regions = () => {
   const currentVariable = useStore((s) => s.currentVariable)
   const overviewLineData = useStore(
     (s) =>
-      s.overviewLineData[`${s.currentVariable.key}_${s.currentVariable.label}`]
+      s.overviewLineData[
+        `${s.currentVariable.key}_${s.currentVariable.label}_${
+          Object.values(s.injectionSeason).findIndex((value) => value) + 1
+        }`
+      ]
   )
   const regionGeojson = useStore((s) => s.regionGeojson)
   const setRegionGeojson = useStore((s) => s.setRegionGeojson)
