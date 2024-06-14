@@ -54,12 +54,12 @@ const Regions = () => {
   }
 
   useEffect(() => {
-    if (!regionGeojson || !overviewLineData) return
+    if (!regionGeojson) return
     // get currentValue from overviewLineData for each polygon and assign to new current value property
     const features = regionGeojson.features.map((feature) => {
       const polygonId = feature.properties.polygon_id
       const currentValue =
-        overviewLineData[polygonId]?.data?.[overviewElapsedTime][1]
+        overviewLineData?.[polygonId]?.data?.[overviewElapsedTime][1] ?? 0
       return {
         ...feature,
         properties: {
