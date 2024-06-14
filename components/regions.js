@@ -328,6 +328,7 @@ const Regions = () => {
   useEffect(() => {
     if (!filterToRegionsInView) {
       map.off('moveend', handleRegionsInView)
+      setRegionsInView(null)
       return
     }
     map.on('moveend', handleRegionsInView)

@@ -99,7 +99,7 @@ const OverviewChart = ({ sx }) => {
 
   const selectedLines = useMemo(() => {
     const lineData = overviewLineData[dataKey]
-    if (!filterToRegionsInView) return lineData
+    if (!filterToRegionsInView || !regionsInView) return lineData
     const selected = {}
     regionsInView.forEach((regionId) => {
       if (lineData[regionId]) {
