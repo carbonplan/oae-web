@@ -98,8 +98,18 @@ const OverviewChart = ({ sx }) => {
     fetchTimeSeriesData()
   }, [injectionDate, currentVariable, variableFamily, dataKey])
 
+  useEffect(() => {
+    if (!selectedRegion) {
+      setActiveLineData(null)
+    } else {
+      const regionData = overviewLineData[dataKey]?.[selectedRegion]
+      setActiveLineData(regionData || null)
+    }
+  }, [selectedRegion, overviewLineData, dataKey])
+
   const selectedLines = useMemo(() => {
     const lineData = overviewLineData[dataKey]
+    if (!lineData) return {}
     if (!filterToRegionsInView || !regionsInView) return lineData
     const selected = {}
     regionsInView.forEach((regionId) => {
@@ -107,9 +117,6 @@ const OverviewChart = ({ sx }) => {
         selected[regionId] = lineData[regionId]
       }
     })
-    if (selectedRegion !== null) {
-      setActiveLineData(selected[selectedRegion])
-    }
     return selected
   }, [
     regionsInView,
