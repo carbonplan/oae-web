@@ -71,20 +71,24 @@ const OverviewChart = ({ sx }) => {
       )
       setTimeData(timeSeriesData) // used for CSV download
 
-      const transformed = timeSeriesData.map((regionData, index) => ({
-        id: index,
-        color: alpha(
-          getColorForValue(
-            regionData[overviewElapsedTime][1],
-            colormap,
-            currentVariable
-          ),
-          0.1
-        )(theme),
-        activeColor: theme.rawColors?.primary,
-        strokeWidth: 2,
-        data: regionData,
-      }))
+      const transformed = timeSeriesData.reduce((acc, regionData, index) => {
+        acc[index] = {
+          id: index,
+          color: alpha(
+            getColorForValue(
+              regionData[overviewElapsedTime][1],
+              colormap,
+              currentVariable
+            ),
+            0.1
+          )(theme),
+          activeColor: theme.rawColors?.primary,
+          strokeWidth: 2,
+          data: regionData,
+        }
+        return acc
+      }, {})
+
       setOverviewLineData({
         ...overviewLineData,
         [dataKey]: transformed,
