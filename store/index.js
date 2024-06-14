@@ -314,8 +314,9 @@ const useStore = create((set) => ({
       if (state.selectedRegion) {
         return {}
       }
+      const dataKey = `${state.currentVariable.key}_${state.currentVariable.label}`
 
-      const activeLineData = state.overviewLineData[hoveredRegion]
+      const activeLineData = state.overviewLineData[dataKey][hoveredRegion]
       return { hoveredRegion, activeLineData: activeLineData || null }
     }),
 
