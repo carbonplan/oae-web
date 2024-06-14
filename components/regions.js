@@ -15,7 +15,10 @@ const Regions = () => {
   const filterToRegionsInView = useStore((s) => s.filterToRegionsInView)
   const setRegionsInView = useStore((s) => s.setRegionsInView)
   const currentVariable = useStore((s) => s.currentVariable)
-  const overviewLineData = useStore((s) => s.overviewLineData)
+  const overviewLineData = useStore(
+    (s) =>
+      s.overviewLineData[`${s.currentVariable.key}_${s.currentVariable.label}`]
+  )
   const regionGeojson = useStore((s) => s.regionGeojson)
   const setRegionGeojson = useStore((s) => s.setRegionGeojson)
   const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)

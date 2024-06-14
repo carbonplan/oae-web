@@ -45,12 +45,15 @@ const OverviewChart = ({ sx }) => {
 
   const disableFilter = typeof selectedRegion === 'number'
 
+  const dataKey = `${currentVariable.key}_${currentVariable.label}`
+
   useEffect(() => {
-    setActiveLineData(null)
-    setOverviewLineData({})
-    setLoading(true)
-    setRegionDataLoading(true)
     const fetchTimeSeriesData = async () => {
+      if (overviewLineData[dataKey]) return
+
+      setActiveLineData(null)
+      setLoading(true)
+      setRegionDataLoading(true)
       const zarrUrl = variables[variableFamily].url
       const getter = await openZarr(zarrUrl, currentVariable.key)
       const injectionDate =
@@ -82,27 +85,36 @@ const OverviewChart = ({ sx }) => {
         strokeWidth: 2,
         data: regionData,
       }))
-      setOverviewLineData(transformed)
+      setOverviewLineData({
+        ...overviewLineData,
+        [dataKey]: transformed,
+      })
       setLoading(false)
       setRegionDataLoading(false)
     }
     fetchTimeSeriesData()
-  }, [injectionSeason, currentVariable, variableFamily])
+  }, [injectionSeason, currentVariable, variableFamily, dataKey])
 
   const selected = useMemo(() => {
-    if (!filterToRegionsInView) return overviewLineData
+    const lineData = overviewLineData[dataKey]
+    if (!filterToRegionsInView) return lineData
     const selected = {}
     regionsInView.forEach((regionId) => {
-      const regionData = overviewLineData[regionId]
-      if (regionData) {
-        selected[regionId] = regionData
+      if (lineData[regionId]) {
+        selected[regionId] = lineData[regionId]
       }
     })
     if (selectedRegion !== null) {
       setActiveLineData(selected[selectedRegion])
     }
     return selected
-  }, [regionsInView, filterToRegionsInView, overviewLineData])
+  }, [
+    regionsInView,
+    filterToRegionsInView,
+    overviewLineData,
+    dataKey,
+    selectedRegion,
+  ])
 
   const handleClick = useCallback(
     (e) => {
