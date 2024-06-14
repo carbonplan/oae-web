@@ -34,6 +34,8 @@ const OverviewChart = ({ sx }) => {
   const currentVariable = useStore((state) => state.currentVariable)
   const variableFamily = useStore((state) => state.variableFamily)
   const setActiveLineData = useStore((state) => state.setActiveLineData)
+  const setLoading = useStore((state) => state.setLoading)
+  const setRegionDataLoading = useStore((state) => state.setRegionDataLoading)
 
   const colormap = useThemedColormap(currentVariable.colormap, { count: 20 }) // low count prevents banding in gradient
   const [timeData, setTimeData] = useState([])
@@ -46,6 +48,8 @@ const OverviewChart = ({ sx }) => {
   useEffect(() => {
     setActiveLineData(null)
     setOverviewLineData({})
+    setLoading(true)
+    setRegionDataLoading(true)
     const fetchTimeSeriesData = async () => {
       const zarrUrl = variables[variableFamily].url
       const getter = await openZarr(zarrUrl, currentVariable.key)
@@ -79,6 +83,8 @@ const OverviewChart = ({ sx }) => {
         data: regionData,
       }))
       setOverviewLineData(transformed)
+      setLoading(false)
+      setRegionDataLoading(false)
     }
     fetchTimeSeriesData()
   }, [injectionSeason, currentVariable, variableFamily])
