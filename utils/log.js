@@ -17,15 +17,22 @@ export const getLogSafeMinMax = (min, max, colorLimits) => {
 }
 
 export const generateLogTicks = (min, max) => {
-  if (min === 0 && max === 0) {
+  if (min === 0 || max === 0) {
     return []
   }
+
+  if (!Number.isFinite(min) || !Number.isFinite(max)) {
+    return []
+  }
+
   const factor = min < 0 && max < 0 ? -1 : 1
   const minExp = Math.ceil(Math.log10(Math.abs(min)))
   const maxExp = Math.floor(Math.log10(Math.abs(max)))
+
   const ticks = []
   for (let exp = minExp; exp <= maxExp; exp++) {
-    ticks.push(factor * Number(Math.pow(10, exp)))
+    const result = factor * Number(Math.pow(10, exp))
+    ticks.push(parseFloat(result.toPrecision(10)))
   }
   return ticks
 }
