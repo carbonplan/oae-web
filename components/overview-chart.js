@@ -95,7 +95,7 @@ const OverviewChart = ({ sx }) => {
     fetchTimeSeriesData()
   }, [injectionSeason, currentVariable, variableFamily, dataKey])
 
-  const selected = useMemo(() => {
+  const selectedLines = useMemo(() => {
     const lineData = overviewLineData[dataKey]
     if (!filterToRegionsInView) return lineData
     const selected = {}
@@ -193,7 +193,9 @@ const OverviewChart = ({ sx }) => {
         </Label>
         <Button
           inverted
-          disabled={Object.keys(selected ? selected : {}).length === 0}
+          disabled={
+            Object.keys(selectedLines ? selectedLines : {}).length === 0
+          }
           onClick={handleCSVDownload}
           sx={{
             fontSize: 0,
@@ -221,7 +223,7 @@ const OverviewChart = ({ sx }) => {
             : currentVariable.label,
           units: currentVariable.unit,
         }}
-        selectedLines={selected}
+        selectedLines={selectedLines}
         elapsedYears={(overviewElapsedTime + 1) / 12}
         colormap={colormap}
         opacity={0.1}
