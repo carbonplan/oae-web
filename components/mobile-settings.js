@@ -13,10 +13,9 @@ const MobileSettings = ({ expanded, children }) => {
     <Box
       sx={{
         position: 'fixed',
-        top: 0,
+        top: 56,
         left: 0,
         right: 0,
-        mt: '56px',
         zIndex: 1100,
         borderStyle: 'solid',
         borderColor: 'muted',
@@ -32,25 +31,20 @@ const MobileSettings = ({ expanded, children }) => {
           bg: 'background',
         }}
       >
-        <Box
+        <Row
           sx={{
+            overflowY: 'auto',
+            maxHeight: 'calc(100vh - 56px)',
+            maxWidth: '100vw',
+            overflowX: 'hidden',
+            py: [4],
             px: [4, 5, 5, 6],
           }}
         >
-          <Row
-            sx={{
-              overflowY: 'auto',
-              maxHeight: 'calc(100vh - 56px)',
-              py: [4],
-              px: [4, 5, 5, 6],
-              mx: [-4, -5, -5, -6],
-            }}
-          >
-            <Column start={[1, 1, 1, 1]} width={[6, 8, 10, 10]}>
-              {children}
-            </Column>
-          </Row>
-        </Box>
+          <Column start={[1, 1, 1, 1]} width={[6, 8, 10, 10]}>
+            {children}
+          </Column>
+        </Row>
       </Flex>
     </Box>
   )
