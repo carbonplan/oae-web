@@ -216,9 +216,12 @@ const OverviewChart = ({ sx }) => {
         yLimits={currentVariable.colorLimits}
         yLabels={{
           title: currentVariable.graphLabel
-            ? `${currentVariable.graphLabel} ${currentVariable.label}`
+            ? `${currentVariable.graphLabel}`
             : currentVariable.label,
-          units: currentVariable.unit,
+          units:
+            currentVariable.graphUnit !== undefined
+              ? currentVariable.graphUnit
+              : currentVariable.unit,
         }}
         selectedLines={selectedLines}
         elapsedYears={(overviewElapsedTime + 1) / 12}
