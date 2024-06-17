@@ -270,13 +270,8 @@ const useStore = create((set) => ({
   setSelectedRegion: (selectedRegion) =>
     selectedRegion !== null
       ? set((state) => {
-          const dataKey = `${state.currentVariable.key}_${
-            state.currentVariable.label
-          }_${
-            Object.values(state.injectionSeason).findIndex((value) => value) + 1
-          }`
           const activeLineData =
-            state.overviewLineData[dataKey]?.[selectedRegion] || null
+            state.overviewLineData?.[selectedRegion] || null
           const selectedRegionGeojson = state.regionGeojson.features.find(
             (f) => f.properties.polygon_id === selectedRegion
           )
@@ -320,11 +315,7 @@ const useStore = create((set) => ({
       if (state.selectedRegion) {
         return {}
       }
-      const dataKey = `${state.currentVariable.key}_${
-        state.currentVariable.label
-      }_${Object.values(state.injectionSeason).findIndex((value) => value) + 1}`
-      const activeLineData =
-        state.overviewLineData[dataKey]?.[hoveredRegion] || null
+      const activeLineData = state.overviewLineData?.[hoveredRegion] || null
       return { hoveredRegion, activeLineData: activeLineData || null }
     }),
 

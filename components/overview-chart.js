@@ -47,12 +47,8 @@ const OverviewChart = ({ sx }) => {
 
   const disableFilter = typeof selectedRegion === 'number'
 
-  const dataKey = `${currentVariable.key}_${currentVariable.label}_${injectionDate}`
-
   useEffect(() => {
     const fetchTimeSeriesData = async () => {
-      if (overviewLineData[dataKey]) return
-
       setActiveLineData(null)
       setLoading(true)
       setRegionDataLoading(true)
@@ -88,27 +84,24 @@ const OverviewChart = ({ sx }) => {
         return acc
       }, {})
 
-      setOverviewLineData({
-        ...overviewLineData,
-        [dataKey]: transformed,
-      })
+      setOverviewLineData(transformed)
       setLoading(false)
       setRegionDataLoading(false)
     }
     fetchTimeSeriesData()
-  }, [injectionDate, currentVariable, variableFamily, dataKey])
+  }, [injectionDate, currentVariable, variableFamily])
 
   useEffect(() => {
     if (!selectedRegion) {
       setActiveLineData(null)
     } else {
-      const regionData = overviewLineData[dataKey]?.[selectedRegion]
+      const regionData = overviewLineData?.[selectedRegion]
       setActiveLineData(regionData || null)
     }
-  }, [selectedRegion, overviewLineData, dataKey])
+  }, [selectedRegion, overviewLineData])
 
   const selectedLines = useMemo(() => {
-    const lineData = overviewLineData[dataKey]
+    const lineData = overviewLineData
     if (!lineData) return {}
     if (!filterToRegionsInView || !regionsInView) return lineData
     const selected = {}
@@ -118,13 +111,7 @@ const OverviewChart = ({ sx }) => {
       }
     })
     return selected
-  }, [
-    regionsInView,
-    filterToRegionsInView,
-    overviewLineData,
-    dataKey,
-    selectedRegion,
-  ])
+  }, [regionsInView, filterToRegionsInView, overviewLineData, selectedRegion])
 
   const handleClick = useCallback(
     (e) => {
