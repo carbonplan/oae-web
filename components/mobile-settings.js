@@ -1,8 +1,14 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Flex } from 'theme-ui'
 import { Column, Row } from '@carbonplan/components'
 
 const MobileSettings = ({ expanded, children }) => {
+  const [isInitialRender, setIsInitialRender] = useState(true)
+
+  useEffect(() => {
+    setIsInitialRender(false)
+  }, [])
+
   return (
     <Box
       sx={{
@@ -15,7 +21,7 @@ const MobileSettings = ({ expanded, children }) => {
         borderColor: 'muted',
         borderWidth: '0px',
         borderBottomWidth: '1px',
-        transition: 'transform 0.15s',
+        transition: isInitialRender ? 'none' : 'transform 0.15s',
         transform: expanded ? 'translateY(0)' : 'translateY(-100%)',
       }}
     >

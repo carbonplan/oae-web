@@ -68,7 +68,11 @@ const Main = () => {
         }}
       >
         {index >= 2 ? (
-          <>
+          <Box
+            sx={{
+              display: ['none', 'none', 'block', 'block'],
+            }}
+          >
             <Sidebar expanded={true} side='left' width={4} footer={<Footer />}>
               <>
                 <Intro />
@@ -90,7 +94,7 @@ const Main = () => {
                 <Spinner size={32} />
               </SidebarAttachment>
             )}
-          </>
+          </Box>
         ) : (
           <>
             {loading && (
