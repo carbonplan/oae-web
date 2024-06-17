@@ -11,8 +11,9 @@ export const variables = {
         key: 'OAE_efficiency',
         colorLimits: [0, 1],
         colormap: 'cool',
-        label: 'Efficiency',
+        label: 'Efficiency ratio',
         unit: 'mole CO₂ / mole alkalinity',
+        graphUnit: '',
       },
     ],
   },
@@ -30,8 +31,9 @@ export const variables = {
         colormap: 'cool',
         optionIndex: 0,
         label: '500 km',
-        graphLabel: 'CO₂ uptake',
+        graphLabel: 'Uptake percentage',
         unit: '%',
+        graphUnit: '',
       },
       {
         key: 'FG_CO2_percent_cumulative',
@@ -39,8 +41,9 @@ export const variables = {
         colormap: 'cool',
         optionIndex: 1,
         label: '1000 km',
-        graphLabel: 'CO₂ uptake',
+        graphLabel: 'Uptake percentage',
         unit: '%',
+        graphUnit: '',
       },
       {
         key: 'FG_CO2_percent_cumulative',
@@ -48,8 +51,9 @@ export const variables = {
         colormap: 'cool',
         optionIndex: 2,
         label: '2000 km',
-        graphLabel: 'CO₂ uptake',
+        graphLabel: 'Uptake percentage',
         unit: '%',
+        graphUnit: '',
       },
     ],
   },
@@ -270,7 +274,8 @@ const useStore = create((set) => ({
   setSelectedRegion: (selectedRegion) =>
     selectedRegion !== null
       ? set((state) => {
-          const activeLineData = state.overviewLineData[selectedRegion]
+          const activeLineData =
+            state.overviewLineData?.[selectedRegion] || null
           const selectedRegionGeojson = state.regionGeojson.features.find(
             (f) => f.properties.polygon_id === selectedRegion
           )
@@ -314,8 +319,7 @@ const useStore = create((set) => ({
       if (state.selectedRegion) {
         return {}
       }
-
-      const activeLineData = state.overviewLineData[hoveredRegion]
+      const activeLineData = state.overviewLineData?.[hoveredRegion] || null
       return { hoveredRegion, activeLineData: activeLineData || null }
     }),
 
@@ -332,9 +336,8 @@ const useStore = create((set) => ({
   setFilterToRegionsInView: (filterToRegionsInView) =>
     set({ filterToRegionsInView }),
 
-  regionsInView: undefined,
-  setRegionsInView: (regionsInView) =>
-    set({ regionsInView: new Set(regionsInView) }),
+  regionsInView: null,
+  setRegionsInView: (regionsInView) => set({ regionsInView }),
 
   injectionSeason: {
     JAN: true,

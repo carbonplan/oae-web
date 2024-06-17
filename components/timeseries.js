@@ -323,7 +323,7 @@ const Timeseries = ({
         </Plot>
         {!xSelector && renderDataBadge()}
         {showActive && <OverviewBadge />}
-        {regionDataLoading && xSelector && (
+        {regionDataLoading && (
           <Box
             sx={{
               position: 'absolute',
