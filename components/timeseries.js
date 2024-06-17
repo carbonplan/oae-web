@@ -276,7 +276,19 @@ const Timeseries = ({
         <Grid horizontal values={logy && logLabels} />
         <Ticks left values={logy && logLabels} />
         <Ticks bottom values={Array.from({ length: 16 }, (_, i) => i)} />
-        <TickLabels left values={logy && logLabels} format={formatValue} />
+        <TickLabels
+          left
+          values={logy && logLabels}
+          format={(d) => {
+            if (logy) {
+              return formatValue(d, { 0.001: '.0e' })
+            } else if (Math.abs(d) < 0.01) {
+              return <Box sx={{ mr: -2 }}>{d}</Box>
+            } else {
+              return d
+            }
+          }}
+        />
         <TickLabels bottom values={[0, 5, 10, 15]} />
         <AxisLabel units={yLabels.units} sx={{ fontSize: 0 }} left>
           {yLabels.title}
