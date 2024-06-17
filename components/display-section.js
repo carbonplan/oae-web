@@ -6,6 +6,7 @@ import TooltipWrapper from './tooltip'
 import useStore, { variables } from '../store'
 import { Chart, TickLabels, Ticks } from '@carbonplan/charts'
 import { generateLogTicks, useVariableColormap, formatValue } from '../utils'
+import { useScroll } from './scroll-context'
 
 const DESCRIPTIONS = {
   EFFICIENCY: {
@@ -60,6 +61,8 @@ const DisplaySection = ({ sx }) => {
   const setVariableFamily = useStore((s) => s.setVariableFamily)
   const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
   const setLogScale = useStore((s) => s.setLogScale)
+
+  const { elementRef } = useScroll()
 
   const min = logScale
     ? currentVariable.logColorLimits[0]
@@ -120,7 +123,9 @@ const DisplaySection = ({ sx }) => {
 
   return (
     <>
-      <Box sx={sx.heading}>Display</Box>
+      <Box ref={elementRef} sx={{ ...sx.heading, scrollMarginTop: '80px' }}>
+        Display
+      </Box>
       <Row columns={[6, 8, 4, 4]} sx={{ mt: 3 }}>
         <Column start={1} width={[2, 2, 1, 1]} sx={sx.label}>
           Variable

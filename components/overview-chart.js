@@ -4,6 +4,7 @@ import { alpha } from '@theme-ui/color'
 import { useThemedColormap } from '@carbonplan/colormaps'
 import { Button } from '@carbonplan/components'
 import { Down } from '@carbonplan/icons'
+import { useScroll } from './scroll-context'
 
 import useStore, { variables } from '../store'
 import Timeseries from './timeseries'
@@ -44,6 +45,8 @@ const OverviewChart = ({ sx }) => {
   const startYear = 0
 
   const { theme } = useThemeUI()
+
+  const { scrollToElement } = useScroll()
 
   const disableFilter = typeof selectedRegion === 'number'
 
@@ -117,8 +120,9 @@ const OverviewChart = ({ sx }) => {
     (e) => {
       const id = parseInt(e.target.id)
       setSelectedRegion(id)
+      scrollToElement()
     },
-    [setSelectedRegion]
+    [setSelectedRegion, scrollToElement]
   )
 
   const handleHover = useCallback(
