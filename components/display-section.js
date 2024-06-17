@@ -80,19 +80,6 @@ const DisplaySection = ({ sx }) => {
     )
   }, [variableFamily, currentVariable])
 
-  const selectVariables = useMemo(() => {
-    if (!hasSelectedRegion) {
-      return Object.keys(variables).reduce((acc, key) => {
-        if (variables[key].overview) {
-          acc[key] = variables[key]
-        }
-        return acc
-      }, {})
-    } else {
-      return variables
-    }
-  }, [hasSelectedRegion])
-
   const handleFamilySelection = useCallback(
     (e) => {
       setVariableFamily(e.target.value)

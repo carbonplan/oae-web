@@ -37,7 +37,6 @@ const sx = {
 
 const Main = () => {
   const loading = useStore((state) => state.loading)
-  const selectedRegion = useStore((state) => state.selectedRegion)
   const expanded = useStore((state) => state.expanded)
   const setExpanded = useStore((state) => state.setExpanded)
   const setShowRegionPicker = useStore((state) => state.setShowRegionPicker)
