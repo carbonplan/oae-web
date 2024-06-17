@@ -31,20 +31,27 @@ const MobileSettings = ({ expanded, children }) => {
           bg: 'background',
         }}
       >
-        <Row
+        <Box
           sx={{
-            overflowY: 'auto',
-            maxHeight: 'calc(100vh - 56px)',
-            maxWidth: '100vw',
-            overflowX: 'hidden',
-            py: [4],
             px: [4, 5, 5, 6],
+            maxWidth: '100vw',
           }}
         >
-          <Column start={[1, 1, 1, 1]} width={[6, 8, 10, 10]}>
-            {children}
-          </Column>
-        </Row>
+          <Row
+            sx={{
+              overflowY: 'auto',
+              maxHeight: 'calc(100vh - 56px)',
+              py: [4],
+              px: [4, 5, 5, 6],
+              mx: [-4, -5, -5, -6],
+              overflowX: 'hidden',
+            }}
+          >
+            <Column start={[1, 1, 1, 1]} width={[6, 8, 10, 10]}>
+              {children}
+            </Column>
+          </Row>
+        </Box>
       </Flex>
     </Box>
   )
