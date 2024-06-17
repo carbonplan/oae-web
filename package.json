@@ -30,7 +30,7 @@
     "@carbonplan/components": "^12.6.1",
     "@carbonplan/icons": "^2.0.0",
     "@carbonplan/layouts": "^4.0.0",
-    "@carbonplan/maps": "^3.3.2",
+    "@carbonplan/maps": "^3.3.3",
     "@carbonplan/theme": "^7.0.0",
     "@theme-ui/color": "^0.16.2",
     "@theme-ui/match-media": "^0.16.2",
