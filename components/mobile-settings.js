@@ -15,6 +15,7 @@ const MobileSettings = ({ expanded, children }) => {
         position: 'fixed',
         top: 0,
         left: 0,
+        right: 0,
         mt: '56px',
         zIndex: 1100,
         borderStyle: 'solid',
