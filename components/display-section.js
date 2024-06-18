@@ -26,7 +26,7 @@ const DESCRIPTIONS = {
   },
   DIC: {
     region:
-      'Dissolved inorganic carbon (DIC) is the sum of inorganic carbon in water. Change in full water column values is shown.',
+      'Dissolved inorganic carbon (DIC) is the sum of inorganic carbon in water. Full water column values shown here.',
   },
   FG: {
     region:
