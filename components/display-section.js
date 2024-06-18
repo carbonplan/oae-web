@@ -26,7 +26,7 @@ const DESCRIPTIONS = {
   },
   DIC: {
     region:
-      'Dissolved inorganic carbon (DIC) is the sum of inorganic carbon in water. Full water column values shown here.',
+      'Dissolved inorganic carbon (DIC) is the sum of inorganic carbon in water. This visualization shows full water column values, which means that total DIC values primarily reflect ocean depth.',
   },
   FG: {
     region:
@@ -46,7 +46,7 @@ const DESCRIPTIONS = {
   },
   pCO2SURF: {
     region:
-      'The partial pressure of carbon dioxide at the ocean surface, a measure of how much CO₂ is dissolved in seawater. Ocean carbon uptake happens when the surface ocean pCO₂ is lower than the partial pressure of CO₂ in the overlying atmosphere',
+      'The partial pressure of carbon dioxide (pCO₂) at the ocean surface, a measure of how much CO₂ is dissolved in seawater. Ocean carbon uptake happens when the surface ocean pCO₂ is lower than the partial pressure of CO₂ in the overlying atmosphere',
   },
 }
 

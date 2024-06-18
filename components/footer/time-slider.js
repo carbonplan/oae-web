@@ -112,7 +112,7 @@ const TimeSlider = () => {
           value={Math.floor(elapsedTime / 12)}
           range={[0, 14]}
           onChange={handleYearChange}
-          formatLabel={(d) => `Year ${d + 1}`}
+          formatLabel={(d) => `Year ${(d + 1).toString().padStart(2, '0')}`}
         />
         <MonthPicker sx={{ mt: -1 }} />
       </Flex>
