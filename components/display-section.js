@@ -26,7 +26,7 @@ const DESCRIPTIONS = {
   },
   DIC: {
     region:
-      'Dissolved inorganic carbon (DIC) is the sum of inorganic carbon in water. This visualization shows full water column values, causing the total layer to primarily reflect ocean bathymetry due to the influence of ocean depth.',
+      'Dissolved inorganic carbon (DIC) is the sum of inorganic carbon in water. This visualization shows full water column values, causing the total layer to primarily reflect ocean depth.',
   },
   FG: {
     region:
