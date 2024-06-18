@@ -153,14 +153,14 @@ const RegionChart = ({ sx }) => {
 
   const handleCSVDownload = useCallback(() => {
     const data = selectedLines[0]?.data.map((d) => ({
-      month: toMonthsIndex(d[0], 0) + 1,
-      value: d[1],
+      Month: toMonthsIndex(d[0], 0) + 1,
+      [`${currentVariable.label} ${currentVariable.unit}`]: d[1],
     }))
     downloadCsv(
       data,
-      `region-${selectedRegion}-${currentVariable.variable}${
-        currentVariable.delta ? '-delta' : ''
-      }-${currentVariable.unit}.csv`
+      `region_${selectedRegion}_${currentVariable.variable}${
+        currentVariable.delta ? '_delta' : ''
+      }.csv`
     )
   }, [selectedLines])
 
