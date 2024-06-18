@@ -21,6 +21,7 @@ const RegionPickerWrapper = () => {
       fontFamily={theme.fonts.mono}
       fontSize={'14px'}
       maxRadius={2000}
+      minRadius={100}
       initialCenter={selectedRegionCenter ? selectedRegionCenter : null}
     />
   )
