@@ -73,7 +73,7 @@ const MapWrapper = () => {
   const handleRegionData = (data) => {
     if (data.value === null) {
       setRegionDataLoading(true)
-    } else {
+    } else if (data.value[variableFamily][1]) {
       setRegionData(data.value)
       setRegionDataLoading(false)
     }
