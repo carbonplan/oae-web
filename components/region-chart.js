@@ -56,10 +56,11 @@ const RegionChart = ({ sx }) => {
   const selectedRegion = useStore((s) => s.selectedRegion)
   const regionDataLoading = useStore((s) => s.regionDataLoading)
   const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
+  const circlePickerMetaData = useStore((s) => s.circlePickerMetaData)
 
   const colormap = useThemedColormap(currentVariable?.colormap)
-  const { region } = useRegion()
-  const zoom = region?.properties?.zoom || 0
+  console.log(circlePickerMetaData)
+  const zoom = circlePickerMetaData?.properties?.zoom || 0
   const index = useBreakpointIndex()
 
   const [minMax, setMinMax] = useState([0, 0])
@@ -152,17 +153,40 @@ const RegionChart = ({ sx }) => {
   )
 
   const handleCSVDownload = useCallback(() => {
-    const data = selectedLines[0]?.data.map((d) => ({
+    const { lat, lng } = circlePickerMetaData.properties.center
+    const radius = circlePickerMetaData.properties.radius
+
+    const metadata = [
+      { Metadata: 'Latitude', Value: lat },
+      { Metadata: 'Longitude', Value: lng },
+      { Metadata: 'Radius', Value: radius },
+      { Metadata: '', Value: '' }, // Empty row for spacing
+    ]
+    const csvData = selectedLines[0]?.data.map((d) => ({
       Month: toMonthsIndex(d[0], 0) + 1,
       [`${currentVariable.label} ${currentVariable.unit}`]: d[1],
     }))
+    const combinedData = [...metadata, ...csvData]
+    const headers = {
+      Metadata: '',
+      Value: '',
+      Month: '',
+      [`${currentVariable.label} ${currentVariable.unit}`]: '',
+    }
+
+    const normalizedData = combinedData.map((row) => ({
+      ...headers,
+      ...row,
+    }))
     downloadCsv(
-      data,
+      normalizedData,
       `region_${selectedRegion}_${currentVariable.variable}${
         currentVariable.delta ? '_delta' : ''
       }.csv`
+        .replace(/ /g, '_')
+        .toLowerCase()
     )
-  }, [selectedLines])
+  }, [selectedLines, circlePickerMetaData, currentVariable, selectedRegion])
 
   return (
     <Box sx={{ mb: 4, height: [0, 0, 380, 380] }}>
