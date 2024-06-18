@@ -84,7 +84,7 @@ export const variables = {
     ],
   },
   pCO2SURF: {
-    label: 'Partial pressure of CO₂ (pCO₂)',
+    label: 'Partial pressure of CO₂',
     optionsTooltip: 'View the change in pCO₂, or the total pCO₂ value.',
     variables: [
       {
@@ -137,7 +137,7 @@ export const variables = {
     ],
   },
   DIC: {
-    label: 'Dissolved inorganic carbon (DIC)',
+    label: 'Dissolved inorganic carbon',
     threshold: 0.00001,
     optionsTooltip: 'View the change in DIC, or the total DIC value.',
     variables: [
