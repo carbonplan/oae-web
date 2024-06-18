@@ -165,10 +165,10 @@ const RegionChart = ({ sx }) => {
   }, [selectedLines])
 
   return (
-    <Box sx={{ mb: 4, height: [0, 0, 390, 390] }}>
+    <Box sx={{ mb: 4, height: [0, 0, 380, 380] }}>
       {index >= 2 && (
         <>
-          <Divider sx={{ mt: 4, mb: 5 }} />
+          <Divider sx={{ mt: 2, mb: 4 }} />
           <Button
             suffix={
               showRegionPicker ? (

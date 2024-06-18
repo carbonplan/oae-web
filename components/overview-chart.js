@@ -147,7 +147,7 @@ const OverviewChart = ({ sx }) => {
 
   return (
     <Box sx={{ mb: 4 }}>
-      <Divider sx={{ mt: 4, mb: 5 }} />
+      <Divider sx={{ mt: 2, mb: 4 }} />
       <Box sx={sx.heading}>Time series</Box>
 
       <Flex sx={{ justifyContent: 'space-between' }}>
