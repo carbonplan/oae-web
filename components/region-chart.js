@@ -59,7 +59,7 @@ const RegionChart = ({ sx }) => {
   const circlePickerMetaData = useStore((s) => s.circlePickerMetaData)
 
   const colormap = useThemedColormap(currentVariable?.colormap)
-  console.log(circlePickerMetaData)
+
   const zoom = circlePickerMetaData?.properties?.zoom || 0
   const index = useBreakpointIndex()
 
