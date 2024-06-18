@@ -141,7 +141,7 @@ const OverviewChart = ({ sx }) => {
     })
     const name = currentVariable.graphLabel
       ? `${currentVariable.graphLabel} ${currentVariable.label}`
-      : currentVariable.label.replace(/ /g, '_')
+      : currentVariable.label
     downloadCsv(
       csvData,
       `${filterToRegionsInView ? 'filtered_' : ''}${name}_timeseries.csv`
