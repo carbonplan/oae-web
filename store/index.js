@@ -139,7 +139,8 @@ export const variables = {
   DIC: {
     label: 'Dissolved inorganic carbon',
     threshold: 0.00001,
-    optionsTooltip: 'View the change in DIC, or the total DIC value.',
+    optionsTooltip:
+      'View the change in DIC. Total values are not available for this variable.',
     variables: [
       {
         variable: 'DIC',
@@ -152,15 +153,15 @@ export const variables = {
         unit: 'mol/m²',
         unitConversion: 0.001,
       },
-      {
-        variable: 'DIC',
-        delta: false,
-        colorLimits: [400, 1400],
-        colormap: 'warm',
-        label: 'Total',
-        unit: 'mol/m²',
-        unitConversion: 0.001,
-      },
+      // {
+      //   variable: 'DIC',
+      //   delta: false,
+      //   colorLimits: [400, 1400],
+      //   colormap: 'warm',
+      //   label: 'Total',
+      //   unit: 'mol/m²',
+      //   unitConversion: 0.001,
+      // },
     ],
   },
   PH: {
