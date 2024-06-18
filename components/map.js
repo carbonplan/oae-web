@@ -51,7 +51,7 @@ const MONTH_MAP = {
   3: 7,
   4: 10,
 }
-const MapWrapper = ({ children }) => {
+const MapWrapper = () => {
   const setLoading = useStore((s) => s.setLoading)
   const setRegionDataLoading = useStore((s) => s.setRegionDataLoading)
   const selectedRegion = useStore((s) => s.selectedRegion)
@@ -82,6 +82,8 @@ const MapWrapper = ({ children }) => {
     <Box
       sx={{
         position: 'absolute',
+        bottom: 0,
+        top: 0,
         right: 0,
         left: [
           0,
@@ -154,7 +156,6 @@ const MapWrapper = ({ children }) => {
 
         <Regions />
         {typeof selectedRegion === 'number' && <CloseIcon />}
-        {children}
       </Map>
     </Box>
   )

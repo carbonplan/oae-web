@@ -37,7 +37,6 @@ const sx = {
 
 const Main = () => {
   const loading = useStore((state) => state.loading)
-  const selectedRegion = useStore((state) => state.selectedRegion)
   const expanded = useStore((state) => state.expanded)
   const setExpanded = useStore((state) => state.setExpanded)
   const setShowRegionPicker = useStore((state) => state.setShowRegionPicker)
@@ -66,10 +65,15 @@ const Main = () => {
           top: 0,
           bottom: 0,
           width: '100%',
+          overflowX: 'hidden',
         }}
       >
         {index >= 2 ? (
-          <>
+          <Box
+            sx={{
+              display: ['none', 'none', 'block', 'block'],
+            }}
+          >
             <Sidebar expanded={true} side='left' width={4} footer={<Footer />}>
               <>
                 <Intro />
@@ -91,7 +95,7 @@ const Main = () => {
                 <Spinner size={32} />
               </SidebarAttachment>
             )}
-          </>
+          </Box>
         ) : (
           <>
             {loading && (
