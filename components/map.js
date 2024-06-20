@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { Map, Line, Raster, Fill } from '@carbonplan/maps'
 import { Box, useThemeUI } from 'theme-ui'
 
@@ -72,8 +72,8 @@ const MapWrapper = () => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
   }, [injectionSeason])
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
+  const handleEscape = useCallback(
+    (e) => {
       if (e.key === 'Escape') {
         if (showRegionPicker) {
           setShowRegionPicker(false)
@@ -81,10 +81,14 @@ const MapWrapper = () => {
           setSelectedRegion(null)
         }
       }
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [showRegionPicker, selectedRegion])
+    },
+    [showRegionPicker, selectedRegion]
+  )
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [handleEscape])
 
   const handleRegionData = (data) => {
     if (data.value === null) {
