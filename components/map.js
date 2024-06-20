@@ -90,14 +90,18 @@ const MapWrapper = () => {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [handleEscape])
 
-  const handleRegionData = (data) => {
-    if (data.value === null) {
-      setRegionDataLoading(true)
-    } else if (data.value[variableFamily]?.[1]) {
-      setRegionData(data.value)
-      setRegionDataLoading(false)
-    }
-  }
+  const handleRegionData = useCallback(
+    (data) => {
+      if (data.value === null) {
+        setRegionDataLoading(true)
+      } else if (data.value[variableFamily]?.[1]) {
+        setRegionData(data.value)
+        setRegionDataLoading(false)
+      }
+    },
+    [setRegionData, setRegionDataLoading, variableFamily]
+  )
+
   return (
     <Box
       sx={{
