@@ -57,6 +57,11 @@ const RegionChart = ({ sx }) => {
   const regionDataLoading = useStore((s) => s.regionDataLoading)
   const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
   const circlePickerMetaData = useStore((s) => s.circlePickerMetaData)
+  const injectionMonthString = useStore((state) =>
+    Object.keys(state.injectionSeason).find(
+      (value) => state.injectionSeason[value]
+    )
+  )
 
   const colormap = useThemedColormap(currentVariable?.colormap)
 
@@ -157,6 +162,7 @@ const RegionChart = ({ sx }) => {
     const radius = circlePickerMetaData.properties.radius
     const csvData = selectedLines[0]?.data.map((d, index) => ({
       month: index + 1,
+      injection_month: injectionMonthString,
       [`${currentVariable.label} ${currentVariable.unit}`]: d[1],
       lat,
       lng,
