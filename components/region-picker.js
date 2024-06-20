@@ -13,10 +13,12 @@ const RegionPickerWrapper = () => {
   const { map } = useMapbox()
   const { region } = useRegion()
 
-  if (selectedRegionCenter) {
-    const isCenterInView = map.getBounds().contains(selectedRegionCenter)
-    if (!isCenterInView) map.flyTo({ center: selectedRegionCenter })
-  }
+  useEffect(() => {
+    if (selectedRegionCenter) {
+      const isCenterInView = map.getBounds().contains(selectedRegionCenter)
+      if (!isCenterInView) map.flyTo({ center: selectedRegionCenter })
+    }
+  }, [])
 
   useEffect(() => {
     if (region) {
