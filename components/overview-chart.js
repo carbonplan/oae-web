@@ -28,6 +28,11 @@ const OverviewChart = ({ sx }) => {
     (state) =>
       Object.values(state.injectionSeason).findIndex((value) => value) + 1
   )
+  const injectionMonthString = useStore((state) =>
+    Object.keys(state.injectionSeason).find(
+      (value) => state.injectionSeason[value]
+    )
+  )
   const filterToRegionsInView = useStore((state) => state.filterToRegionsInView)
   const setFilterToRegionsInView = useStore(
     (state) => state.setFilterToRegionsInView
@@ -132,6 +137,7 @@ const OverviewChart = ({ sx }) => {
     const totalMonths = 180
     const csvData = Array.from({ length: totalMonths }, (_, index) => ({
       month: index + 1,
+      injection_month: injectionMonthString,
     }))
     Object.values(selectedLines).forEach((line) => {
       line.data.forEach(([year, value]) => {
@@ -142,7 +148,12 @@ const OverviewChart = ({ sx }) => {
     const name = currentVariable.graphLabel
       ? `${currentVariable.graphLabel} ${currentVariable.label}`
       : currentVariable.label
-    downloadCsv(csvData, `${name} timeseries.csv`)
+    downloadCsv(
+      csvData,
+      `${filterToRegionsInView ? 'filtered_' : ''}${name}_timeseries.csv`
+        .replace(/ /g, '_')
+        .toLocaleLowerCase()
+    )
   }, [selectedLines, toMonthsIndex])
 
   return (

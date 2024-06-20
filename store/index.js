@@ -253,6 +253,10 @@ const useStore = create((set) => ({
   regionDataLoading: false,
   setRegionDataLoading: (regionDataLoading) => set({ regionDataLoading }),
 
+  circlePickerMetaData: null,
+  setCirclePickerMetaData: (circlePickerMetaData) =>
+    set({ circlePickerMetaData }),
+
   expanded: true,
   setExpanded: (expanded) => set({ expanded }),
 

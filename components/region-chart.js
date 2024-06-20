@@ -56,10 +56,16 @@ const RegionChart = ({ sx }) => {
   const selectedRegion = useStore((s) => s.selectedRegion)
   const regionDataLoading = useStore((s) => s.regionDataLoading)
   const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
+  const circlePickerMetaData = useStore((s) => s.circlePickerMetaData)
+  const injectionMonthString = useStore((state) =>
+    Object.keys(state.injectionSeason).find(
+      (value) => state.injectionSeason[value]
+    )
+  )
 
   const colormap = useThemedColormap(currentVariable?.colormap)
-  const { region } = useRegion()
-  const zoom = region?.properties?.zoom || 0
+
+  const zoom = circlePickerMetaData?.properties?.zoom || 0
   const index = useBreakpointIndex()
 
   const [minMax, setMinMax] = useState([0, 0])
@@ -152,17 +158,25 @@ const RegionChart = ({ sx }) => {
   )
 
   const handleCSVDownload = useCallback(() => {
-    const data = selectedLines[0]?.data.map((d) => ({
-      month: toMonthsIndex(d[0], 0) + 1,
-      value: d[1],
+    const { lat, lng } = circlePickerMetaData.properties.center
+    const radius = circlePickerMetaData.properties.radius
+    const csvData = selectedLines[0]?.data.map((d, index) => ({
+      month: index + 1,
+      injection_month: injectionMonthString,
+      [`${currentVariable.label} ${currentVariable.unit}`]: d[1],
+      lat,
+      lng,
+      radius,
     }))
     downloadCsv(
-      data,
-      `region-${selectedRegion}-${currentVariable.variable}${
-        currentVariable.delta ? '-delta' : ''
-      }-${currentVariable.unit}.csv`
+      csvData,
+      `region_${selectedRegion}_${currentVariable.variable}${
+        currentVariable.delta ? '_delta' : ''
+      }.csv`
+        .replace(/ /g, '_')
+        .toLowerCase()
     )
-  }, [selectedLines])
+  }, [selectedLines, circlePickerMetaData, currentVariable, selectedRegion])
 
   return (
     <Box sx={{ mb: 4, height: [0, 0, 380, 380] }}>
