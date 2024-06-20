@@ -98,7 +98,13 @@ const MapWrapper = () => {
         height: '100%',
       }}
     >
-      <Map zoom={1.5} center={[140, -45]} debug={false} setLoading={setLoading}>
+      <Map
+        zoom={0}
+        center={[180, 0]}
+        maxZoom={3}
+        debug={false}
+        setLoading={setLoading}
+      >
         {selectedRegion !== null && !variables[variableFamily].overview && (
           <>
             <Raster
