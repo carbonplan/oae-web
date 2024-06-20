@@ -155,31 +155,15 @@ const RegionChart = ({ sx }) => {
   const handleCSVDownload = useCallback(() => {
     const { lat, lng } = circlePickerMetaData.properties.center
     const radius = circlePickerMetaData.properties.radius
-
-    const metadata = [
-      { Metadata: 'Latitude', Value: lat },
-      { Metadata: 'Longitude', Value: lng },
-      { Metadata: 'Radius', Value: radius },
-      { Metadata: '', Value: '' }, // Empty row for spacing
-    ]
-    const csvData = selectedLines[0]?.data.map((d) => ({
-      Month: toMonthsIndex(d[0], 0) + 1,
+    const csvData = selectedLines[0]?.data.map((d, index) => ({
+      month: index + 1,
       [`${currentVariable.label} ${currentVariable.unit}`]: d[1],
-    }))
-    const combinedData = [...metadata, ...csvData]
-    const headers = {
-      Metadata: '',
-      Value: '',
-      Month: '',
-      [`${currentVariable.label} ${currentVariable.unit}`]: '',
-    }
-
-    const normalizedData = combinedData.map((row) => ({
-      ...headers,
-      ...row,
+      lat,
+      lng,
+      radius,
     }))
     downloadCsv(
-      normalizedData,
+      csvData,
       `region_${selectedRegion}_${currentVariable.variable}${
         currentVariable.delta ? '_delta' : ''
       }.csv`
