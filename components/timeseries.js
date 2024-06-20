@@ -193,7 +193,7 @@ const Timeseries = ({
   const handleXSelectorMouseMove = (e) => {
     const { left, width } = e.currentTarget.getBoundingClientRect()
     const clickX = Math.max(e.clientX - left, 0)
-    const months = Math.round((clickX / width) * 179)
+    const months = Math.round((clickX / width) * 180)
     const years = months / 12
     setMousePosition(years)
     setXSelectorValue(selectedLines[0]?.data?.[months]?.[1])
@@ -221,11 +221,14 @@ const Timeseries = ({
   const renderXSelector = (x, selected) => {
     if ((!selected && !isHovering) || !xSelector) return null
     const color = selected ? 'primary' : 'secondary'
+    const months = x * 12
+    const closestMonth = Math.round(months)
+    const year = closestMonth / 12
     return (
       <Line
         data={[
-          [x, yLimits[0]],
-          [x, yLimits[1]],
+          [year, yLimits[0]],
+          [year, yLimits[1]],
         ]}
         color={color}
         strokeWidth={1}
