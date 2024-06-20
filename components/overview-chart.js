@@ -229,7 +229,6 @@ const OverviewChart = ({ sx }) => {
         opacity={0.1}
         handleClick={disableFilter ? undefined : handleClick}
         handleHover={disableFilter ? undefined : handleHover}
-        shadeHorizon
         showActive
       />
     </Box>

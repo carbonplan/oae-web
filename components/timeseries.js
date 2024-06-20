@@ -171,7 +171,6 @@ const Timeseries = ({
   colormap,
   opacity,
   showActive = false,
-  shadeHorizon = false,
   xSelector = false,
   handleXSelectorClick = () => {},
   logy = false,
@@ -222,14 +221,14 @@ const Timeseries = ({
   const renderXSelector = (x, selected) => {
     if ((!selected && !isHovering) || !xSelector) return null
     const color = selected ? 'primary' : 'secondary'
-    const year = Math.floor(x)
     return (
-      <Rect
-        id='x-selector'
-        x={[year, year + 1]}
-        y={[yLimits[0], yLimits[1]]}
+      <Line
+        data={[
+          [x, yLimits[0]],
+          [x, yLimits[1]],
+        ]}
         color={color}
-        opacity={0.1}
+        strokeWidth={1}
       />
     )
   }
@@ -315,20 +314,13 @@ const Timeseries = ({
             handleClick={handleClick}
             gradient={colormap ? true : false}
           />
-          {shadeHorizon && (
-            <Rect
-              x={[elapsedYears, 15]}
-              y={[yLimits[0], yLimits[1]]}
-              color='muted'
-              pointerEvents='none'
-              style={{
-                transition: 'all 0.2s ease-in-out',
-                opacity: 0.3,
-              }}
-              onClick={(e) => e.stopPropagation()}
-            />
-          )}
-
+          <Line
+            data={[
+              [elapsedYears, yLimits[0]],
+              [elapsedYears, yLimits[1]],
+            ]}
+            color='primary'
+          />
           {showActive && <ActiveLine />}
           {xSelector && mousePosition && renderXSelector(mousePosition, false)}
           {point && renderPoint(point)}
