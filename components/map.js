@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Map, Line, Raster, Fill } from '@carbonplan/maps'
 import { Box, useThemeUI } from 'theme-ui'
 
@@ -55,11 +55,13 @@ const MapWrapper = () => {
   const setLoading = useStore((s) => s.setLoading)
   const setRegionDataLoading = useStore((s) => s.setRegionDataLoading)
   const selectedRegion = useStore((s) => s.selectedRegion)
+  const setSelectedRegion = useStore((s) => s.setSelectedRegion)
   const detailElapsedTime = useStore((s) => s.detailElapsedTime)
   const injectionSeason = useStore((s) => s.injectionSeason)
   const currentVariable = useStore((s) => s.currentVariable)
   const variableFamily = useStore((s) => s.variableFamily)
   const showRegionPicker = useStore((s) => s.showRegionPicker)
+  const setShowRegionPicker = useStore((s) => s.setShowRegionPicker)
   const setRegionData = useStore((s) => s.setRegionData)
   const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
 
@@ -69,6 +71,20 @@ const MapWrapper = () => {
   const injectionDate = useMemo(() => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
   }, [injectionSeason])
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (showRegionPicker) {
+          setShowRegionPicker(false)
+        } else if (selectedRegion !== null) {
+          setSelectedRegion(null)
+        }
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [showRegionPicker, selectedRegion])
 
   const handleRegionData = (data) => {
     if (data.value === null) {
