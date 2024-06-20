@@ -314,16 +314,22 @@ const Timeseries = ({
             handleClick={handleClick}
             gradient={colormap ? true : false}
           />
-          <Line
-            data={[
-              [elapsedYears, yLimits[0]],
-              [elapsedYears, yLimits[1]],
-            ]}
-            color='primary'
-          />
-          {showActive && <ActiveLine />}
-          {xSelector && mousePosition && renderXSelector(mousePosition, false)}
-          {point && renderPoint(point)}
+          {Object.keys(selectedLines).length && (
+            <>
+              <Line
+                data={[
+                  [elapsedYears, yLimits[0]],
+                  [elapsedYears, yLimits[1]],
+                ]}
+                color='primary'
+              />
+              {showActive && <ActiveLine />}
+              {xSelector &&
+                mousePosition &&
+                renderXSelector(mousePosition, false)}
+              {point && renderPoint(point)}
+            </>
+          )}
         </Plot>
         {!xSelector && renderDataBadge()}
         {showActive && <OverviewBadge />}
