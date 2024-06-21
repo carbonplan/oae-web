@@ -3,7 +3,6 @@ import { Sidebar, SidebarAttachment } from '@carbonplan/layouts'
 import { Box, Spinner } from 'theme-ui'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 
-import useInitializeFromUrl from '../utils/useInitializeFromUrl'
 import useStore from '../store'
 import Header from './header'
 import MapWrapper from './map'
@@ -14,6 +13,8 @@ import RegionInfo from './region-info'
 import About from './about'
 import DisplaySection from './display-section'
 import ChartSection from './chart-section'
+import ShareLink from './share-link'
+import useRegionUrlSync from '../utils/useRegionUrlSync'
 
 const sx = {
   heading: {
@@ -42,7 +43,7 @@ const Main = () => {
   const setExpanded = useStore((state) => state.setExpanded)
   const setShowRegionPicker = useStore((state) => state.setShowRegionPicker)
   const index = useBreakpointIndex({ defaultIndex: 2 })
-  useInitializeFromUrl()
+  useRegionUrlSync()
 
   // toggle sidebar based on breakpoint
   const prevIndexRef = useRef(index)
@@ -97,6 +98,7 @@ const Main = () => {
                 <Spinner size={32} />
               </SidebarAttachment>
             )}
+            <ShareLink />
           </Box>
         ) : (
           <>
