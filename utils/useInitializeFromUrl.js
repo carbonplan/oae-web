@@ -1,27 +1,18 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
-import useStore, { variables } from '../store'
+import useStore from '../store'
 
 const useInitializeFromUrl = () => {
   const router = useRouter()
-  const setVariableFamily = useStore((state) => state.setVariableFamily)
-  const setCurrentVariable = useStore((state) => state.setCurrentVariable)
-  const setLogScale = useStore((state) => state.setLogScale)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
 
   useEffect(() => {
-    const { variableFamily, currentVariable, logScale, region } = router.query
-    console.log('reading query')
-
-    const currentVariableValue = variables[variableFamily]?.variables.find(
-      (variable) => variable.label === currentVariable
-    )
-
-    // selectedRegion must come first so that the default variable is overridden below
-    if (region) setSelectedRegion(parseInt(region))
-    if (variableFamily) setVariableFamily(variableFamily)
-    if (currentVariableValue) setCurrentVariable(currentVariableValue)
-    if (logScale) setLogScale(logScale === 'true')
+    if (!router.isReady) return
+    const { region } = router.query
+    const regionInt = parseInt(region)
+    if (!isNaN(regionInt) && regionInt >= 0 && regionInt <= 689) {
+      setSelectedRegion(regionInt)
+    }
   }, [router.isReady])
 }
 
