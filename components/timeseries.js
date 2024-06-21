@@ -232,6 +232,7 @@ const Timeseries = ({
         ]}
         color={color}
         strokeWidth={1}
+        style={{ strokeDasharray: '2 4' }}
       />
     )
   }
@@ -329,7 +330,15 @@ const Timeseries = ({
                   [elapsedYears, yLimits[1]],
                 ]}
                 color='primary'
+                style={{ strokeDasharray: '2 4' }}
               />
+              {xSelector &&
+                isHovering &&
+                renderPoint({
+                  x: mousePosition,
+                  y: xSelectorValue,
+                  color: 'secondary',
+                })}
               {point && renderPoint(point)}
             </>
           )}
