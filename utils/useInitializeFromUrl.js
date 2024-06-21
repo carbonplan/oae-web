@@ -10,15 +10,15 @@ const useInitializeFromUrl = () => {
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
 
   useEffect(() => {
-    const { variableFamily, currentVariable, logScale, selectedRegion } =
-      router.query
+    const { variableFamily, currentVariable, logScale, region } = router.query
+    console.log('reading query')
 
     const currentVariableValue = variables[variableFamily]?.variables.find(
       (variable) => variable.label === currentVariable
     )
 
     // selectedRegion must come first so that the default variable is overridden below
-    if (selectedRegion) setSelectedRegion(parseInt(selectedRegion))
+    if (region) setSelectedRegion(parseInt(region))
     if (variableFamily) setVariableFamily(variableFamily)
     if (currentVariableValue) setCurrentVariable(currentVariableValue)
     if (logScale) setLogScale(logScale === 'true')
