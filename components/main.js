@@ -4,7 +4,6 @@ import { Box, Spinner } from 'theme-ui'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 
 import useInitializeFromUrl from '../utils/useInitializeFromUrl'
-import useSyncUrlWithStore from '../utils/useSyncUrlWithStore'
 import useStore from '../store'
 import Header from './header'
 import MapWrapper from './map'
@@ -45,7 +44,6 @@ const Main = () => {
   const setShowRegionPicker = useStore((state) => state.setShowRegionPicker)
   const index = useBreakpointIndex({ defaultIndex: 2 })
   useInitializeFromUrl()
-  useSyncUrlWithStore()
 
   // toggle sidebar based on breakpoint
   const prevIndexRef = useRef(index)
