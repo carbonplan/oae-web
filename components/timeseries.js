@@ -316,9 +316,7 @@ const Timeseries = ({
           {Object.keys(selectedLines).length && (
             <>
               {showActive && <ActiveLine />}
-              {xSelector &&
-                mousePosition &&
-                renderXSelector(mousePosition, false)}
+              {xSelector && mousePosition && renderXSelector(mousePosition)}
               <Line
                 data={[
                   [elapsedYears, yLimits[0]],
