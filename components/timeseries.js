@@ -222,13 +222,23 @@ const Timeseries = ({
     if (!isHovering || !xSelector) return null
     const year = Math.floor(x)
     return (
-      <Rect
-        id='x-selector'
-        x={[year, year + 1]}
-        y={[yLimits[0], yLimits[1]]}
-        color={'secondary'}
-        opacity={0.1}
-      />
+      <>
+        <Rect
+          id='x-selector'
+          x={[year, year + 1]}
+          y={[yLimits[0], yLimits[1]]}
+          color={'secondary'}
+          opacity={0.1}
+        />
+        <Line
+          data={[
+            [x, yLimits[0]],
+            [x, yLimits[1]],
+          ]}
+          color='secondary'
+          style={{ strokeDasharray: '2 4' }}
+        />
+      </>
     )
   }
 
