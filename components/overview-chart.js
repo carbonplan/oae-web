@@ -207,7 +207,7 @@ const OverviewChart = ({ sx }) => {
           }
           onClick={handleCSVDownload}
           sx={{
-            fontSize: 0,
+            fontSize: [0, 0, 0, 1],
             minWidth: '120px',
             mb: 1,
             textAlign: 'right',

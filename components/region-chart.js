@@ -205,7 +205,7 @@ const RegionChart = ({ sx }) => {
                   disabled={selectedLines.length === 0 || regionDataLoading}
                   onClick={handleCSVDownload}
                   sx={{
-                    fontSize: 0,
+                    fontSize: [0, 0, 0, 1],
                     textTransform: 'uppercase',
                     fontFamily: 'mono',
                     '&:disabled': {

@@ -260,7 +260,7 @@ const Timeseries = ({
         }}
       >
         ({xYearsMonth(xValue)}, {formatValue(yValue)}
-        <Box as='span' sx={{ fontSize: 0 }}>
+        <Box as='span' sx={{ fontSize: [0, 0, 0, 1] }}>
           {currentVariable.unit}
         </Box>
         )

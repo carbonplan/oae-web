@@ -211,7 +211,7 @@ const DisplaySection = ({ sx }) => {
                     sx={{
                       width: 18,
                       mr: 1,
-                      mt: '-3px',
+                      mt: '-1px',
                       color: 'secondary',
                       transition: 'color 0.15s',
                       'input:active ~ &': {

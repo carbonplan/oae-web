@@ -76,7 +76,7 @@ const Main = () => {
           >
             <Sidebar expanded={true} side='left' width={4} footer={<Footer />}>
               <>
-                <Intro />
+                <Intro sx={sx} />
                 <RegionInfo sx={sx} />
                 <DisplaySection sx={sx} />
                 <ChartSection sx={sx} />
