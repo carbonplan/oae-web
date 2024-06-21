@@ -184,7 +184,7 @@ const Timeseries = ({
 
   const xYearsMonth = (x) => {
     const years = Math.floor(x)
-    const months = Math.round((x - years) * 12)
+    const months = Math.round((x - years) * 12) + 1
     return `${years.toString().padStart(2, '0')}y${months
       .toString()
       .padStart(2, '0')}m`
@@ -196,7 +196,7 @@ const Timeseries = ({
     const months = Math.round((clickX / width) * 180)
     const years = months / 12
     setMousePosition(years)
-    setXSelectorValue(selectedLines[0]?.data?.[months]?.[1])
+    setXSelectorValue(selectedLines[0]?.data?.[months - 1]?.[1])
   }
 
   const handleXSelectorMouseEnter = () => {
