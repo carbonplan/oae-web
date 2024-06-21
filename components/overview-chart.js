@@ -177,11 +177,11 @@ const OverviewChart = ({ sx }) => {
             checked={filterToRegionsInView}
             onChange={(e) => setFilterToRegionsInView(e.target.checked)}
             sx={{
-              width: 14,
+              width: [14, 14, 14, 16],
               mr: 1,
-              mt: '-4px',
+              mt: ['-3px', '-3px', '-3px', '-2px'],
               cursor: 'pointer',
-              color: 'muted',
+              color: 'secondary',
               transition: 'color 0.15s',
               'input:active ~ &': { bg: 'background', color: 'primary' },
               'input:focus ~ &': {

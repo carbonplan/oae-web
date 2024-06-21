@@ -209,9 +209,9 @@ const DisplaySection = ({ sx }) => {
                     checked={logScale}
                     onChange={(e) => setLogScale(e.target.checked)}
                     sx={{
-                      width: 18,
+                      width: [16, 16, 16, 18],
                       mr: 1,
-                      mt: '-1px',
+                      mt: ['-3px', '-3px', '-3px', '-1px'],
                       color: 'secondary',
                       transition: 'color 0.15s',
                       'input:active ~ &': {

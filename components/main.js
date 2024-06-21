@@ -111,7 +111,7 @@ const Main = () => {
               </Box>
             )}
             <MobileSettings expanded={expanded}>
-              <Intro />
+              <Intro sx={sx} />
               <RegionInfo sx={sx} />
               <DisplaySection sx={sx} />
               <ChartSection sx={sx} />
