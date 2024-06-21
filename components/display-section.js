@@ -4,7 +4,7 @@ import { Column, Filter, Select, Row, Colorbar } from '@carbonplan/components'
 
 import TooltipWrapper from './tooltip'
 import useStore, { variables } from '../store'
-import { Chart, TickLabels, Ticks } from '@carbonplan/charts'
+import { AxisLabel, Chart, TickLabels, Ticks } from '@carbonplan/charts'
 import { generateLogTicks, useVariableColormap, formatValue } from '../utils'
 
 const DESCRIPTIONS = {
@@ -104,7 +104,7 @@ const DisplaySection = ({ sx }) => {
     },
     [variableFamily, setCurrentVariable]
   )
-
+  console.log(Object.keys(variables))
   return (
     <>
       <Box sx={sx.heading}>Display</Box>
@@ -124,7 +124,6 @@ const DisplaySection = ({ sx }) => {
               }}
               sxSelect={{
                 fontFamily: 'mono',
-                textTransform: 'uppercase',
                 fontSize: [1, 1, 1, 2],
                 width: '100%',
               }}
@@ -133,7 +132,7 @@ const DisplaySection = ({ sx }) => {
                 {Object.keys(variables).map((variable) =>
                   variables[variable].overview ? (
                     <option key={variable} value={variable}>
-                      {variables[variable].label}
+                      {variables[variable].label.toUpperCase()}
                     </option>
                   ) : null
                 )}
@@ -142,7 +141,9 @@ const DisplaySection = ({ sx }) => {
                 {Object.keys(variables).map((variable) =>
                   !variables[variable].overview ? (
                     <option key={variable} value={variable}>
-                      {variables[variable].label}
+                      {variable === 'PH'
+                        ? variables[variable].label
+                        : variables[variable].label.toUpperCase()}
                     </option>
                   ) : null
                 )}
@@ -184,7 +185,7 @@ const DisplaySection = ({ sx }) => {
           <Flex sx={{ justifyContent: 'space-between', height: 25 }}>
             <Box>
               Color range{' '}
-              {currentVariable.unit && (
+              {/* {currentVariable.unit && (
                 <>
                   (
                   <Box as='span' sx={{ textTransform: 'none' }}>
@@ -192,7 +193,7 @@ const DisplaySection = ({ sx }) => {
                   </Box>
                   )
                 </>
-              )}
+              )} */}
             </Box>
             <Box>
               {currentVariable.logScale && (
@@ -249,7 +250,11 @@ const DisplaySection = ({ sx }) => {
         </Column>
       </Row>
       <Row columns={[6, 8, 4, 4]} sx={{ mt: '9px' }}>
-        <Column start={1} width={[6, 8, 4, 4]} sx={{ ...sx.label, mt: 5 }}>
+        <Column
+          start={1}
+          width={[6, 8, 4, 4]}
+          sx={{ ...sx.label, mt: 5, mb: 3 }}
+        >
           <Chart
             logx={logScale}
             x={[min, max]}
@@ -269,6 +274,14 @@ const DisplaySection = ({ sx }) => {
               sx={{ textTransform: 'none' }}
               bottom
             />
+            <AxisLabel
+              bottom
+              align='center'
+              arrow={false}
+              sx={{ color: 'secondary', fontSize: [0, 0, 0, 1] }}
+            >
+              {currentVariable.unit}
+            </AxisLabel>
           </Chart>
         </Column>
       </Row>
