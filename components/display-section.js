@@ -104,7 +104,6 @@ const DisplaySection = ({ sx }) => {
     },
     [variableFamily, setCurrentVariable]
   )
-  console.log(Object.keys(variables))
   return (
     <>
       <Box sx={sx.heading}>Display</Box>
