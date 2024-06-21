@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { Map, Line, Raster, Fill } from '@carbonplan/maps'
 import { Box, useThemeUI } from 'theme-ui'
 
@@ -55,11 +55,13 @@ const MapWrapper = () => {
   const setLoading = useStore((s) => s.setLoading)
   const setRegionDataLoading = useStore((s) => s.setRegionDataLoading)
   const selectedRegion = useStore((s) => s.selectedRegion)
+  const setSelectedRegion = useStore((s) => s.setSelectedRegion)
   const detailElapsedTime = useStore((s) => s.detailElapsedTime)
   const injectionSeason = useStore((s) => s.injectionSeason)
   const currentVariable = useStore((s) => s.currentVariable)
   const variableFamily = useStore((s) => s.variableFamily)
   const showRegionPicker = useStore((s) => s.showRegionPicker)
+  const setShowRegionPicker = useStore((s) => s.setShowRegionPicker)
   const setRegionData = useStore((s) => s.setRegionData)
   const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
 
@@ -70,14 +72,36 @@ const MapWrapper = () => {
     return Object.values(injectionSeason).findIndex((value) => value) + 1
   }, [injectionSeason])
 
-  const handleRegionData = (data) => {
-    if (data.value === null) {
-      setRegionDataLoading(true)
-    } else if (data.value[variableFamily]?.[1]) {
-      setRegionData(data.value)
-      setRegionDataLoading(false)
-    }
-  }
+  const handleEscape = useCallback(
+    (e) => {
+      if (e.key === 'Escape') {
+        if (showRegionPicker) {
+          setShowRegionPicker(false)
+        } else if (selectedRegion !== null) {
+          setSelectedRegion(null)
+        }
+      }
+    },
+    [showRegionPicker, selectedRegion]
+  )
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [handleEscape])
+
+  const handleRegionData = useCallback(
+    (data) => {
+      if (data.value === null) {
+        setRegionDataLoading(true)
+      } else if (data.value[variableFamily]?.[1]) {
+        setRegionData(data.value)
+        setRegionDataLoading(false)
+      }
+    },
+    [setRegionData, setRegionDataLoading, variableFamily]
+  )
+
   return (
     <Box
       sx={{
@@ -98,7 +122,13 @@ const MapWrapper = () => {
         height: '100%',
       }}
     >
-      <Map zoom={1.5} center={[140, -45]} debug={false} setLoading={setLoading}>
+      <Map
+        zoom={0}
+        center={[180, 0]}
+        maxZoom={3}
+        debug={false}
+        setLoading={setLoading}
+      >
         {selectedRegion !== null && !variables[variableFamily].overview && (
           <>
             <Raster
