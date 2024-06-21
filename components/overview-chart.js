@@ -168,6 +168,7 @@ const OverviewChart = ({ sx }) => {
             cursor: 'pointer',
             fontSize: [0, 0, 0, 1],
             fontFamily: 'mono',
+            letterSpacing: 'mono',
             textTransform: 'uppercase',
             py: 1,
           }}
@@ -211,6 +212,7 @@ const OverviewChart = ({ sx }) => {
             minWidth: '120px',
             mb: 1,
             textAlign: 'right',
+            letterSpacing: 'mono',
             textTransform: 'uppercase',
             fontFamily: 'mono',
             '&:disabled': {
