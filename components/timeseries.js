@@ -327,14 +327,13 @@ const Timeseries = ({
                 color='primary'
                 style={{ strokeDasharray: '2 4' }}
               />
-              {xSelector &&
-                isHovering &&
-                renderPoint({
-                  x: mousePosition,
-                  y: xSelectorValue,
-                  color: 'secondary',
-                })}
-              {point && renderPoint(point)}
+              {xSelector && isHovering
+                ? renderPoint({
+                    x: mousePosition,
+                    y: xSelectorValue,
+                    color: 'secondary',
+                  })
+                : point && renderPoint(point)}
             </>
           )}
         </Plot>
