@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from 'react'
 import { Box, Divider, Flex } from 'theme-ui'
 import { Button } from '@carbonplan/components'
 import { useThemedColormap } from '@carbonplan/colormaps'
-import { useRegion } from '@carbonplan/maps'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { Down, Search, X } from '@carbonplan/icons'
 
@@ -91,7 +90,7 @@ const RegionChart = ({ sx }) => {
               zoom,
               unitConversion
             )
-            const toYear = year - 1 + (month - 1) / 12
+            const toYear = year - 1 + month / 12
             averages.push([toYear, avg])
           })
       })

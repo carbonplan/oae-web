@@ -171,7 +171,6 @@ const Timeseries = ({
   colormap,
   opacity,
   showActive = false,
-  shadeHorizon = false,
   xSelector = false,
   handleXSelectorClick = () => {},
   logy = false,
@@ -194,10 +193,10 @@ const Timeseries = ({
   const handleXSelectorMouseMove = (e) => {
     const { left, width } = e.currentTarget.getBoundingClientRect()
     const clickX = Math.max(e.clientX - left, 0)
-    const months = Math.round((clickX / width) * 179)
+    const months = Math.round((clickX / width) * 180)
     const years = months / 12
     setMousePosition(years)
-    setXSelectorValue(selectedLines[0]?.data?.[months]?.[1])
+    setXSelectorValue(selectedLines[0]?.data?.[months - 1]?.[1])
   }
 
   const handleXSelectorMouseEnter = () => {
@@ -219,18 +218,27 @@ const Timeseries = ({
       }
     : {}
 
-  const renderXSelector = (x, selected) => {
-    if ((!selected && !isHovering) || !xSelector) return null
-    const color = selected ? 'primary' : 'secondary'
+  const renderXSelector = (x) => {
+    if (!isHovering || !xSelector) return null
     const year = Math.floor(x)
     return (
-      <Rect
-        id='x-selector'
-        x={[year, year + 1]}
-        y={[yLimits[0], yLimits[1]]}
-        color={color}
-        opacity={0.1}
-      />
+      <>
+        <Rect
+          id='x-selector'
+          x={[year, year + 1]}
+          y={[yLimits[0], yLimits[1]]}
+          color={'secondary'}
+          opacity={0.1}
+        />
+        <Line
+          data={[
+            [x, yLimits[0]],
+            [x, yLimits[1]],
+          ]}
+          color='secondary'
+          style={{ strokeDasharray: '2 4' }}
+        />
+      </>
     )
   }
 
@@ -315,23 +323,28 @@ const Timeseries = ({
             handleClick={handleClick}
             gradient={colormap ? true : false}
           />
-          {shadeHorizon && (
-            <Rect
-              x={[elapsedYears, 15]}
-              y={[yLimits[0], yLimits[1]]}
-              color='muted'
-              pointerEvents='none'
-              style={{
-                transition: 'all 0.2s ease-in-out',
-                opacity: 0.3,
-              }}
-              onClick={(e) => e.stopPropagation()}
-            />
+          {Object.keys(selectedLines).length && (
+            <>
+              {showActive && <ActiveLine />}
+              {xSelector && mousePosition && renderXSelector(mousePosition)}
+              <Line
+                data={[
+                  [elapsedYears, yLimits[0]],
+                  [elapsedYears, yLimits[1]],
+                ]}
+                color='primary'
+                style={{ strokeDasharray: '2 4' }}
+              />
+              {xSelector &&
+                isHovering &&
+                renderPoint({
+                  x: mousePosition,
+                  y: xSelectorValue,
+                  color: 'secondary',
+                })}
+              {point && renderPoint(point)}
+            </>
           )}
-
-          {showActive && <ActiveLine />}
-          {xSelector && mousePosition && renderXSelector(mousePosition, false)}
-          {point && renderPoint(point)}
         </Plot>
         {!xSelector && renderDataBadge()}
         {showActive && <OverviewBadge />}
