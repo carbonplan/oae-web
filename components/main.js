@@ -38,7 +38,6 @@ const sx = {
 
 const Main = () => {
   const loading = useStore((state) => state.loading)
-  const selectedRegion = useStore((state) => state.selectedRegion)
   const expanded = useStore((state) => state.expanded)
   const setExpanded = useStore((state) => state.setExpanded)
   const setShowRegionPicker = useStore((state) => state.setShowRegionPicker)
@@ -59,12 +58,6 @@ const Main = () => {
     }
   }, [index])
 
-  useEffect(() => {
-    if (index < 2 && selectedRegion) {
-      setExpanded(true)
-    }
-  }, [index, selectedRegion])
-
   return (
     <>
       <Header expanded={expanded} setExpanded={setExpanded} />
@@ -74,64 +67,62 @@ const Main = () => {
           top: 0,
           bottom: 0,
           width: '100%',
+          overflowX: 'hidden',
         }}
       >
-        <MapWrapper>
-          {index >= 2 ? (
-            <>
-              <Sidebar
-                expanded={expanded}
-                setExpanded={setExpanded}
-                side='left'
-                width={4}
-                footer={<Footer />}
-              >
-                <>
-                  <Intro />
-                  <RegionInfo sx={sx} />
-                  <DisplaySection sx={sx} />
-                  <ChartSection sx={sx} />
-                  <About sx={sx} />
-                </>
-              </Sidebar>
-              {loading && (
-                <SidebarAttachment
-                  expanded={expanded}
-                  side='left'
-                  width={4}
-                  sx={{
-                    top: '16px',
-                  }}
-                >
-                  <Spinner size={32} />
-                </SidebarAttachment>
-              )}
-            </>
-          ) : (
-            <>
-              {loading && (
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    top: '72px',
-                    left: '16px',
-                    zIndex: 20220,
-                  }}
-                >
-                  <Spinner size={32} />
-                </Box>
-              )}
-              <MobileSettings expanded={expanded}>
+        {index >= 2 ? (
+          <Box
+            sx={{
+              display: ['none', 'none', 'block', 'block'],
+            }}
+          >
+            <Sidebar expanded={true} side='left' width={4} footer={<Footer />}>
+              <>
                 <Intro />
                 <RegionInfo sx={sx} />
                 <DisplaySection sx={sx} />
                 <ChartSection sx={sx} />
                 <About sx={sx} />
-              </MobileSettings>
-              <Footer />
-            </>
-          )}
-        </MapWrapper>
+              </>
+            </Sidebar>
+            {loading && (
+              <SidebarAttachment
+                expanded={expanded}
+                side='left'
+                width={4}
+                sx={{
+                  top: '16px',
+                }}
+              >
+                <Spinner size={32} />
+              </SidebarAttachment>
+            )}
+          </Box>
+        ) : (
+          <>
+            {loading && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '72px',
+                  left: '16px',
+                  zIndex: 20220,
+                }}
+              >
+                <Spinner size={32} />
+              </Box>
+            )}
+            <MobileSettings expanded={expanded}>
+              <Intro />
+              <RegionInfo sx={sx} />
+              <DisplaySection sx={sx} />
+              <ChartSection sx={sx} />
+              <About sx={sx} />
+            </MobileSettings>
+            <Footer />
+          </>
+        )}
+        <MapWrapper />
       </Box>
     </>
   )

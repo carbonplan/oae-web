@@ -3,24 +3,24 @@ import useStore, { variables } from '../store'
 import { useMapbox } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
-import centroid from '@turf/centroid'
+import { centerOfMass } from '@turf/turf'
 
 const Regions = () => {
-  const hoveredRegion = useStore((state) => state.hoveredRegion)
-  const setHoveredRegion = useStore((state) => state.setHoveredRegion)
-  const selectedRegion = useStore((state) => state.selectedRegion)
-  const setSelectedRegion = useStore((state) => state.setSelectedRegion)
-  const setSelectedRegionCenter = useStore(
-    (state) => state.setSelectedRegionCenter
-  )
-  const filterToRegionsInView = useStore((state) => state.filterToRegionsInView)
-  const setRegionsInView = useStore((state) => state.setRegionsInView)
-  const currentVariable = useStore((state) => state.currentVariable)
-  const overviewLineData = useStore((state) => state.overviewLineData)
-  const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
-  const variableFamily = useStore((state) => state.variableFamily)
-
-  const [baseGeojson, setBaseGeojson] = useState(null)
+  const hoveredRegion = useStore((s) => s.hoveredRegion)
+  const setHoveredRegion = useStore((s) => s.setHoveredRegion)
+  const selectedRegion = useStore((s) => s.selectedRegion)
+  const setSelectedRegion = useStore((s) => s.setSelectedRegion)
+  const selectedRegionCenter = useStore((s) => s.selectedRegionCenter)
+  const setSelectedRegionCenter = useStore((s) => s.setSelectedRegionCenter)
+  const filterToRegionsInView = useStore((s) => s.filterToRegionsInView)
+  const setRegionsInView = useStore((s) => s.setRegionsInView)
+  const currentVariable = useStore((s) => s.currentVariable)
+  const overviewLineData = useStore((s) => s.overviewLineData)
+  const regionGeojson = useStore((s) => s.regionGeojson)
+  const setRegionGeojson = useStore((s) => s.setRegionGeojson)
+  const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
+  const variableFamily = useStore((s) => s.variableFamily)
+  const selectedRegionGeojson = useStore((s) => s.selectedRegionGeojson)
 
   const colormap = useThemedColormap(currentVariable.colormap)
   const colorLimits = currentVariable.colorLimits
@@ -47,12 +47,12 @@ const Regions = () => {
   }
 
   useEffect(() => {
-    if (!baseGeojson || !overviewLineData) return
+    if (!regionGeojson) return
     // get currentValue from overviewLineData for each polygon and assign to new current value property
-    const features = baseGeojson.features.map((feature) => {
+    const features = regionGeojson.features.map((feature) => {
       const polygonId = feature.properties.polygon_id
       const currentValue =
-        overviewLineData[polygonId]?.data?.[overviewElapsedTime][1]
+        overviewLineData?.[polygonId]?.data?.[overviewElapsedTime][1] ?? 0
       return {
         ...feature,
         properties: {
@@ -63,7 +63,7 @@ const Regions = () => {
     })
     if (map && map.getSource('regions')) {
       const colorExpression = buildColorExpression()
-      map.getSource('regions').setData({ ...baseGeojson, features })
+      map.getSource('regions').setData({ ...regionGeojson, features })
       map.setPaintProperty('regions-fill', 'fill-color', colorExpression)
       map.setPaintProperty(
         'selected-region-fill',
@@ -71,7 +71,7 @@ const Regions = () => {
         colorExpression
       )
     }
-  }, [baseGeojson, overviewElapsedTime, overviewLineData])
+  }, [regionGeojson, overviewElapsedTime, overviewLineData])
 
   //reused colors
   const transparent = 'rgba(0, 0, 0, 0)'
@@ -108,12 +108,7 @@ const Regions = () => {
     if (e.features.length > 0) {
       const feature = e.features[0]
       const polygonId = feature.properties.polygon_id
-      let center // handle multipolygons on the dateline
-      if (feature.geometry.type === 'Polygon') {
-        center = centroid(feature.geometry).geometry.coordinates
-      } else {
-        center = [e.lngLat.lng, e.lngLat.lat]
-      }
+      const center = [e.lngLat.lng, e.lngLat.lat]
       setSelectedRegion(polygonId)
       setSelectedRegionCenter(center)
     }
@@ -123,7 +118,7 @@ const Regions = () => {
     fetch('/regions.geojson')
       .then((response) => response.json())
       .then((data) => {
-        setBaseGeojson(data)
+        setRegionGeojson(data)
         try {
           if (!map.getSource('regions')) {
             map.addSource('regions', {
@@ -330,6 +325,7 @@ const Regions = () => {
   useEffect(() => {
     if (!filterToRegionsInView) {
       map.off('moveend', handleRegionsInView)
+      setRegionsInView(null)
       return
     }
     map.on('moveend', handleRegionsInView)
@@ -337,6 +333,27 @@ const Regions = () => {
       map.off('moveend', handleRegionsInView)
     }
   }, [map, handleRegionsInView, filterToRegionsInView])
+
+  useEffect(() => {
+    // get center and fly to selected region when selected via time series
+    if (typeof selectedRegion === 'number' && !selectedRegionCenter) {
+      const center = centerOfMass(selectedRegionGeojson).geometry.coordinates
+      setSelectedRegionCenter(center)
+      const bounds = map.getBounds()
+      if (!bounds.contains(center)) {
+        setTimeout(() => {
+          // timeout prevents warnings with flushSync during react render
+          map.jumpTo({ center }) // flyTo is choppy in this case
+        }, 0)
+      }
+    }
+  }, [
+    selectedRegion,
+    selectedRegionCenter,
+    regionGeojson,
+    map,
+    setSelectedRegionCenter,
+  ])
 
   useEffect(() => {
     if (map && map.getSource('regions') && map.getLayer('regions-line')) {

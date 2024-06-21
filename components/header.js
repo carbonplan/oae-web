@@ -35,6 +35,7 @@ const Header = ({ expanded, setExpanded }) => {
           top: 0,
           height: '56px',
           zIndex: 5000,
+          pointerEvents: 'none',
         }}
       >
         <Container>

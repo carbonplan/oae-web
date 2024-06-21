@@ -1,16 +1,20 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { Box, Divider, Flex } from 'theme-ui'
 import { Button } from '@carbonplan/components'
-import AnimateHeight from 'react-animate-height'
 import { useThemedColormap } from '@carbonplan/colormaps'
-import { useRegion } from '@carbonplan/maps'
 import { useBreakpointIndex } from '@theme-ui/match-media'
 import { Down, Search, X } from '@carbonplan/icons'
 
 import Timeseries from './timeseries'
-import { generateLogTicks, getColorForValue } from '../utils/color'
-import { downloadCsv } from '../utils/csv'
+import PlaceholderChart from './placeholder-chart'
 import useStore from '../store'
+import {
+  generateLogTicks,
+  getColorForValue,
+  downloadCsv,
+  formatValue,
+  getLogSafeMinMax,
+} from '../utils'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 const degToRad = (degrees) => {
@@ -26,7 +30,7 @@ const areaOfPixelProjected = (lat, zoom) => {
 const isValidElement = (el) =>
   el !== 0 && el !== 9.969209968386869e36 && !isNaN(el)
 
-const getArrayData = (arr, lats, zoom) => {
+const getArrayData = (arr, lats, zoom, unitConversion) => {
   const areas = lats
     .filter((l, i) => isValidElement(arr[i]))
     .map((lat) => areaOfPixelProjected(lat, zoom))
@@ -35,7 +39,7 @@ const getArrayData = (arr, lats, zoom) => {
     .filter((el) => isValidElement(el))
     .reduce(
       (accum, el, i) => ({
-        avg: accum.avg + el * (areas[i] / totalArea),
+        avg: accum.avg + el * unitConversion * (areas[i] / totalArea),
       }),
       { avg: 0 }
     )
@@ -51,10 +55,16 @@ const RegionChart = ({ sx }) => {
   const selectedRegion = useStore((s) => s.selectedRegion)
   const regionDataLoading = useStore((s) => s.regionDataLoading)
   const logScale = useStore((s) => s.logScale && s.currentVariable.logScale)
+  const circlePickerMetaData = useStore((s) => s.circlePickerMetaData)
+  const injectionMonthString = useStore((state) =>
+    Object.keys(state.injectionSeason).find(
+      (value) => state.injectionSeason[value]
+    )
+  )
 
   const colormap = useThemedColormap(currentVariable?.colormap)
-  const { region } = useRegion()
-  const zoom = region?.properties?.zoom || 0
+
+  const zoom = circlePickerMetaData?.properties?.zoom || 0
   const index = useBreakpointIndex()
 
   const [minMax, setMinMax] = useState([0, 0])
@@ -63,60 +73,34 @@ const RegionChart = ({ sx }) => {
   const toLineData = useMemo(() => {
     if (!regionData) return []
     const variableData = regionData[currentVariable.variable]
+    const unitConversion = currentVariable.unitConversion ?? 1
     if (!variableData) return []
     let averages = []
-    if (currentVariable.delta) {
-      const injected = variableData.experiment
-      const notInjected = variableData.counterfactual
-      if (!injected || !notInjected) return []
+    Array(15)
+      .fill()
+      .map((d, i) => i + 1)
+      .map((year) => {
+        Array(12)
+          .fill()
+          .map((d, i) => i + 1)
+          .map((month) => {
+            const { avg } = getArrayData(
+              variableData[month][year],
+              regionData.coordinates.lat,
+              zoom,
+              unitConversion
+            )
+            const toYear = year - 1 + month / 12
+            averages.push([toYear, avg])
+          })
+      })
 
-      Array(15)
-        .fill()
-        .map((d, i) => i + 1)
-        .map((year) => {
-          Array(12)
-            .fill()
-            .map((d, i) => i + 1)
-            .map((month) => {
-              const data = injected[month][year].map(
-                (injectedEl, i) => injectedEl - notInjected[month][year][i]
-              )
-              const { avg } = getArrayData(
-                data,
-                regionData.coordinates.lat,
-                zoom
-              )
-              const toYear = year - 1 + month / 12
-              averages.push([toYear, avg])
-            })
-        })
-    } else if (variableData) {
-      Array(15)
-        .fill()
-        .map((d, i) => i + 1)
-        .map((year) => {
-          Array(12)
-            .fill()
-            .map((d, i) => i + 1)
-            .map((month) => {
-              const { avg } = getArrayData(
-                variableData.experiment[month][year],
-                regionData.coordinates.lat,
-                zoom
-              )
-              const toYear = year - 1 + (month - 1) / 12
-              averages.push([toYear, avg])
-            })
-        })
-    } else {
-      return []
-    }
     const [min, max] = averages.reduce(
       ([min, max], [_, value]) => [Math.min(min, value), Math.max(max, value)],
       [Infinity, -Infinity]
     )
     const logSafeMinMax = logScale
-      ? [Math.max(currentVariable.logColorLimits[0], min), max]
+      ? getLogSafeMinMax(min, max, currentVariable.logColorLimits)
       : [min, max]
     setMinMax(logSafeMinMax)
     return [averages]
@@ -131,19 +115,14 @@ const RegionChart = ({ sx }) => {
       const color = getColorForValue(
         avgValueForLine,
         colormap,
-        currentVariable.colorLimits,
-        50
+        currentVariable,
+        { colorAdjustments: true }
       )
       selected[id] = {
         id: id,
         color,
         strokeWidth: 2,
-        data: logScale
-          ? line.map(([x, y]) => [
-              x,
-              y <= 0 ? currentVariable.logColorLimits[0] : y,
-            ])
-          : line,
+        data: line,
       }
     })
     return selected
@@ -155,14 +134,14 @@ const RegionChart = ({ sx }) => {
     const color = getColorForValue(
       lineAverageValue,
       colormap,
-      currentVariable.colorLimits,
-      50
+      currentVariable,
+      { colorAdjustments: true }
     )
     return {
       x: elapsedYears,
       y,
       color,
-      text: y.toFixed(currentVariable.delta ? 3 : 1),
+      text: formatValue(y),
     }
   }, [elapsedYears, selectedLines, lineAverageValue, colormap, currentVariable])
 
@@ -178,23 +157,31 @@ const RegionChart = ({ sx }) => {
   )
 
   const handleCSVDownload = useCallback(() => {
-    const data = selectedLines[0]?.data.map((d) => ({
-      month: toMonthsIndex(d[0], 0) + 1,
-      value: d[1],
+    const { lat, lng } = circlePickerMetaData.properties.center
+    const radius = circlePickerMetaData.properties.radius
+    const csvData = selectedLines[0]?.data.map((d, index) => ({
+      month: index + 1,
+      injection_month: injectionMonthString,
+      [`${currentVariable.label} ${currentVariable.unit}`]: d[1],
+      lat,
+      lng,
+      radius,
     }))
     downloadCsv(
-      data,
-      `region-${selectedRegion}-${currentVariable.variable}${
-        currentVariable.delta ? '-delta' : ''
-      }-${currentVariable.unit}.csv`
+      csvData,
+      `region_${selectedRegion}_${currentVariable.variable}${
+        currentVariable.delta ? '_delta' : ''
+      }.csv`
+        .replace(/ /g, '_')
+        .toLowerCase()
     )
-  }, [selectedLines])
+  }, [selectedLines, circlePickerMetaData, currentVariable, selectedRegion])
 
   return (
-    <Box sx={{ mb: 4 }}>
+    <Box sx={{ mb: 4, height: [0, 0, 380, 380] }}>
       {index >= 2 && (
         <>
-          <Divider sx={{ mt: 4, mb: 5 }} />
+          <Divider sx={{ mt: 2, mb: 4 }} />
           <Button
             suffix={
               showRegionPicker ? (
@@ -210,47 +197,47 @@ const RegionChart = ({ sx }) => {
             Time series
           </Button>
 
-          <AnimateHeight duration={250} height={showRegionPicker ? 'auto' : 0}>
-            <Flex sx={{ justifyContent: 'flex-end', mb: 2, height: 15 }}>
-              <Button
-                inverted
-                disabled={selectedLines.length === 0 || regionDataLoading}
-                onClick={handleCSVDownload}
-                sx={{
-                  fontSize: 0,
-                  textTransform: 'uppercase',
-                  fontFamily: 'mono',
-                  '&:disabled': {
-                    color: 'muted',
-                    pointerEvents: 'none',
-                  },
+          {showRegionPicker ? (
+            <>
+              <Flex sx={{ justifyContent: 'flex-end', mb: 2, height: 15 }}>
+                <Button
+                  inverted
+                  disabled={selectedLines.length === 0 || regionDataLoading}
+                  onClick={handleCSVDownload}
+                  sx={{
+                    fontSize: 0,
+                    textTransform: 'uppercase',
+                    fontFamily: 'mono',
+                    '&:disabled': {
+                      color: 'muted',
+                      pointerEvents: 'none',
+                    },
+                  }}
+                >
+                  <Down sx={{ height: 10, width: 10, mr: 1 }} />
+                  Download CSV
+                </Button>
+              </Flex>
+              <Timeseries
+                xLimits={[0, 15]}
+                yLimits={minMax}
+                yLabels={{
+                  title: currentVariable.label ?? '',
+                  units: currentVariable.unit ?? '',
                 }}
-              >
-                <Down sx={{ height: 10, width: 10, mr: 1 }} />
-                Download CSV
-              </Button>
-            </Flex>
-            <Timeseries
-              xLimits={[0, 15]}
-              yLimits={minMax}
-              yLabels={{
-                title: currentVariable.label ?? '',
-                units: currentVariable.unit ?? '',
-              }}
-              selectedLines={selectedLines}
-              elapsedYears={elapsedYears}
-              handleClick={handleTimeseriesClick}
-              point={point}
-              xSelector={true}
-              handleXSelectorClick={handleTimeseriesClick}
-              logy={logScale && minMax[0] > 0} // stale state during switch to log scale
-              logLabels={
-                logScale &&
-                minMax[0] > 0 &&
-                generateLogTicks(minMax[0], minMax[1])
-              }
-            />
-          </AnimateHeight>
+                selectedLines={selectedLines}
+                elapsedYears={elapsedYears}
+                handleClick={handleTimeseriesClick}
+                point={point}
+                xSelector={true}
+                handleXSelectorClick={handleTimeseriesClick}
+                logy={logScale} // stale state during switch to log scale
+                logLabels={logScale && generateLogTicks(minMax[0], minMax[1])}
+              />
+            </>
+          ) : (
+            <PlaceholderChart />
+          )}
         </>
       )}
     </Box>

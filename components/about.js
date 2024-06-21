@@ -8,7 +8,7 @@ import { CarbonToSea, CWorthy, EDF } from './logos'
 const About = ({ sx }) => {
   return (
     <>
-      <SidebarDivider sx={{ my: 4 }} />
+      <SidebarDivider sx={{ mt: 5, mb: 4 }} />
       <Box sx={sx.heading}>About</Box>
 
       <Box sx={{ fontSize: 1, mb: 3 }}>

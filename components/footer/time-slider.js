@@ -85,14 +85,17 @@ const UnitSlider = ({
 }
 
 const TimeSlider = () => {
-  const { elapsedTime, setElapsedTime } = useStore((state) => ({
-    elapsedTime: variables[state.variableFamily].overview
+  const elapsedTime = useStore((state) => {
+    return variables[state.variableFamily].overview
       ? state.overviewElapsedTime
-      : state.detailElapsedTime,
-    setElapsedTime: variables[state.variableFamily].overview
+      : state.detailElapsedTime
+  })
+  const setElapsedTime = useStore((state) => {
+    return variables[state.variableFamily].overview
       ? state.setOverviewElapsedTime
-      : state.setDetailElapsedTime,
-  }))
+      : state.setDetailElapsedTime
+  })
+
   const handleYearChange = useCallback(
     (year) => {
       const months = elapsedTime % 12
@@ -109,7 +112,7 @@ const TimeSlider = () => {
           value={Math.floor(elapsedTime / 12)}
           range={[0, 14]}
           onChange={handleYearChange}
-          formatLabel={(d) => `Year ${d + 1}`}
+          formatLabel={(d) => `Year ${(d + 1).toString().padStart(2, '0')}`}
         />
         <MonthPicker sx={{ mt: -1 }} />
       </Flex>

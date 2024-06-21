@@ -1,21 +1,30 @@
-import React, { useCallback } from 'react'
-import { RegionPicker, useMapbox } from '@carbonplan/maps'
+import React, { useEffect } from 'react'
+import { RegionPicker, useMapbox, useRegion } from '@carbonplan/maps'
 import { useThemeUI } from 'theme-ui'
 
 import useStore from '../store'
 
 const RegionPickerWrapper = () => {
   const selectedRegionCenter = useStore((state) => state.selectedRegionCenter)
+  const setCirclePickerMetaData = useStore(
+    (state) => state.setCirclePickerMetaData
+  )
   const { theme } = useThemeUI()
   const { map } = useMapbox()
+  const { region } = useRegion()
 
-  const isCenterInView = useCallback(
-    (center) => {
-      const bounds = map.getBounds()
-      return bounds.contains(center)
-    },
-    [map]
-  )
+  useEffect(() => {
+    if (selectedRegionCenter) {
+      const isCenterInView = map.getBounds().contains(selectedRegionCenter)
+      if (!isCenterInView) map.flyTo({ center: selectedRegionCenter })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (region) {
+      setCirclePickerMetaData(region)
+    }
+  }, [region])
 
   return (
     <RegionPicker
@@ -24,9 +33,8 @@ const RegionPickerWrapper = () => {
       fontFamily={theme.fonts.mono}
       fontSize={'14px'}
       maxRadius={2000}
-      initialCenter={
-        isCenterInView(selectedRegionCenter) ? selectedRegionCenter : null
-      }
+      minRadius={100}
+      initialCenter={selectedRegionCenter ? selectedRegionCenter : null}
     />
   )
 }

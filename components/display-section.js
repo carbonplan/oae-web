@@ -1,17 +1,16 @@
 import React, { useCallback, useMemo } from 'react'
 import { Box, Checkbox, Flex, Label } from 'theme-ui'
 import { Column, Filter, Select, Row, Colorbar } from '@carbonplan/components'
-import { useThemedColormap } from '@carbonplan/colormaps'
 
 import TooltipWrapper from './tooltip'
 import useStore, { variables } from '../store'
 import { Chart, TickLabels, Ticks } from '@carbonplan/charts'
-import { generateLogTicks } from '../utils/color'
+import { generateLogTicks, useVariableColormap, formatValue } from '../utils'
 
 const DESCRIPTIONS = {
   EFFICIENCY: {
     overview:
-      'Carbon removal efficiency of release as a function of region, injection month, and elapsed time. Select a region to view additional experimental outputs.',
+      'CO₂ removed per unit of alkalinity added. Higher values indicate more efficient carbon removal. Select a region to view additional experimental outputs.',
     region:
       'Carbon removal efficiency of release as a function of region, injection month, and elapsed time.',
   },
@@ -29,10 +28,32 @@ const DESCRIPTIONS = {
     region:
       'Dissolved inorganic carbon (DIC) is the sum of inorganic carbon in water. Full water column values shown here.',
   },
+  FG: {
+    region:
+      'The movement of carbon dioxide between the atmosphere and the ocean. Negative values indicate ocean CO₂ uptake.',
+  },
+  Omega_arag: {
+    region:
+      'The saturation state of surface seawater with respect to aragonite . Aragonite is a type of calcium carbonate (CaCO₃) that is precipitated by many shell-forming marine organisms. A value of more than 1 indicates supersaturation, which supports the growth of calcifying organisms and indicates a higher likelihood of abiotic mineral precipitation.',
+  },
+  Omega_calc: {
+    region:
+      'The saturation state of surface seawater with respect to calcite, which is a type of calcium carbonate (CaCO₃). A value greater than 1 indicates supersaturation, which supports the growth of calcifying organisms and indicates a higher likelihood of abiotic mineral precipitation.',
+  },
+  PH: {
+    region:
+      'The measurement of acidity, or free hydrogen ions, in surface waters. The lower the pH value, the more acidic the seawater.',
+  },
+  pCO2SURF: {
+    region:
+      'The partial pressure of carbon dioxide (pCO₂) at the ocean surface, a measure of how much CO₂ is dissolved in seawater. Ocean carbon uptake happens when the surface ocean pCO₂ is lower than the partial pressure of CO₂ in the overlying atmosphere',
+  },
 }
 
 const DisplaySection = ({ sx }) => {
-  const selectedRegion = useStore((state) => state.selectedRegion)
+  const hasSelectedRegion = useStore(
+    (state) => typeof state.selectedRegion === 'number'
+  )
   const currentVariable = useStore((s) => s.currentVariable)
   const setCurrentVariable = useStore((s) => s.setCurrentVariable)
   const variableFamily = useStore((s) => s.variableFamily)
@@ -47,11 +68,7 @@ const DisplaySection = ({ sx }) => {
     ? currentVariable.logColorLimits[1]
     : currentVariable.colorLimits[1]
   const logLabels = logScale ? generateLogTicks(min, max) : null
-  const colormap = logScale
-    ? useThemedColormap(currentVariable.colormap, {
-        count: logLabels.length,
-      }).slice(1, logLabels.length)
-    : useThemedColormap(currentVariable.colormap)
+  const colormap = useVariableColormap()
 
   const filterValues = useMemo(() => {
     return variables[variableFamily].variables.reduce(
@@ -62,19 +79,6 @@ const DisplaySection = ({ sx }) => {
       {}
     )
   }, [variableFamily, currentVariable])
-
-  const selectVariables = useMemo(() => {
-    if (selectedRegion === null) {
-      return Object.keys(variables).reduce((acc, key) => {
-        if (variables[key].overview) {
-          acc[key] = variables[key]
-        }
-        return acc
-      }, {})
-    } else {
-      return variables
-    }
-  }, [selectedRegion])
 
   const handleFamilySelection = useCallback(
     (e) => {
@@ -124,54 +128,70 @@ const DisplaySection = ({ sx }) => {
                 width: '100%',
               }}
             >
-              {Object.keys(selectVariables).map((variable) => (
-                <option key={variable} value={variable}>
-                  {variables[variable].label}
-                </option>
-              ))}
+              <optgroup label='Overview'>
+                {Object.keys(variables).map((variable) =>
+                  variables[variable].overview ? (
+                    <option key={variable} value={variable}>
+                      {variables[variable].label}
+                    </option>
+                  ) : null
+                )}
+              </optgroup>
+              <optgroup label='Region-specific' disabled={!hasSelectedRegion}>
+                {Object.keys(variables).map((variable) =>
+                  !variables[variable].overview ? (
+                    <option key={variable} value={variable}>
+                      {variables[variable].label}
+                    </option>
+                  ) : null
+                )}
+              </optgroup>
             </Select>
             <Box
               id='description'
               sx={{
-                fontSize: 0,
+                fontSize: [0, 0, 0, 1],
                 color: 'secondary',
                 transition: 'all 0.2s',
               }}
             >
               {
                 DESCRIPTIONS[variableFamily][
-                  selectedRegion ? 'region' : 'overview'
+                  hasSelectedRegion ? 'region' : 'overview'
                 ]
               }
             </Box>
           </Box>
-
-          {variables[variableFamily].optionsTooltip && (
-            <Box sx={{ mt: 3 }}>
-              <TooltipWrapper
-                sx={{ justifyContent: 'flex-start', gap: 2 }}
-                tooltip={variables[variableFamily].optionsTooltip}
-              >
-                {Object.keys(filterValues).length && (
+          <Box sx={{ mt: 3 }}>
+            {Object.keys(filterValues).length &&
+              variables[variableFamily].optionsTooltip && (
+                <TooltipWrapper
+                  sx={{ justifyContent: 'flex-start', gap: 2 }}
+                  tooltip={variables[variableFamily].optionsTooltip}
+                >
                   <Filter
                     key={variableFamily}
                     values={filterValues}
                     setValues={handleVariableSelection}
                   />
-                )}
-              </TooltipWrapper>
-            </Box>
-          )}
+                </TooltipWrapper>
+              )}
+          </Box>
         </Column>
 
         <Column start={1} width={[6, 8, 4, 4]} sx={{ ...sx.label, mt: 4 }}>
           <Flex sx={{ justifyContent: 'space-between', height: 25 }}>
             <Box>
-              Color range (
-              <Box as='span' sx={{ textTransform: 'none' }}>
-                {currentVariable.unit}
-              </Box>
-              )
+              Color range{' '}
+              {currentVariable.unit && (
+                <>
+                  (
+                  <Box as='span' sx={{ textTransform: 'none' }}>
+                    {currentVariable.unit}
+                  </Box>
+                  )
+                </>
+              )}
             </Box>
             <Box>
               {currentVariable.logScale && (
@@ -240,7 +260,12 @@ const DisplaySection = ({ sx }) => {
                 '&:first-of-type': { ml: '-1px' },
               }}
             />
-            <TickLabels values={logScale ? logLabels : null} bottom />
+            <TickLabels
+              values={logScale ? logLabels : null}
+              format={(d) => formatValue(d, { 0.001: '.0e' })}
+              sx={{ textTransform: 'none' }}
+              bottom
+            />
           </Chart>
         </Column>
       </Row>

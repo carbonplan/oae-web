@@ -11,18 +11,19 @@ export const variables = {
         key: 'OAE_efficiency',
         colorLimits: [0, 1],
         colormap: 'cool',
-        label: 'Efficiency',
+        label: 'Efficiency ratio',
         unit: 'mole CO₂ / mole alkalinity',
+        graphUnit: '',
       },
     ],
   },
   FG_CO2: {
-    label: 'Spread of CO₂ Uptake',
+    label: 'Spread of CO₂ uptake',
     threshold: 0.001,
     overview: true,
-    hasOptions: true,
     url: 'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/cumulative_FG_CO2_percent.zarr',
-    optionsTooltip: 'Distance from center of injection region',
+    optionsTooltip:
+      'View the percentage of cumulative CO₂ uptake taking place within 500 km, 1000 km, or 2000 km of the injection center.',
     variables: [
       {
         key: 'FG_CO2_percent_cumulative',
@@ -30,8 +31,9 @@ export const variables = {
         colormap: 'cool',
         optionIndex: 0,
         label: '500 km',
-        graphLabel: 'CO₂ uptake',
+        graphLabel: 'Uptake percentage',
         unit: '%',
+        graphUnit: '',
       },
       {
         key: 'FG_CO2_percent_cumulative',
@@ -39,8 +41,9 @@ export const variables = {
         colormap: 'cool',
         optionIndex: 1,
         label: '1000 km',
-        graphLabel: 'CO₂ uptake',
+        graphLabel: 'Uptake percentage',
         unit: '%',
+        graphUnit: '',
       },
       {
         key: 'FG_CO2_percent_cumulative',
@@ -48,18 +51,17 @@ export const variables = {
         colormap: 'cool',
         optionIndex: 2,
         label: '2000 km',
-        graphLabel: 'CO₂ uptake',
+        graphLabel: 'Uptake percentage',
         unit: '%',
+        graphUnit: '',
       },
     ],
   },
   ALK: {
-    label: 'Alkalinity',
+    label: 'Surface alkalinity',
     threshold: 0.0001,
-    overview: false,
-    hasOptions: true,
     optionsTooltip:
-      'View the change in the selected variable, or its total values.',
+      'View the change in alkalinity, or the total alkalinity value.',
     variables: [
       {
         variable: 'ALK',
@@ -68,7 +70,7 @@ export const variables = {
         colorLimits: [0, 0.1],
         logColorLimits: [0.0001, 10],
         colormap: 'warm',
-        label: 'change',
+        label: 'Change',
         unit: 'mEq/m³',
       },
       {
@@ -81,32 +83,150 @@ export const variables = {
       },
     ],
   },
+  pCO2SURF: {
+    label: 'Partial pressure of CO₂',
+    optionsTooltip: 'View the change in pCO₂, or the total pCO₂ value.',
+    variables: [
+      {
+        variable: 'pCO2SURF',
+        delta: true,
+        logScale: true,
+        threshold: -1e-6,
+        colorLimits: [0, -0.01],
+        logColorLimits: [-1e-5, -1],
+        colormap: 'warm',
+        label: 'Change',
+        unit: 'µatm',
+      },
+      {
+        variable: 'pCO2SURF',
+        delta: false,
+        colorLimits: [300, 400],
+        colormap: 'warm',
+        label: 'Total',
+        unit: 'µatm',
+      },
+    ],
+  },
+  FG: {
+    label: 'Air-sea CO₂ flux',
+    optionsTooltip: 'View the change in CO₂ flux, or the total flux value.',
+    variables: [
+      {
+        variable: 'FG',
+        delta: true,
+        logScale: true,
+        colorLimits: [0, -1e-2],
+        logColorLimits: [-1e-5, -1],
+        threshold: -1e-6,
+        colormap: 'warm',
+        label: 'Change',
+        unit: 'mol/m²/yr',
+        unitConversion: -315.36,
+      },
+      {
+        variable: 'FG',
+        delta: false,
+        colorLimits: [-5, 5],
+        colormap: 'orangeblue',
+        flipColormap: true,
+        label: 'Total',
+        unit: 'mol/m²/yr',
+        unitConversion: -315.36,
+      },
+    ],
+  },
   DIC: {
-    label: 'Dissolved inorganic carbon (DIC)',
-    threshold: 0.001,
-    overview: false,
-    hasOptions: true,
+    label: 'Dissolved inorganic carbon',
+    threshold: 0.00001,
     optionsTooltip:
-      'View the change in the selected variable, or its total values.',
+      'View the change in DIC. Total values are not available for this variable.',
     variables: [
       {
         variable: 'DIC',
         delta: true,
-        colorLimits: [0, 0.1],
+        logScale: true,
+        colorLimits: [0, 0.0025],
+        logColorLimits: [0.00001, 0.1],
         colormap: 'warm',
-        label: 'change',
-        unit: 'mmol/m³',
+        label: 'Change',
+        unit: 'mol/m²',
+        unitConversion: 0.001,
+      },
+      // {
+      //   variable: 'DIC',
+      //   delta: false,
+      //   colorLimits: [400, 1400],
+      //   colormap: 'warm',
+      //   label: 'Total',
+      //   unit: 'mol/m²',
+      //   unitConversion: 0.001,
+      // },
+    ],
+  },
+  PH: {
+    label: 'pH',
+    threshold: 1e-8,
+    optionsTooltip: 'View the change in pH, or the total pH value.',
+    variables: [
+      {
+        variable: 'PH',
+        delta: true,
+        logScale: true,
+        colorLimits: [0, 1e-4],
+        logColorLimits: [1e-8, 0.1],
+        colormap: 'warm',
+        label: 'Change',
       },
       {
-        variable: 'DIC',
+        variable: 'PH',
         delta: false,
-        colorLimits: [1800, 2300],
+        colorLimits: [7.8, 8.4],
         colormap: 'warm',
         label: 'Total',
-        unit: 'mmol/m³',
       },
     ],
   },
+  // Omega_arag: {
+  //   label: 'Omega_arag',
+  //   threshold: 0.001,
+  //   variables: [
+  //     {
+  //       variable: 'Omega_arag',
+  //       delta: true,
+  //       colorLimits: [0, 1],
+  //       colormap: 'warm',
+  //       label: 'Change',
+  //     },
+  //     {
+  //       variable: 'Omega_arag',
+  //       delta: false,
+  //       colorLimits: [0, 1],
+  //       colormap: 'warm',
+  //       label: 'Total',
+  //     },
+  //   ],
+  // },
+  // Omega_calc: {
+  //   label: 'Omega_calc',
+  //   threshold: 0.001,
+  //   variables: [
+  //     {
+  //       variable: 'Omega_calc',
+  //       delta: true,
+  //       colorLimits: [0, 1],
+  //       colormap: 'warm',
+  //       label: 'Change',
+  //     },
+  //     {
+  //       variable: 'Omega_calc',
+  //       delta: false,
+  //       colorLimits: [0, 1],
+  //       colormap: 'warm',
+  //       label: 'Total',
+  //     },
+  //   ],
+  // },
 }
 
 const monthMap = {
@@ -133,6 +253,10 @@ const useStore = create((set) => ({
   regionDataLoading: false,
   setRegionDataLoading: (regionDataLoading) => set({ regionDataLoading }),
 
+  circlePickerMetaData: null,
+  setCirclePickerMetaData: (circlePickerMetaData) =>
+    set({ circlePickerMetaData }),
+
   expanded: true,
   setExpanded: (expanded) => set({ expanded }),
 
@@ -155,19 +279,17 @@ const useStore = create((set) => ({
   setSelectedRegion: (selectedRegion) =>
     selectedRegion !== null
       ? set((state) => {
-          if (selectedRegion !== 301) {
-            alert(
-              'only region 301 (upper mid pacific) is available at this time'
-            )
-            return { selectedRegion: null }
-          }
-
-          const activeLineData = state.overviewLineData[selectedRegion]
+          const activeLineData =
+            state.overviewLineData?.[selectedRegion] || null
+          const selectedRegionGeojson = state.regionGeojson.features.find(
+            (f) => f.properties.polygon_id === selectedRegion
+          )
           return {
             selectedRegion,
             currentVariable: variables.ALK.variables[0],
             variableFamily: 'ALK',
             activeLineData,
+            selectedRegionGeojson,
           }
         })
       : set({
@@ -179,6 +301,7 @@ const useStore = create((set) => ({
           hoveredRegion: null,
           activeLineData: null,
           logScale: false,
+          selectedRegionCenter: null,
         }),
 
   selectedRegionCenter: null,
@@ -188,14 +311,20 @@ const useStore = create((set) => ({
   overviewLineData: {},
   setOverviewLineData: (overviewLineData) => set({ overviewLineData }),
 
+  regionGeojson: null,
+  setRegionGeojson: (regionGeojson) => set({ regionGeojson }),
+
+  selectedRegionGeojson: null,
+  setSelectedRegionGeojson: (selectedRegionGeojson) =>
+    set({ selectedRegionGeojson }),
+
   hoveredRegion: null,
   setHoveredRegion: (hoveredRegion) =>
     set((state) => {
       if (state.selectedRegion) {
         return {}
       }
-
-      const activeLineData = state.overviewLineData[hoveredRegion]
+      const activeLineData = state.overviewLineData?.[hoveredRegion] || null
       return { hoveredRegion, activeLineData: activeLineData || null }
     }),
 
@@ -212,9 +341,8 @@ const useStore = create((set) => ({
   setFilterToRegionsInView: (filterToRegionsInView) =>
     set({ filterToRegionsInView }),
 
-  regionsInView: undefined,
-  setRegionsInView: (regionsInView) =>
-    set({ regionsInView: new Set(regionsInView) }),
+  regionsInView: null,
+  setRegionsInView: (regionsInView) => set({ regionsInView }),
 
   injectionSeason: {
     JAN: true,
