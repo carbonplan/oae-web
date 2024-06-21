@@ -6,6 +6,7 @@ const useRegionUrlSync = () => {
   const router = useRouter()
   const selectedRegion = useStore((state) => state.selectedRegion)
   const setSelectedRegion = useStore((state) => state.setSelectedRegion)
+  const regionGeojson = useStore((state) => state.regionGeojson)
   const isInitialized = useRef(false)
 
   const isValidRegion = (region) => {
@@ -15,7 +16,7 @@ const useRegionUrlSync = () => {
 
   // url to state
   useEffect(() => {
-    if (router.isReady && !isInitialized.current) {
+    if (router.isReady && !isInitialized.current && regionGeojson) {
       const { region } = router.query
       if (isValidRegion(region)) {
         setSelectedRegion(parseInt(region))
@@ -24,7 +25,7 @@ const useRegionUrlSync = () => {
       }
       isInitialized.current = true
     }
-  }, [router.isReady, router.query, setSelectedRegion])
+  }, [router.isReady, router.query, setSelectedRegion, regionGeojson])
 
   // state to url
   useEffect(() => {
