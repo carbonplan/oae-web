@@ -253,7 +253,7 @@ const DisplaySection = ({ sx }) => {
         <Column
           start={1}
           width={[6, 8, 4, 4]}
-          sx={{ ...sx.label, mt: 5, mb: 3 }}
+          sx={{ ...sx.label, mt: 5, mb: currentVariable.unit ? 4 : 0 }}
         >
           <Chart
             logx={logScale}
@@ -278,7 +278,11 @@ const DisplaySection = ({ sx }) => {
               bottom
               align='center'
               arrow={false}
-              sx={{ color: 'secondary', fontSize: [0, 0, 0, 1] }}
+              sx={{
+                color: 'secondary',
+                fontSize: [0, 0, 0, 1],
+                textTransform: 'none',
+              }}
             >
               {currentVariable.unit}
             </AxisLabel>
