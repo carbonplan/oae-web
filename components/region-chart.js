@@ -144,8 +144,8 @@ const RegionChart = ({ sx }) => {
     (e) => {
       const { left, width } = e.currentTarget.getBoundingClientRect()
       const clickX = e.clientX - left
-      const years = (clickX / width) * 15
-      const months = Math.round(toMonthsIndex(years, 0))
+      const years = Math.floor((clickX / width) * 15)
+      const months = years * 12 + (((elapsedYears * 12) % 12) - 1)
       setDetailElapsedTime(Math.min(Math.max(0, months), 179))
     },
     [setDetailElapsedTime, elapsedYears]

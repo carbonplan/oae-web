@@ -218,21 +218,16 @@ const Timeseries = ({
       }
     : {}
 
-  const renderXSelector = (x, selected) => {
-    if ((!selected && !isHovering) || !xSelector) return null
-    const color = selected ? 'primary' : 'secondary'
-    const months = x * 12
-    const closestMonth = Math.round(months)
-    const year = closestMonth / 12
+  const renderXSelector = (x) => {
+    if (!isHovering || !xSelector) return null
+    const year = Math.floor(x)
     return (
-      <Line
-        data={[
-          [year, yLimits[0]],
-          [year, yLimits[1]],
-        ]}
-        color={color}
-        strokeWidth={1}
-        style={{ strokeDasharray: '2 4' }}
+      <Rect
+        id='x-selector'
+        x={[year, year + 1]}
+        y={[yLimits[0], yLimits[1]]}
+        color={'secondary'}
+        opacity={0.1}
       />
     )
   }
