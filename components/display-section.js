@@ -113,18 +113,19 @@ const DisplaySection = ({ sx }) => {
           Variable
         </Column>
         <Column start={[3, 3, 2, 2]} width={[4, 6, 3, 3]}>
-          <Box sx={{ position: 'relative' }}>
+          <Box sx={{ mt: ['-2px', '-2px', '-2px', '0px'] }}>
             <Select
               onChange={handleFamilySelection}
               value={variableFamily}
               size='xs'
               sx={{
                 width: '100%',
-                mr: 2,
                 mb: 1,
               }}
               sxSelect={{
                 fontFamily: 'mono',
+                textTransform: 'uppercase',
+                fontSize: [1, 1, 1, 2],
                 width: '100%',
               }}
             >
@@ -147,20 +148,20 @@ const DisplaySection = ({ sx }) => {
                 )}
               </optgroup>
             </Select>
-            <Box
-              id='description'
-              sx={{
-                fontSize: [0, 0, 0, 1],
-                color: 'secondary',
-                transition: 'all 0.2s',
-              }}
-            >
-              {
-                DESCRIPTIONS[variableFamily][
-                  hasSelectedRegion ? 'region' : 'overview'
-                ]
-              }
-            </Box>
+          </Box>
+          <Box
+            id='description'
+            sx={{
+              fontSize: [1, 1, 1, 2],
+              color: 'secondary',
+              transition: 'all 0.2s',
+            }}
+          >
+            {
+              DESCRIPTIONS[variableFamily][
+                hasSelectedRegion ? 'region' : 'overview'
+              ]
+            }
           </Box>
           <Box sx={{ mt: 3 }}>
             {Object.keys(filterValues).length &&
@@ -198,8 +199,10 @@ const DisplaySection = ({ sx }) => {
                 <Label
                   sx={{
                     cursor: 'pointer',
-                    textTransform: 'none',
+                    textTransform: 'uppercase',
                     color: 'secondary',
+                    fontFamily: 'mono',
+                    fontSize: [1, 1, 1, 2],
                   }}
                 >
                   <Checkbox

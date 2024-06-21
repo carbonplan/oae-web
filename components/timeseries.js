@@ -254,7 +254,7 @@ const Timeseries = ({
           right: 0,
           top: 0,
           fontFamily: 'mono',
-          fontSize: 1,
+          fontSize: [0, 0, 0, 1],
           color: 'secondary',
           pointerEvents: 'none',
         }}

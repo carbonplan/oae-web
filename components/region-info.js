@@ -63,7 +63,7 @@ const RegionInfo = ({ sx }) => {
               ).padStart(3, '0')}
             </Badge>
           </Flex>
-          <Box sx={{ fontSize: [0, 0, 0, 1], color: 'primary' }}>
+          <Box sx={{ fontSize: [1, 1, 1, 2], color: 'primary' }}>
             {hasSelectedRegion ? (
               <Flex sx={{ alignItems: 'center' }}>
                 <Box
@@ -100,7 +100,7 @@ const RegionInfo = ({ sx }) => {
                   mt: '-5px',
                 }}
               >
-                Select a polygon region on the map
+                Select a polygon
               </Box>
             )}
           </Box>

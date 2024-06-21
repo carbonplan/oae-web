@@ -166,8 +166,9 @@ const OverviewChart = ({ sx }) => {
           sx={{
             color: disableFilter ? 'muted' : 'secondary',
             cursor: 'pointer',
-            fontSize: 1,
+            fontSize: [0, 0, 0, 1],
             fontFamily: 'mono',
+            textTransform: 'uppercase',
             py: 1,
           }}
         >
@@ -176,9 +177,9 @@ const OverviewChart = ({ sx }) => {
             checked={filterToRegionsInView}
             onChange={(e) => setFilterToRegionsInView(e.target.checked)}
             sx={{
-              width: 18,
+              width: 14,
               mr: 1,
-              mt: '-3px',
+              mt: '-4px',
               cursor: 'pointer',
               color: 'muted',
               transition: 'color 0.15s',

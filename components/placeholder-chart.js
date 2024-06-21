@@ -52,9 +52,9 @@ const PlaceholderChart = () => {
           left: '50%',
           transform: 'translate(-50%, -50%)',
           textAlign: 'center',
-          width: [180, 180, 180, 210],
-          fontSize: [0, 0, 0, 1],
-          color: 'primary',
+          width: [210, 210, 210, 250],
+          fontSize: [1, 1, 1, 2],
+          color: 'secondary',
         }}
       >
         Click on the search icon above to generate a time series
