@@ -4,7 +4,7 @@ import { Column, Filter, Select, Row, Colorbar } from '@carbonplan/components'
 
 import TooltipWrapper from './tooltip'
 import useStore, { variables } from '../store'
-import { AxisLabel, Chart, TickLabels, Ticks } from '@carbonplan/charts'
+import { Chart, TickLabels, Ticks } from '@carbonplan/charts'
 import { generateLogTicks, useVariableColormap, formatValue } from '../utils'
 
 const DESCRIPTIONS = {
@@ -123,6 +123,7 @@ const DisplaySection = ({ sx }) => {
               }}
               sxSelect={{
                 fontFamily: 'mono',
+                letterSpacing: 'mono',
                 fontSize: [1, 1, 1, 2],
                 width: '100%',
               }}
@@ -184,7 +185,7 @@ const DisplaySection = ({ sx }) => {
           <Flex sx={{ justifyContent: 'space-between', height: 25 }}>
             <Box>
               Color range{' '}
-              {/* {currentVariable.unit && (
+              {currentVariable.unit && (
                 <>
                   (
                   <Box as='span' sx={{ textTransform: 'none' }}>
@@ -192,7 +193,7 @@ const DisplaySection = ({ sx }) => {
                   </Box>
                   )
                 </>
-              )} */}
+              )}
             </Box>
             <Box>
               {currentVariable.logScale && (
@@ -273,18 +274,6 @@ const DisplaySection = ({ sx }) => {
               sx={{ textTransform: 'none' }}
               bottom
             />
-            <AxisLabel
-              bottom
-              align='center'
-              arrow={false}
-              sx={{
-                color: 'secondary',
-                fontSize: [0, 0, 0, 1],
-                textTransform: 'none',
-              }}
-            >
-              {currentVariable.unit}
-            </AxisLabel>
           </Chart>
         </Column>
       </Row>
