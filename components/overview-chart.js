@@ -179,7 +179,7 @@ const OverviewChart = ({ sx }) => {
             sx={{
               width: [14, 14, 14, 16],
               mr: 1,
-              mt: ['-4px', '-4px', '-4px', '-2px'],
+              mt: ['-4px', '-4px', '-4px', '-3px'],
               cursor: 'pointer',
               color: 'secondary',
               transition: 'color 0.15s',
