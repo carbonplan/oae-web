@@ -208,6 +208,7 @@ const RegionChart = ({ sx }) => {
                     fontSize: [0, 0, 0, 1],
                     textTransform: 'uppercase',
                     fontFamily: 'mono',
+                    letterSpacing: 'mono',
                     '&:disabled': {
                       color: 'muted',
                       pointerEvents: 'none',
