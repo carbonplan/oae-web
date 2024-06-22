@@ -2,6 +2,8 @@ import React from 'react'
 import { Button } from '@carbonplan/components'
 import { Down } from '@carbonplan/icons'
 
+const size = [10, 10, 10, 12]
+
 const DownloadCSV = ({ onClick, disabled, sx = {} }) => {
   return (
     <Button
@@ -22,7 +24,7 @@ const DownloadCSV = ({ onClick, disabled, sx = {} }) => {
         ...sx,
       }}
     >
-      <Down sx={{ height: 10, width: 10, mr: 1 }} />
+      <Down sx={{ height: size, width: size, mr: 1 }} />
       Download CSV
     </Button>
   )
