@@ -7,6 +7,7 @@ import { Down, Search, X } from '@carbonplan/icons'
 
 import Timeseries from './timeseries'
 import PlaceholderChart from './placeholder-chart'
+import DownloadCSV from './download-csv'
 import useStore from '../store'
 import {
   generateLogTicks,
@@ -200,24 +201,10 @@ const RegionChart = ({ sx }) => {
           {showRegionPicker ? (
             <>
               <Flex sx={{ justifyContent: 'flex-end', mb: 2, height: 15 }}>
-                <Button
-                  inverted
-                  disabled={selectedLines.length === 0 || regionDataLoading}
+                <DownloadCSV
                   onClick={handleCSVDownload}
-                  sx={{
-                    fontSize: [0, 0, 0, 1],
-                    textTransform: 'uppercase',
-                    fontFamily: 'mono',
-                    letterSpacing: 'mono',
-                    '&:disabled': {
-                      color: 'muted',
-                      pointerEvents: 'none',
-                    },
-                  }}
-                >
-                  <Down sx={{ height: 10, width: 10, mr: 1 }} />
-                  Download CSV
-                </Button>
+                  disabled={selectedLines.length === 0 || regionDataLoading}
+                />
               </Flex>
               <Timeseries
                 xLimits={[0, 15]}

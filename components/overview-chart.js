@@ -14,6 +14,7 @@ import {
   downloadCsv,
   getColorForValue,
 } from '../utils'
+import DownloadCSV from './download-csv'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 const ids = Array.from({ length: 690 }, (_, i) => i)
@@ -201,7 +202,16 @@ const OverviewChart = ({ sx }) => {
           />
           Filter to map view
         </Label>
-        <Button
+        <DownloadCSV
+          onClick={handleCSVDownload}
+          disabled={
+            Object.keys(selectedLines ? selectedLines : {}).length === 0
+          }
+          sx={{
+            mb: 1,
+          }}
+        />
+        {/* <Button
           inverted
           disabled={
             Object.keys(selectedLines ? selectedLines : {}).length === 0
@@ -223,7 +233,7 @@ const OverviewChart = ({ sx }) => {
         >
           <Down sx={{ height: 10, width: 10, mr: 1 }} />
           Download CSV
-        </Button>
+        </Button> */}
       </Flex>
       <Timeseries
         xLimits={[startYear, 15]}
