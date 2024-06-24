@@ -29,6 +29,16 @@ const Regions = () => {
   const { theme } = useThemeUI()
   const hoveredRegionRef = useRef(hoveredRegion)
 
+  //reused colors
+  const transparent = 'rgba(0, 0, 0, 0)'
+  const lineColor = theme.rawColors.hinted
+  const lineHighlightColor = [
+    'case',
+    ['boolean', ['feature-state', 'hover'], false],
+    theme.rawColors?.primary,
+    transparent,
+  ]
+
   const buildColorExpression = () => {
     const dataField = 'currentValue'
     const fillColorExpression = [
@@ -72,16 +82,6 @@ const Regions = () => {
       )
     }
   }, [regionGeojson, overviewElapsedTime, overviewLineData])
-
-  //reused colors
-  const transparent = 'rgba(0, 0, 0, 0)'
-  const lineColor = theme.rawColors.hinted
-  const lineHighlightColor = [
-    'case',
-    ['boolean', ['feature-state', 'hover'], false],
-    theme.rawColors?.primary,
-    transparent,
-  ]
 
   const safeColorMap = useMemo(() => {
     return colormap[0].length === 3

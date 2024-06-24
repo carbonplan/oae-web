@@ -13,6 +13,7 @@ import RegionInfo from './region-info'
 import About from './about'
 import DisplaySection from './display-section'
 import ChartSection from './chart-section'
+import useRegionUrlSync from '../utils/useRegionUrlSync'
 
 const sx = {
   heading: {
@@ -41,6 +42,7 @@ const Main = () => {
   const setExpanded = useStore((state) => state.setExpanded)
   const setShowRegionPicker = useStore((state) => state.setShowRegionPicker)
   const index = useBreakpointIndex({ defaultIndex: 2 })
+  useRegionUrlSync()
 
   // toggle sidebar based on breakpoint
   const prevIndexRef = useRef(index)
