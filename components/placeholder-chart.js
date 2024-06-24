@@ -28,18 +28,10 @@ const PlaceholderChart = () => {
       </Box>
       <Chart x={[0, 15]} y={[0, 1]} padding={{ top: 30 }} sx={{ mt: 10 }}>
         <Grid horizontal vertical sx={{ borderColor: 'hinted' }} />
-        <AxisLabel
-          sx={{ fontSize: [0, 0, 0, 1], color: 'hinted' }}
-          left
-          arrow={false}
-        >
+        <AxisLabel sx={{ color: 'hinted' }} left arrow={false}>
           Variable
         </AxisLabel>
-        <AxisLabel
-          arrow={false}
-          sx={{ fontSize: [0, 0, 0, 1], color: 'hinted' }}
-          bottom
-        >
+        <AxisLabel arrow={false} sx={{ color: 'hinted' }} bottom>
           Time
         </AxisLabel>
         <TickLabels
