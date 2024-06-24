@@ -254,16 +254,14 @@ const Timeseries = ({
           right: 0,
           top: 0,
           fontFamily: 'mono',
-          fontSize: 1,
+          fontSize: [0, 0, 0, 1],
+          letterSpacing: 'mono',
           color: 'secondary',
           pointerEvents: 'none',
         }}
       >
         ({xYearsMonth(xValue)}, {formatValue(yValue)}
-        <Box as='span' sx={{ fontSize: 0 }}>
-          {currentVariable.unit}
-        </Box>
-        )
+        <Box as='span'>{currentVariable.unit}</Box>)
       </Box>
     )
   }
@@ -298,10 +296,10 @@ const Timeseries = ({
           }}
         />
         <TickLabels bottom values={[0, 5, 10, 15]} />
-        <AxisLabel units={yLabels.units} sx={{ fontSize: 0 }} left>
+        <AxisLabel units={yLabels.units} left>
           {yLabels.title}
         </AxisLabel>
-        <AxisLabel units='years' sx={{ fontSize: 0 }} bottom>
+        <AxisLabel units='years' bottom>
           Time
         </AxisLabel>
         <Plot

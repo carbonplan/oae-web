@@ -19,7 +19,8 @@ const PlaceholderChart = () => {
           right: 0,
           top: 0,
           fontFamily: 'mono',
-          fontSize: 1,
+          letterSpacing: 'mono',
+          fontSize: [0, 0, 0, 1],
           color: 'hinted',
         }}
       >
@@ -27,10 +28,10 @@ const PlaceholderChart = () => {
       </Box>
       <Chart x={[0, 15]} y={[0, 1]} padding={{ top: 30 }} sx={{ mt: 10 }}>
         <Grid horizontal vertical sx={{ borderColor: 'hinted' }} />
-        <AxisLabel sx={{ fontSize: 0, color: 'hinted' }} left arrow={false}>
+        <AxisLabel sx={{ color: 'hinted' }} left arrow={false}>
           Variable
         </AxisLabel>
-        <AxisLabel arrow={false} sx={{ fontSize: 0, color: 'hinted' }} bottom>
+        <AxisLabel arrow={false} sx={{ color: 'hinted' }} bottom>
           Time
         </AxisLabel>
         <TickLabels
@@ -52,9 +53,9 @@ const PlaceholderChart = () => {
           left: '50%',
           transform: 'translate(-50%, -50%)',
           textAlign: 'center',
-          width: [180, 180, 180, 210],
-          fontSize: [0, 0, 0, 1],
-          color: 'primary',
+          width: [210, 210, 210, 250],
+          fontSize: [1, 1, 1, 2],
+          color: 'secondary',
         }}
       >
         Click on the search icon above to generate a time series

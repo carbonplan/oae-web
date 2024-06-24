@@ -27,7 +27,7 @@ const sx = {
     letterSpacing: 'mono',
     textTransform: 'uppercase',
     color: 'secondary',
-    fontSize: [1],
+    fontSize: [1, 1, 1, 2],
     whiteSpace: 'nowrap',
   },
   description: {
@@ -76,7 +76,7 @@ const Main = () => {
           >
             <Sidebar expanded={true} side='left' width={4} footer={<Footer />}>
               <>
-                <Intro />
+                <Intro sx={sx} />
                 <RegionInfo sx={sx} />
                 <DisplaySection sx={sx} />
                 <ChartSection sx={sx} />
@@ -111,7 +111,7 @@ const Main = () => {
               </Box>
             )}
             <MobileSettings expanded={expanded}>
-              <Intro />
+              <Intro sx={sx} />
               <RegionInfo sx={sx} />
               <DisplaySection sx={sx} />
               <ChartSection sx={sx} />

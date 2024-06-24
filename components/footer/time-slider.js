@@ -12,7 +12,7 @@ const sx = {
     letterSpacing: 'mono',
     textTransform: 'uppercase',
     color: 'secondary',
-    fontSize: [1],
+    fontSize: [1, 1, 1, 2],
   },
 }
 

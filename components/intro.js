@@ -2,9 +2,9 @@ import React from 'react'
 import { Box } from 'theme-ui'
 import { Link } from '@carbonplan/components'
 
-const Intro = () => {
+const Intro = ({ sx }) => {
   return (
-    <Box sx={{ fontSize: 1, mb: 3 }}>
+    <Box sx={{ ...sx.description, mb: 3 }}>
       This is an interactive tool for exploring the efficiency of ocean
       alkalinity enhancement (OAE). You can explore global patterns, or select a
       polygon region to see how alkalinity released in a specific region and

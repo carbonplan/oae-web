@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useMemo } from 'react'
 import { Box, Checkbox, Divider, Flex, Label, useThemeUI } from 'theme-ui'
 import { alpha } from '@theme-ui/color'
 import { useThemedColormap } from '@carbonplan/colormaps'
-import { Button } from '@carbonplan/components'
-import { Down } from '@carbonplan/icons'
 
 import useStore, { variables } from '../store'
 import Timeseries from './timeseries'
@@ -14,6 +12,7 @@ import {
   downloadCsv,
   getColorForValue,
 } from '../utils'
+import DownloadCSV from './download-csv'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 const ids = Array.from({ length: 690 }, (_, i) => i)
@@ -166,8 +165,10 @@ const OverviewChart = ({ sx }) => {
           sx={{
             color: disableFilter ? 'muted' : 'secondary',
             cursor: 'pointer',
-            fontSize: 1,
+            fontSize: [0, 0, 0, 1],
             fontFamily: 'mono',
+            letterSpacing: 'mono',
+            textTransform: 'uppercase',
             py: 1,
           }}
         >
@@ -176,11 +177,11 @@ const OverviewChart = ({ sx }) => {
             checked={filterToRegionsInView}
             onChange={(e) => setFilterToRegionsInView(e.target.checked)}
             sx={{
-              width: 18,
+              width: [14, 14, 14, 16],
               mr: 1,
-              mt: '-3px',
+              mt: ['-4px', '-4px', '-4px', '-3px'],
               cursor: 'pointer',
-              color: 'muted',
+              color: 'secondary',
               transition: 'color 0.15s',
               'input:active ~ &': { bg: 'background', color: 'primary' },
               'input:focus ~ &': {
@@ -199,28 +200,15 @@ const OverviewChart = ({ sx }) => {
           />
           Filter to map view
         </Label>
-        <Button
-          inverted
+        <DownloadCSV
+          onClick={handleCSVDownload}
           disabled={
             Object.keys(selectedLines ? selectedLines : {}).length === 0
           }
-          onClick={handleCSVDownload}
           sx={{
-            fontSize: 0,
-            minWidth: '120px',
             mb: 1,
-            textAlign: 'right',
-            textTransform: 'uppercase',
-            fontFamily: 'mono',
-            '&:disabled': {
-              color: 'muted',
-              pointerEvents: 'none',
-            },
           }}
-        >
-          <Down sx={{ height: 10, width: 10, mr: 1 }} />
-          Download CSV
-        </Button>
+        />
       </Flex>
       <Timeseries
         xLimits={[startYear, 15]}

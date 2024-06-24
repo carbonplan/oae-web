@@ -40,7 +40,7 @@ const TooltipWrapper = ({
   children,
   tooltip,
   mt = 0,
-  color = 'primary',
+  color = 'secondary',
   sx,
 }) => {
   const [expanded, setExpanded] = useState(false)

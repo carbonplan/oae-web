@@ -104,7 +104,6 @@ const DisplaySection = ({ sx }) => {
     },
     [variableFamily, setCurrentVariable]
   )
-
   return (
     <>
       <Box sx={sx.heading}>Display</Box>
@@ -113,18 +112,19 @@ const DisplaySection = ({ sx }) => {
           Variable
         </Column>
         <Column start={[3, 3, 2, 2]} width={[4, 6, 3, 3]}>
-          <Box sx={{ position: 'relative' }}>
+          <Box sx={{ mt: ['-2px', '-2px', '-2px', '0px'] }}>
             <Select
               onChange={handleFamilySelection}
               value={variableFamily}
               size='xs'
               sx={{
                 width: '100%',
-                mr: 2,
                 mb: 1,
               }}
               sxSelect={{
                 fontFamily: 'mono',
+                letterSpacing: 'mono',
+                fontSize: [1, 1, 1, 2],
                 width: '100%',
               }}
             >
@@ -132,7 +132,7 @@ const DisplaySection = ({ sx }) => {
                 {Object.keys(variables).map((variable) =>
                   variables[variable].overview ? (
                     <option key={variable} value={variable}>
-                      {variables[variable].label}
+                      {variables[variable].label.toUpperCase()}
                     </option>
                   ) : null
                 )}
@@ -141,26 +141,28 @@ const DisplaySection = ({ sx }) => {
                 {Object.keys(variables).map((variable) =>
                   !variables[variable].overview ? (
                     <option key={variable} value={variable}>
-                      {variables[variable].label}
+                      {variable === 'PH'
+                        ? variables[variable].label
+                        : variables[variable].label.toUpperCase()}
                     </option>
                   ) : null
                 )}
               </optgroup>
             </Select>
-            <Box
-              id='description'
-              sx={{
-                fontSize: [0, 0, 0, 1],
-                color: 'secondary',
-                transition: 'all 0.2s',
-              }}
-            >
-              {
-                DESCRIPTIONS[variableFamily][
-                  hasSelectedRegion ? 'region' : 'overview'
-                ]
-              }
-            </Box>
+          </Box>
+          <Box
+            id='description'
+            sx={{
+              fontSize: [1, 1, 1, 2],
+              color: 'secondary',
+              transition: 'all 0.2s',
+            }}
+          >
+            {
+              DESCRIPTIONS[variableFamily][
+                hasSelectedRegion ? 'region' : 'overview'
+              ]
+            }
           </Box>
           <Box sx={{ mt: 3 }}>
             {Object.keys(filterValues).length &&
@@ -198,17 +200,20 @@ const DisplaySection = ({ sx }) => {
                 <Label
                   sx={{
                     cursor: 'pointer',
-                    textTransform: 'none',
+                    textTransform: 'uppercase',
                     color: 'secondary',
+                    fontFamily: 'mono',
+                    letterSpacing: 'mono',
+                    fontSize: [1, 1, 1, 2],
                   }}
                 >
                   <Checkbox
                     checked={logScale}
                     onChange={(e) => setLogScale(e.target.checked)}
                     sx={{
-                      width: 18,
+                      width: [16, 16, 16, 18],
                       mr: 1,
-                      mt: '-3px',
+                      mt: ['-3px', '-3px', '-3px', '-1px'],
                       color: 'secondary',
                       transition: 'color 0.15s',
                       'input:active ~ &': {
@@ -246,7 +251,11 @@ const DisplaySection = ({ sx }) => {
         </Column>
       </Row>
       <Row columns={[6, 8, 4, 4]} sx={{ mt: '9px' }}>
-        <Column start={1} width={[6, 8, 4, 4]} sx={{ ...sx.label, mt: 5 }}>
+        <Column
+          start={1}
+          width={[6, 8, 4, 4]}
+          sx={{ ...sx.label, mt: 5, mb: currentVariable.unit ? 4 : 0 }}
+        >
           <Chart
             logx={logScale}
             x={[min, max]}

@@ -11,7 +11,7 @@ const About = ({ sx }) => {
       <SidebarDivider sx={{ mt: 5, mb: 4 }} />
       <Box sx={sx.heading}>About</Box>
 
-      <Box sx={{ fontSize: 1, mb: 3 }}>
+      <Box sx={{ ...sx.description, mb: 3 }}>
         <p>
           [C]Worthy and collaborators{' '}
           <Link href='https://doi.org/10.21203/rs.3.rs-4124909/v1'>

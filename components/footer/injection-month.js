@@ -9,7 +9,7 @@ const sx = {
     letterSpacing: 'mono',
     textTransform: 'uppercase',
     color: 'secondary',
-    fontSize: [1],
+    fontSize: [1, 1, 1, 2],
   },
 }
 
@@ -24,7 +24,7 @@ const InjectionMonth = () => {
       <Filter
         values={injectionSeason}
         setValues={(val) => setInjectionSeason(val)}
-        sx={{ '[role="checkbox"]': { fontSize: 1 } }}
+        sx={{ '[role="checkbox"]': { fontSize: [1, 1, 1, 2] } }}
       />
     </Flex>
   )
