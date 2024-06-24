@@ -203,6 +203,7 @@ const DisplaySection = ({ sx }) => {
                     textTransform: 'uppercase',
                     color: 'secondary',
                     fontFamily: 'mono',
+                    letterSpacing: 'mono',
                     fontSize: [1, 1, 1, 2],
                   }}
                 >

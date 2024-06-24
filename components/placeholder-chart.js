@@ -19,6 +19,7 @@ const PlaceholderChart = () => {
           right: 0,
           top: 0,
           fontFamily: 'mono',
+          letterSpacing: 'mono',
           fontSize: [0, 0, 0, 1],
           color: 'hinted',
         }}
