@@ -17,6 +17,7 @@ const DownloadCSV = ({ onClick, disabled, sx = {} }) => {
         letterSpacing: 'mono',
         minWidth: '120px',
         textAlign: 'right',
+        whiteSpace: 'nowrap',
         '&:disabled': {
           color: 'muted',
           pointerEvents: 'none',
