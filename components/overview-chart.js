@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useMemo } from 'react'
 import { Box, Checkbox, Divider, Flex, Label, useThemeUI } from 'theme-ui'
 import { alpha } from '@theme-ui/color'
 import { useThemedColormap } from '@carbonplan/colormaps'
-import { Button } from '@carbonplan/components'
-import { Down } from '@carbonplan/icons'
 
 import useStore, { variables } from '../store'
 import Timeseries from './timeseries'
@@ -211,29 +209,6 @@ const OverviewChart = ({ sx }) => {
             mb: 1,
           }}
         />
-        {/* <Button
-          inverted
-          disabled={
-            Object.keys(selectedLines ? selectedLines : {}).length === 0
-          }
-          onClick={handleCSVDownload}
-          sx={{
-            fontSize: [0, 0, 0, 1],
-            minWidth: '120px',
-            mb: 1,
-            textAlign: 'right',
-            letterSpacing: 'mono',
-            textTransform: 'uppercase',
-            fontFamily: 'mono',
-            '&:disabled': {
-              color: 'muted',
-              pointerEvents: 'none',
-            },
-          }}
-        >
-          <Down sx={{ height: 10, width: 10, mr: 1 }} />
-          Download CSV
-        </Button> */}
       </Flex>
       <Timeseries
         xLimits={[startYear, 15]}
