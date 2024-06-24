@@ -13,7 +13,6 @@ import RegionInfo from './region-info'
 import About from './about'
 import DisplaySection from './display-section'
 import ChartSection from './chart-section'
-import ShareLink from './share-link'
 import useRegionUrlSync from '../utils/useRegionUrlSync'
 
 const sx = {
@@ -98,7 +97,6 @@ const Main = () => {
                 <Spinner size={32} />
               </SidebarAttachment>
             )}
-            <ShareLink />
           </Box>
         ) : (
           <>
