@@ -5,7 +5,7 @@ export const variables = {
     label: 'Efficiency',
     threshold: 0.001,
     overview: true,
-    url: 'https://oae-dataset-carbonplan.s3.us-east-2.amazonaws.com/store1b.zarr',
+    url: 'https://carbonplan-oae-efficiency.s3.us-west-2.amazonaws.com/store1b.zarr',
     variables: [
       {
         key: 'OAE_efficiency',
