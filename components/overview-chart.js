@@ -49,7 +49,7 @@ const OverviewChart = ({ sx }) => {
 
   const { theme } = useThemeUI()
 
-  const disableFilter = typeof selectedRegion === 'number'
+  const hideFilter = typeof selectedRegion === 'number'
 
   useEffect(() => {
     const fetchTimeSeriesData = async () => {
@@ -160,46 +160,47 @@ const OverviewChart = ({ sx }) => {
       <Divider sx={{ mt: 2, mb: 4 }} />
       <Box sx={sx.heading}>Time series</Box>
 
-      <Flex sx={{ justifyContent: 'space-between' }}>
-        <Label
-          sx={{
-            color: disableFilter ? 'muted' : 'secondary',
-            cursor: 'pointer',
-            fontSize: [0, 0, 0, 1],
-            fontFamily: 'mono',
-            letterSpacing: 'mono',
-            textTransform: 'uppercase',
-            py: 1,
-          }}
-        >
-          <Checkbox
-            disabled={disableFilter}
-            checked={filterToRegionsInView}
-            onChange={(e) => setFilterToRegionsInView(e.target.checked)}
+      <Flex sx={{ justifyContent: hideFilter ? 'flex-end' : 'space-between' }}>
+        {!hideFilter && (
+          <Label
             sx={{
-              width: [14, 14, 14, 16],
-              mr: 1,
-              mt: ['-4px', '-4px', '-4px', '-3px'],
-              cursor: 'pointer',
               color: 'secondary',
-              transition: 'color 0.15s',
-              'input:active ~ &': { bg: 'background', color: 'primary' },
-              'input:focus ~ &': {
-                bg: 'background',
-                color: filterToRegionsInView ? 'primary' : 'muted',
-              },
-              'input:hover ~ &': {
-                bg: 'background',
-                color: disableFilter ? 'muted' : 'primary',
-              },
-              'input:focus-visible ~ &': {
-                outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
-                background: 'rgb(110, 110, 110, 0.625)',
-              },
+              cursor: 'pointer',
+              fontSize: [0, 0, 0, 1],
+              fontFamily: 'mono',
+              letterSpacing: 'mono',
+              textTransform: 'uppercase',
+              py: 1,
             }}
-          />
-          Filter to map view
-        </Label>
+          >
+            <Checkbox
+              checked={filterToRegionsInView}
+              onChange={(e) => setFilterToRegionsInView(e.target.checked)}
+              sx={{
+                width: [14, 14, 14, 16],
+                mr: 1,
+                mt: ['-4px', '-4px', '-4px', '-3px'],
+                cursor: 'pointer',
+                color: 'secondary',
+                transition: 'color 0.15s',
+                'input:active ~ &': { bg: 'background', color: 'primary' },
+                'input:focus ~ &': {
+                  bg: 'background',
+                  color: filterToRegionsInView ? 'primary' : 'muted',
+                },
+                'input:hover ~ &': {
+                  bg: 'background',
+                  color: 'primary',
+                },
+                'input:focus-visible ~ &': {
+                  outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
+                  background: 'rgb(110, 110, 110, 0.625)',
+                },
+              }}
+            />
+            Filter to map view
+          </Label>
+        )}
         <DownloadCSV
           onClick={handleCSVDownload}
           disabled={
@@ -226,8 +227,8 @@ const OverviewChart = ({ sx }) => {
         elapsedYears={(overviewElapsedTime + 1) / 12}
         colormap={colormap}
         opacity={0.1}
-        handleClick={disableFilter ? undefined : handleClick}
-        handleHover={disableFilter ? undefined : handleHover}
+        handleClick={hideFilter ? undefined : handleClick}
+        handleHover={hideFilter ? undefined : handleHover}
         showActive
       />
     </Box>
