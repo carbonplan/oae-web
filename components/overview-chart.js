@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
-import { Box, Checkbox, Divider, Flex, Label, useThemeUI } from 'theme-ui'
+import { Box, Divider, Flex, Label, useThemeUI } from 'theme-ui'
 import { alpha } from '@theme-ui/color'
 import { useThemedColormap } from '@carbonplan/colormaps'
 
@@ -13,6 +13,7 @@ import {
   getColorForValue,
 } from '../utils'
 import DownloadCSV from './download-csv'
+import Checkbox from './checkbox'
 
 const toMonthsIndex = (year, startYear) => (year - startYear) * 12 - 1
 const ids = Array.from({ length: 690 }, (_, i) => i)
@@ -162,44 +163,11 @@ const OverviewChart = ({ sx }) => {
 
       <Flex sx={{ justifyContent: hideFilter ? 'flex-end' : 'space-between' }}>
         {!hideFilter && (
-          <Label
-            sx={{
-              color: 'secondary',
-              cursor: 'pointer',
-              fontSize: [0, 0, 0, 1],
-              fontFamily: 'mono',
-              letterSpacing: 'mono',
-              textTransform: 'uppercase',
-              py: 1,
-            }}
-          >
-            <Checkbox
-              checked={filterToRegionsInView}
-              onChange={(e) => setFilterToRegionsInView(e.target.checked)}
-              sx={{
-                width: [14, 14, 14, 16],
-                mr: 1,
-                mt: ['-4px', '-4px', '-4px', '-3px'],
-                cursor: 'pointer',
-                color: 'secondary',
-                transition: 'color 0.15s',
-                'input:active ~ &': { bg: 'background', color: 'primary' },
-                'input:focus ~ &': {
-                  bg: 'background',
-                  color: filterToRegionsInView ? 'primary' : 'muted',
-                },
-                'input:hover ~ &': {
-                  bg: 'background',
-                  color: 'primary',
-                },
-                'input:focus-visible ~ &': {
-                  outline: 'dashed 1px rgb(110, 110, 110, 0.625)',
-                  background: 'rgb(110, 110, 110, 0.625)',
-                },
-              }}
-            />
-            Filter to map view
-          </Label>
+          <Checkbox
+            checked={filterToRegionsInView}
+            label='Filter to map view'
+            onChange={(e) => setFilterToRegionsInView(e.target.checked)}
+          />
         )}
         <DownloadCSV
           onClick={handleCSVDownload}

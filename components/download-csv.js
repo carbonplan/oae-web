@@ -2,16 +2,15 @@ import React from 'react'
 import { Button } from '@carbonplan/components'
 import { Down } from '@carbonplan/icons'
 
-const size = [10, 10, 10, 12]
-
 const DownloadCSV = ({ onClick, disabled, sx = {} }) => {
   return (
     <Button
       inverted
       disabled={disabled}
       onClick={onClick}
+      size='xs'
       sx={{
-        fontSize: [0, 0, 0, 1],
+        fontSize: [1, 1, 1, 2],
         textTransform: 'uppercase',
         fontFamily: 'mono',
         letterSpacing: 'mono',
@@ -24,8 +23,8 @@ const DownloadCSV = ({ onClick, disabled, sx = {} }) => {
         },
         ...sx,
       }}
+      prefix={<Down />}
     >
-      <Down sx={{ height: size, width: size, mr: 1 }} />
       Download CSV
     </Button>
   )
