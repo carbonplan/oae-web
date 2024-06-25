@@ -21,7 +21,7 @@ export const variables = {
     label: 'Spread of CO₂ uptake',
     threshold: 0.001,
     overview: true,
-    url: 'https://carbonplan-share.s3.us-west-2.amazonaws.com/oae-efficiency/cumulative_FG_CO2_percent.zarr',
+    url: 'https://carbonplan-oae-efficiency.s3.us-west-2.amazonaws.com/cumulative_FG_CO2_percent.zarr',
     optionsTooltip:
       'View the percentage of cumulative CO₂ uptake taking place within 500 km, 1000 km, or 2000 km of the injection center.',
     variables: [
