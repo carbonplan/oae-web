@@ -264,7 +264,27 @@ const useStore = create((set) => ({
   setVariableFamily: (variableFamily) => set({ variableFamily }),
 
   currentVariable: variables.EFFICIENCY.variables[0],
-  setCurrentVariable: (currentVariable) => set({ currentVariable }),
+  setCurrentVariable: (currentVariable) =>
+    set(() => {
+      const variableFamily = Object.keys(variables).find((family) =>
+        variables[family].variables
+          .map((v) => v.key)
+          .includes(currentVariable.key)
+      )
+      if (variables[variableFamily]?.overview) {
+        return {
+          currentOverviewVariable: currentVariable,
+          currentVariable,
+          variableFamily,
+        }
+      } else {
+        return { currentVariable, variableFamily }
+      }
+    }),
+
+  currentOverviewVariable: variables.EFFICIENCY.variables[0],
+  setCurrentOverviewVariable: (currentOverviewVariable) =>
+    set({ currentOverviewVariable }),
 
   logScale: false,
   setLogScale: (logScale) =>
@@ -292,16 +312,31 @@ const useStore = create((set) => ({
             selectedRegionGeojson,
           }
         })
-      : set({
-          selectedRegion,
-          currentVariable: variables.EFFICIENCY.variables[0],
-          variableFamily: 'EFFICIENCY',
-          showRegionPicker: false,
-          regionData: null,
-          hoveredRegion: null,
-          activeLineData: null,
-          logScale: false,
-          selectedRegionCenter: null,
+      : set((state) => {
+          const isOverview = variables[state.variableFamily].overview
+          const variableFamily = isOverview
+            ? state.variableFamily
+            : Object.keys(variables).find((family) =>
+                variables[family].variables
+                  .map((v) => v.key)
+                  .includes(state.currentOverviewVariable.key)
+              )
+          return {
+            selectedRegion,
+            currentVariable: isOverview
+              ? state.currentVariable
+              : state.currentOverviewVariable,
+            currentOverviewVariable: isOverview
+              ? state.currentVariable
+              : state.currentOverviewVariable,
+            variableFamily: variableFamily,
+            showRegionPicker: false,
+            regionData: null,
+            hoveredRegion: null,
+            activeLineData: null,
+            logScale: false,
+            selectedRegionCenter: null,
+          }
         }),
 
   selectedRegionCenter: null,
