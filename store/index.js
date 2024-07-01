@@ -8,7 +8,7 @@ export const variables = {
     url: 'https://carbonplan-oae-efficiency.s3.us-west-2.amazonaws.com/store1b.zarr',
     variables: [
       {
-        key: 'OAE_efficiency',
+        variable: 'OAE_efficiency',
         colorLimits: [0, 1],
         colormap: 'cool',
         label: 'Efficiency ratio',
@@ -26,7 +26,7 @@ export const variables = {
       'View the percentage of cumulative CO₂ uptake taking place within 500 km, 1000 km, or 2000 km of the injection center.',
     variables: [
       {
-        key: 'FG_CO2_percent_cumulative',
+        variable: 'FG_CO2_percent_cumulative',
         colorLimits: [0, 100],
         colormap: 'cool',
         optionIndex: 0,
@@ -36,7 +36,7 @@ export const variables = {
         graphUnit: '',
       },
       {
-        key: 'FG_CO2_percent_cumulative',
+        variable: 'FG_CO2_percent_cumulative',
         colorLimits: [0, 100],
         colormap: 'cool',
         optionIndex: 1,
@@ -46,7 +46,7 @@ export const variables = {
         graphUnit: '',
       },
       {
-        key: 'FG_CO2_percent_cumulative',
+        variable: 'FG_CO2_percent_cumulative',
         colorLimits: [0, 100],
         colormap: 'cool',
         optionIndex: 2,
@@ -246,6 +246,12 @@ export const getInjectionMonth = (season) => {
   return 1
 }
 
+const findVariableFamily = (variable) => {
+  return Object.keys(variables).find((family) =>
+    variables[family].variables.some((v) => v.variable === variable.variable)
+  )
+}
+
 const useStore = create((set) => ({
   loading: false,
   setLoading: (loading) => set({ loading }),
@@ -266,11 +272,7 @@ const useStore = create((set) => ({
   currentVariable: variables.EFFICIENCY.variables[0],
   setCurrentVariable: (currentVariable) =>
     set(() => {
-      const variableFamily = Object.keys(variables).find((family) =>
-        variables[family].variables
-          .map((v) => v.key)
-          .includes(currentVariable.key)
-      )
+      const variableFamily = findVariableFamily(currentVariable)
       if (variables[variableFamily]?.overview) {
         return {
           currentOverviewVariable: currentVariable,
@@ -316,11 +318,7 @@ const useStore = create((set) => ({
           const isOverview = variables[state.variableFamily].overview
           const variableFamily = isOverview
             ? state.variableFamily
-            : Object.keys(variables).find((family) =>
-                variables[family].variables
-                  .map((v) => v.key)
-                  .includes(state.currentOverviewVariable.key)
-              )
+            : findVariableFamily(state.currentOverviewVariable)
           return {
             selectedRegion,
             currentVariable: isOverview
