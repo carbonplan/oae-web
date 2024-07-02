@@ -58,7 +58,7 @@ const OverviewChart = ({ sx }) => {
       setLoading(true)
       setRegionDataLoading(true)
       const zarrUrl = variables[variableFamily].url
-      const getter = await openZarr(zarrUrl, currentVariable.key)
+      const getter = await openZarr(zarrUrl, currentVariable.variable)
       const injectionChunkIndex = injectionDate - 1
       const raw =
         currentVariable.optionIndex !== undefined
