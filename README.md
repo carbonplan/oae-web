@@ -3,18 +3,16 @@
   height='48'
 />
 
-# carbonplan / simple-site
+# carbonplan / oae-web
 
-**website template using our stack**
+**maps exploring ocean alkalinity enhancement efficiency and dynamics**
 
 [![GitHub][github-badge]][github]
 ![MIT License][]
 
-[github]: https://github.com/carbonplan/design
+[github]: https://github.com/carbonplan/oae-web
 [github-badge]: https://flat.badgen.net/badge/-/github?icon=github&label
 [mit license]: https://flat.badgen.net/badge/license/MIT/blue
-
-This repository is a super simple website set up using the basic components of our web stack and design system: React, Next, ThemeUI, our components, and our theme.
 
 ## usage
 
@@ -25,7 +23,7 @@ npm install
 npm run dev
 ```
 
-and then visit `http://localhost:4000/` in your browser.
+and then visit `http://localhost:4001/` in your browser.
 
 ## license
 
