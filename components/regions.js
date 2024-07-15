@@ -81,7 +81,13 @@ const Regions = () => {
         colorExpression
       )
     }
-  }, [regionGeojson, overviewElapsedTime, overviewLineData])
+  }, [
+    regionGeojson,
+    overviewElapsedTime,
+    overviewLineData,
+    colormap,
+    colorLimits,
+  ])
 
   const safeColorMap = useMemo(() => {
     return colormap[0].length === 3
