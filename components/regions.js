@@ -72,7 +72,9 @@ const Regions = () => {
       }
     })
     if (map && map.getSource('regions')) {
-      const colorExpression = buildColorExpression()
+      const colorExpression = overviewLineData
+        ? buildColorExpression()
+        : transparent
       map.getSource('regions').setData({ ...regionGeojson, features })
       map.setPaintProperty('regions-fill', 'fill-color', colorExpression)
       map.setPaintProperty(

@@ -54,6 +54,7 @@ const OverviewChart = ({ sx }) => {
 
   useEffect(() => {
     const fetchTimeSeriesData = async () => {
+      setOverviewLineData(null)
       setActiveLineData(null)
       setLoading(true)
       setRegionDataLoading(true)
