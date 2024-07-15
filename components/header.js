@@ -12,7 +12,7 @@ const Header = ({ expanded, setExpanded }) => {
   return (
     <>
       <Meta
-        card={''}
+        card={'https://images.carbonplan.org/social/oae-efficiency.png'}
         description={
           'Interactive mapping tool for exploring the efficiency of ocean alkalinity enhancement (OAE).'
         }
