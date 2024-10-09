@@ -45,7 +45,12 @@ const OverviewChart = ({ sx }) => {
   const setLoading = useStore((state) => state.setLoading)
   const setRegionDataLoading = useStore((state) => state.setRegionDataLoading)
 
-  const colormap = useThemedColormap(currentVariable.colormap, { count: 20 }) // low count prevents banding in gradient
+  const colormap = useThemedColormap(currentVariable.colormap, {
+    count: 8,
+    // low count prevents banding in gradient.
+    // >8 breaks chrome in some cases.
+  })
+
   const startYear = 0
 
   const { theme } = useThemeUI()
