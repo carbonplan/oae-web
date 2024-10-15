@@ -12,7 +12,9 @@ const Intro = ({ sx }) => {
       Read the{' '}
       <Link href='https://doi.org/10.21203/rs.3.rs-4124909/v1'>paper</Link> (in
       press) or our{' '}
-      <Link href='/research/oae-efficiency-explainer'>explainer article</Link>{' '}
+      <Link href='https://carbonplan.org/research/oae-efficiency-explainer'>
+        explainer article
+      </Link>{' '}
       for more details. Developed in collaboration with{' '}
       <Link href='https://cworthy.org/'>[C]Worthy</Link>.
     </Box>
