@@ -37,7 +37,7 @@
     "@turf/turf": "^7.0.0",
     "d3-format": "^3.1.0",
     "mapbox-gl": "^1.13.1",
-    "next": "^12.0.7",
+    "next": "^14.2.15",
     "react": "^18.2.0",
     "react-animate-height": "^3.2.3",
     "react-dom": "^18.2.0",
