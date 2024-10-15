@@ -135,7 +135,7 @@ const MapWrapper = () => {
               key={variableFamily}
               variable={variableFamily}
               source={
-                'https://carbonplan-oae-efficiency.s3.us-west-2.amazonaws.com/store2.zarr'
+                'https://carbonplan-oae-efficiency.s3.us-west-2.amazonaws.com/v2/store2.zarr'
               }
               colormap={colormap}
               clim={

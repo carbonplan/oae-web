@@ -7,7 +7,7 @@
 
 **maps exploring ocean alkalinity enhancement efficiency and dynamics**
 
-Built in collaboration with [[C]Worthy](https://www.cworthy.org/), this tool explores a new dataset that makes it easier to see how the efficiency of ocean alkalinity enhancement varies around the world. This work is described in more detail in a [web article](https://carbonplan.org/research/oae-efficiency-explainer) with a companion [map tool](https://carbonplan.org/research/oae-efficiency) to explore the data. You can also read the [preprint](https://www.researchsquare.com/article/rs-4124909/v1) or download the [raw data](https://beta.source.coop/repositories/cworthy/oae-efficiency-atlas/description/) for more.
+Built in collaboration with [[C]Worthy](https://www.cworthy.org/), this tool explores a new dataset that makes it easier to see how the efficiency of ocean alkalinity enhancement varies around the world. This work is described in more detail in a [web article](https://carbonplan.org/research/oae-efficiency-explainer) with a companion [map tool](https://carbonplan.org/research/oae-efficiency) to explore the data. You can also read the [paper](https://doi.org/10.21203/rs.3.rs-4124909/v1) or download the [raw data](https://beta.source.coop/repositories/cworthy/oae-efficiency-atlas/description/) for more.
 
 [![GitHub][github-badge]][github]
 ![MIT License][]
