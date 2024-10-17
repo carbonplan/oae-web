@@ -12,8 +12,9 @@ const bucket = 'https://storage.googleapis.com/carbonplan-maps/'
 const width = 4 // width of sidebar
 
 const frag = (variable) => `
-    if (${variable} == fillValue) {
-      gl_FragColor = vec4(0.0);
+    if (${variable} >= fillValue) {
+      // equality check (==) causes issues on some GPUs (android)
+      discard;
       return;
     }
 
