@@ -10,8 +10,10 @@ const Intro = ({ sx }) => {
       polygon region to see how alkalinity released in a specific region and
       month will move through the ocean and result in carbon removal over time.
       Read the{' '}
-      <Link href='https://doi.org/10.21203/rs.3.rs-4124909/v1'>paper</Link> (in
-      press) or our{' '}
+      <Link href='https://www.nature.com/articles/s41558-024-02179-9.epdf?sharing_token=LgDF4VdJvkifRzIuQy5nT9RgN0jAjWel9jnR3ZoTv0ML06qtsGAXcI3ncw2VKMdvNBF8yc3ykUNvQP2YZSZZg3VEb8eJNbnayufBxkZ0cVTHRB4myOJv4osBgWv1OPyMNfRCLYPLT3MancsjfEhCqWMLGD_VUA_LXbALrR9640c%3D'>
+        paper
+      </Link>{' '}
+      or our{' '}
       <Link href='https://carbonplan.org/research/oae-efficiency-explainer'>
         explainer article
       </Link>{' '}
