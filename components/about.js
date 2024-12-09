@@ -19,7 +19,7 @@ const About = ({ sx }) => {
           </Link>{' '}
           the underlying OAE efficiency dataset. Together, CarbonPlan and
           [C]Worthy built the interactive tool, with funding from the Carbon to
-          Sea Initiative and Environmental Defense Fund.
+          Sea Initiative (via Windward Fund) and Environmental Defense Fund.
         </p>
       </Box>
       <Row columns={[6, 8, 4, 4]} sx={{ mt: 5 }}>
