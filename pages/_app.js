@@ -1,4 +1,5 @@
 import React from 'react'
+import PlausibleProvider from 'next-plausible'
 import { ThemeUIProvider } from 'theme-ui'
 import '@carbonplan/components/fonts.css'
 import '@carbonplan/components/globals.css'
@@ -7,9 +8,11 @@ import theme from '@carbonplan/theme'
 
 const App = ({ Component, pageProps }) => {
   return (
-    <ThemeUIProvider theme={theme}>
-      <Component {...pageProps} />
-    </ThemeUIProvider>
+    <PlausibleProvider domain='carbonplan.org'>
+      <ThemeUIProvider theme={theme}>
+        <Component {...pageProps} />
+      </ThemeUIProvider>
+    </PlausibleProvider>
   )
 }
 
