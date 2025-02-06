@@ -9,12 +9,12 @@ class MyDocument extends Document {
       <Html lang='en' className='no-focus-outline'>
         <Head>
           <Tracking id={process.env.GA_TRACKING_ID} />
-          {/* <script
+          <script
             defer
             data-domain='carbonplan.org'
             data-api='https://carbonplan.org/proxy/api/event'
             src='https://carbonplan.org/js/script.file-downloads.outbound-links.js'
-          ></script> */}
+          />
         </Head>
         <body>
           <InitializeColorMode />
