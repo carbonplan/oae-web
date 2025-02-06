@@ -8,7 +8,10 @@ import theme from '@carbonplan/theme'
 
 const App = ({ Component, pageProps }) => {
   return (
-    <PlausibleProvider domain='carbonplan.org'>
+    <PlausibleProvider
+      domain='carbonplan.org'
+      customDomain='https://carbonplan.org'
+    >
       <ThemeUIProvider theme={theme}>
         <Component {...pageProps} />
       </ThemeUIProvider>
