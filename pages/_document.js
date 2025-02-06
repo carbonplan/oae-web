@@ -12,8 +12,7 @@ class MyDocument extends Document {
           <script
             defer
             data-domain='carbonplan.org'
-            data-api='https://carbonplan.org/api/event'
-            src='https://carbonplan.org/js/script.js'
+            src='https://carbonplan.org/js/script.file-downloads.outbound-links.js'
           ></script>
         </Head>
         <body>
