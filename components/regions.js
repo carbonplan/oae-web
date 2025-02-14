@@ -116,9 +116,10 @@ const Regions = () => {
           type: 'vector',
           promoteId: 'polygon_id',
           tiles: [
-            'https://carbonplan-oae-efficiency.s3.us-west-2.amazonaws.com/region-tiles/{z}/{x}/{y}.pbf',
+            'https://carbonplan-oae-efficiency.s3.us-west-2.amazonaws.com/region-tiles-compressed/{z}/{x}/{y}.pbf',
           ],
           maxzoom: 0,
+          minzoom: 0,
         })
       }
 
