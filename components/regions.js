@@ -28,10 +28,11 @@ const Regions = () => {
   const { map } = useMapbox()
   const { theme } = useThemeUI()
   const hoveredRegionRef = useRef(hoveredRegion)
+  const previouslySelectedRegionRef = useRef(null)
 
   //reused colors
   const transparent = 'rgba(0, 0, 0, 0)'
-  const lineColor = theme.rawColors.hinted
+  const lineColor = theme.rawColors?.hinted
   const lineHighlightColor = [
     'case',
     ['boolean', ['feature-state', 'hover'], false],
@@ -39,12 +40,17 @@ const Regions = () => {
     transparent,
   ]
 
-  const buildColorExpression = () => {
-    const dataField = 'currentValue'
+  const safeColorMap = useMemo(() => {
+    return colormap[0].length === 3
+      ? colormap.map((rgb) => `rgb(${rgb.join(',')})`)
+      : colormap
+  }, [colormap])
+
+  const colorExpression = useMemo(() => {
     const fillColorExpression = [
       'case',
-      ['has', dataField],
-      ['step', ['get', dataField], safeColorMap[0]],
+      ['!=', ['feature-state', 'currentValue'], null],
+      ['step', ['feature-state', 'currentValue'], safeColorMap[0]],
       transparent,
     ]
     const totalRange = colorLimits[1] - colorLimits[0]
@@ -54,48 +60,35 @@ const Regions = () => {
       fillColorExpression[2].push(threshold, safeColorMap[i])
     }
     return fillColorExpression
-  }
+  }, [safeColorMap, colorLimits, transparent])
 
   useEffect(() => {
-    if (!regionGeojson) return
-    // get currentValue from overviewLineData for each polygon and assign to new current value property
-    const features = regionGeojson.features.map((feature) => {
+    if (!regionGeojson || !map?.getSource('regions')) return
+
+    regionGeojson.features.forEach((feature) => {
       const polygonId = feature.properties.polygon_id
       const currentValue =
         overviewLineData?.[polygonId]?.data?.[overviewElapsedTime][1] ?? 0
-      return {
-        ...feature,
-        properties: {
-          ...feature.properties,
-          currentValue,
-        },
-      }
-    })
-    if (map && map.getSource('regions')) {
-      const colorExpression = overviewLineData
-        ? buildColorExpression()
-        : transparent
-      map.getSource('regions').setData({ ...regionGeojson, features })
-      map.setPaintProperty('regions-fill', 'fill-color', colorExpression)
-      map.setPaintProperty(
-        'selected-region-fill',
-        'fill-color',
-        colorExpression
-      )
-    }
-  }, [
-    regionGeojson,
-    overviewElapsedTime,
-    overviewLineData,
-    colormap,
-    colorLimits,
-  ])
 
-  const safeColorMap = useMemo(() => {
-    return colormap[0].length === 3
-      ? colormap.map((rgb) => `rgb(${rgb.join(',')})`)
-      : colormap
-  }, [colormap])
+      map.setFeatureState(
+        {
+          source: 'regions',
+          id: polygonId,
+        },
+        {
+          currentValue,
+        }
+      )
+    })
+    map.setPaintProperty('regions-fill', 'fill-color', colorExpression)
+    map.setPaintProperty('selected-region-fill', 'fill-color', colorExpression)
+  }, [
+    map,
+    overviewLineData,
+    regionGeojson,
+    currentVariable,
+    overviewElapsedTime,
+  ])
 
   const handleMouseMove = (e) => {
     map.getCanvas().style.cursor = 'pointer'
@@ -144,7 +137,7 @@ const Regions = () => {
             type: 'fill',
             source: 'regions',
             paint: {
-              'fill-color': transparent,
+              'fill-color': colorExpression,
               'fill-outline-color': transparent,
             },
           })
@@ -179,7 +172,7 @@ const Regions = () => {
             type: 'fill',
             source: 'regions',
             paint: {
-              'fill-color': transparent,
+              'fill-color': colorExpression,
               'fill-outline-color': transparent,
               'fill-opacity': [
                 'case',
@@ -278,17 +271,14 @@ const Regions = () => {
 
   const handleRegionsInView = useCallback(() => {
     if (selectedRegion !== null) return
-    if (
-      map.getLayer('regions-fill') &&
-      map.getLayoutProperty('regions-fill', 'visibility') === 'visible'
-    ) {
+    if (map.getLayer('regions-fill')) {
       const features = map.queryRenderedFeatures({
         layers: ['regions-fill'],
       })
       const ids = features.map((f) => f.properties.polygon_id)
       setRegionsInView(ids)
     }
-  }, [map, selectedRegion, setRegionsInView])
+  }, [map, setRegionsInView])
 
   const toggleLayerVisibilities = useCallback(
     (visible) => {
@@ -297,19 +287,22 @@ const Regions = () => {
       map.setLayoutProperty('regions-line', 'visibility', visibility)
       map.setLayoutProperty('regions-hover', 'visibility', visibility)
       map.setLayoutProperty('regions-fill', 'visibility', visibility)
-      if (visible && filterToRegionsInView) {
-        // fixes race when clearing selected region
-        map.once('idle', handleRegionsInView)
-      }
     },
-    [map, handleRegionsInView, filterToRegionsInView]
+    [map]
   )
 
   useEffect(() => {
     if (!map || !map.getSource('regions')) return
-    map.removeFeatureState({
-      source: 'regions',
-    })
+
+    if (previouslySelectedRegionRef.current !== null) {
+      map.removeFeatureState(
+        { source: 'regions', id: previouslySelectedRegionRef.current },
+        'selected'
+      )
+    }
+
+    previouslySelectedRegionRef.current = selectedRegion
+
     if (selectedRegion !== null) {
       map.setFeatureState(
         {
@@ -318,7 +311,6 @@ const Regions = () => {
         },
         { selected: true }
       )
-
       map.setFeatureState(
         {
           source: 'regions',
@@ -330,15 +322,16 @@ const Regions = () => {
     } else {
       toggleLayerVisibilities(true)
     }
-  }, [selectedRegion, map, currentVariable, toggleLayerVisibilities])
+  }, [selectedRegion, map, variableFamily])
 
   useEffect(() => {
     if (!filterToRegionsInView) {
       map.off('moveend', handleRegionsInView)
       setRegionsInView(null)
-      return
+    } else {
+      map.on('moveend', handleRegionsInView)
+      handleRegionsInView()
     }
-    map.on('moveend', handleRegionsInView)
     return () => {
       map.off('moveend', handleRegionsInView)
     }
