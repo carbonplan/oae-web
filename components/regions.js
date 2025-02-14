@@ -16,11 +16,10 @@ const Regions = () => {
   const setRegionsInView = useStore((s) => s.setRegionsInView)
   const currentVariable = useStore((s) => s.currentVariable)
   const overviewLineData = useStore((s) => s.overviewLineData)
-  const regionGeojson = useStore((s) => s.regionGeojson)
-  const setRegionGeojson = useStore((s) => s.setRegionGeojson)
   const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
   const variableFamily = useStore((s) => s.variableFamily)
   const selectedRegionGeojson = useStore((s) => s.selectedRegionGeojson)
+  const setSelectedRegionGeojson = useStore((s) => s.setSelectedRegionGeojson)
 
   const colormap = useThemedColormap(currentVariable.colormap)
   const colorLimits = currentVariable.colorLimits
@@ -63,17 +62,17 @@ const Regions = () => {
   }, [safeColorMap, colorLimits, transparent])
 
   useEffect(() => {
-    if (!regionGeojson || !map?.getSource('regions')) return
-
-    regionGeojson.features.forEach((feature) => {
-      const polygonId = feature.properties.polygon_id
+    if (!map?.getSource('regions')) return
+    const idArray = Array.from({ length: 690 }, (_, i) => i)
+    idArray.forEach((id) => {
       const currentValue =
-        overviewLineData?.[polygonId]?.data?.[overviewElapsedTime][1] ?? 0
+        overviewLineData?.[id]?.data?.[overviewElapsedTime][1] ?? 0
 
       map.setFeatureState(
         {
           source: 'regions',
-          id: polygonId,
+          sourceLayer: 'regions',
+          id: id,
         },
         {
           currentValue,
@@ -82,13 +81,7 @@ const Regions = () => {
     })
     map.setPaintProperty('regions-fill', 'fill-color', colorExpression)
     map.setPaintProperty('selected-region-fill', 'fill-color', colorExpression)
-  }, [
-    map,
-    overviewLineData,
-    regionGeojson,
-    currentVariable,
-    overviewElapsedTime,
-  ])
+  }, [map, overviewLineData, currentVariable, overviewElapsedTime])
 
   const handleMouseMove = (e) => {
     map.getCanvas().style.cursor = 'pointer'
@@ -112,102 +105,104 @@ const Regions = () => {
       const center = [e.lngLat.lng, e.lngLat.lat]
       setSelectedRegion(polygonId)
       setSelectedRegionCenter(center)
+      setSelectedRegionGeojson(feature)
     }
   }
 
   const addRegions = async () => {
-    fetch(
-      'https://carbonplan-oae-efficiency.s3.us-west-2.amazonaws.com/regions.geojson'
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setRegionGeojson(data)
-        try {
-          if (!map.getSource('regions')) {
-            map.addSource('regions', {
-              type: 'geojson',
-              data: data,
-              promoteId: 'polygon_id',
-              maxzoom: 0,
-            })
-          }
+    try {
+      if (!map.getSource('regions')) {
+        map.addSource('regions', {
+          type: 'vector',
+          promoteId: 'polygon_id',
+          tiles: [
+            'https://carbonplan-oae-efficiency.s3.us-west-2.amazonaws.com/region-tiles/{z}/{x}/{y}.pbf',
+          ],
+          maxzoom: 0,
+        })
+      }
 
-          map.addLayer({
-            id: 'regions-fill',
-            type: 'fill',
-            source: 'regions',
-            paint: {
-              'fill-color': colorExpression,
-              'fill-outline-color': transparent,
-            },
-          })
-
-          map.addLayer({
-            id: 'regions-line',
-            type: 'line',
-            source: 'regions',
-            paint: {
-              'line-color': lineColor,
-              'line-width': 1,
-            },
-          })
-
-          map.addLayer({
-            id: 'regions-hover',
-            type: 'line',
-            source: 'regions',
-            paint: {
-              'line-color': lineHighlightColor,
-              'line-width': [
-                'case',
-                ['boolean', ['feature-state', 'hover'], false],
-                2, // Width when hovered
-                0, // Default width
-              ],
-            },
-          })
-
-          map.addLayer({
-            id: 'selected-region-fill',
-            type: 'fill',
-            source: 'regions',
-            paint: {
-              'fill-color': colorExpression,
-              'fill-outline-color': transparent,
-              'fill-opacity': [
-                'case',
-                [
-                  'all',
-                  ['boolean', ['feature-state', 'selected'], false],
-                  ['boolean', ['feature-state', 'overview'], false],
-                ],
-                1, // Opacity when an overview var is selected is active
-                0, // Default opacity
-              ],
-            },
-          })
-          map.addLayer({
-            id: 'regions-selected',
-            type: 'line',
-            source: 'regions',
-            paint: {
-              'line-color': theme.rawColors.primary,
-              'line-width': [
-                'case',
-                ['boolean', ['feature-state', 'selected'], false],
-                2, // Width when hovered
-                0, // Default width
-              ],
-            },
-          })
-
-          map.on('mousemove', 'regions-fill', handleMouseMove)
-          map.on('mouseleave', 'regions-fill', handleMouseLeave)
-          map.on('click', 'regions-fill', handleClick)
-        } catch (error) {
-          console.error('Error fetching or adding regions:', error)
-        }
+      map.addLayer({
+        id: 'regions-fill',
+        type: 'fill',
+        source: 'regions',
+        'source-layer': 'regions',
+        paint: {
+          'fill-color': colorExpression,
+          'fill-outline-color': transparent,
+        },
       })
+
+      map.addLayer({
+        id: 'regions-line',
+        type: 'line',
+        source: 'regions',
+        'source-layer': 'regions',
+        paint: {
+          'line-color': lineColor,
+          'line-width': 1,
+        },
+      })
+
+      map.addLayer({
+        id: 'regions-hover',
+        type: 'line',
+        source: 'regions',
+        'source-layer': 'regions',
+        paint: {
+          'line-color': lineHighlightColor,
+          'line-width': [
+            'case',
+            ['boolean', ['feature-state', 'hover'], false],
+            2,
+            0,
+          ],
+        },
+      })
+
+      map.addLayer({
+        id: 'selected-region-fill',
+        type: 'fill',
+        source: 'regions',
+        'source-layer': 'regions',
+        paint: {
+          'fill-color': colorExpression,
+          'fill-outline-color': transparent,
+          'fill-opacity': [
+            'case',
+            [
+              'all',
+              ['boolean', ['feature-state', 'selected'], false],
+              ['boolean', ['feature-state', 'overview'], false],
+            ],
+            1,
+            0,
+          ],
+        },
+      })
+
+      map.addLayer({
+        id: 'regions-selected',
+        type: 'line',
+        source: 'regions',
+        'source-layer': 'regions',
+        paint: {
+          'line-color': theme.rawColors?.primary,
+          'line-width': [
+            'case',
+            ['boolean', ['feature-state', 'selected'], false],
+            2,
+            0,
+          ],
+        },
+      })
+
+      map.on('mousemove', 'regions-fill', handleMouseMove)
+      map.on('mouseleave', 'regions-fill', handleMouseLeave)
+      map.on('click', 'regions-fill', handleClick)
+    } catch (error) {
+      console.error('Error adding regions:', error)
+    }
   }
 
   useEffect(() => {
@@ -248,6 +243,7 @@ const Regions = () => {
           map.setFeatureState(
             {
               source: 'regions',
+              sourceLayer: 'regions',
               id: hoveredRegionRef.current,
             },
             { hover: false }
@@ -258,6 +254,7 @@ const Regions = () => {
           map.setFeatureState(
             {
               source: 'regions',
+              sourceLayer: 'regions',
               id: hoveredRegion,
             },
             { hover: true }
@@ -296,7 +293,11 @@ const Regions = () => {
 
     if (previouslySelectedRegionRef.current !== null) {
       map.removeFeatureState(
-        { source: 'regions', id: previouslySelectedRegionRef.current },
+        {
+          source: 'regions',
+          sourceLayer: 'regions',
+          id: previouslySelectedRegionRef.current,
+        },
         'selected'
       )
     }
@@ -307,6 +308,7 @@ const Regions = () => {
       map.setFeatureState(
         {
           source: 'regions',
+          sourceLayer: 'regions',
           id: selectedRegion,
         },
         { selected: true }
@@ -314,6 +316,7 @@ const Regions = () => {
       map.setFeatureState(
         {
           source: 'regions',
+          sourceLayer: 'regions',
           id: selectedRegion,
         },
         { overview: variables[variableFamily].overview }
@@ -350,13 +353,7 @@ const Regions = () => {
         }, 0)
       }
     }
-  }, [
-    selectedRegion,
-    selectedRegionCenter,
-    regionGeojson,
-    map,
-    setSelectedRegionCenter,
-  ])
+  }, [selectedRegion, selectedRegionCenter, map, setSelectedRegionCenter])
 
   useEffect(() => {
     if (map && map.getSource('regions') && map.getLayer('regions-line')) {

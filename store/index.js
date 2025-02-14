@@ -303,15 +303,11 @@ const useStore = create((set) => ({
       ? set((state) => {
           const activeLineData =
             state.overviewLineData?.[selectedRegion] || null
-          const selectedRegionGeojson = state.regionGeojson.features.find(
-            (f) => f.properties.polygon_id === selectedRegion
-          )
           return {
             selectedRegion,
             currentVariable: variables.ALK.variables[0],
             variableFamily: 'ALK',
             activeLineData,
-            selectedRegionGeojson,
           }
         })
       : set((state) => {
@@ -343,9 +339,6 @@ const useStore = create((set) => ({
 
   overviewLineData: {},
   setOverviewLineData: (overviewLineData) => set({ overviewLineData }),
-
-  regionGeojson: null,
-  setRegionGeojson: (regionGeojson) => set({ regionGeojson }),
 
   selectedRegionGeojson: null,
   setSelectedRegionGeojson: (selectedRegionGeojson) =>
