@@ -28,7 +28,7 @@ const Regions = () => {
   const { map } = useMapbox()
   const { theme } = useThemeUI()
   const hoveredRegionRef = useRef(hoveredRegion)
-  const previouslySelectedRegionRef = useRef(null)
+  const previouslySelectedRegionRef = useRef(selectedRegion)
 
   //reused colors
   const transparent = 'rgba(0, 0, 0, 0)'
