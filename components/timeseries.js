@@ -109,14 +109,9 @@ const RenderLines = ({
   ))
 }
 
-const ActiveLine = ({ selectedLines }) => {
-  const hoveredRegion = useStore((s) => s.hoveredRegion)
-  const selectedRegion = useStore((s) => s.selectedRegion)
+const ActiveLine = () => {
+  const activeLineData = useStore((s) => s.activeLineData)
   const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
-
-  const activeRegion = hoveredRegion ?? selectedRegion
-  const activeLineData =
-    activeRegion !== null ? selectedLines[activeRegion] : null
 
   if (!activeLineData || !activeLineData.data) {
     return null
@@ -149,16 +144,11 @@ const ActiveLine = ({ selectedLines }) => {
   )
 }
 
-const OverviewBadge = ({ selectedLines }) => {
-  const hoveredRegion = useStore((s) => s.hoveredRegion)
-  const selectedRegion = useStore((s) => s.selectedRegion)
+const OverviewBadge = () => {
+  const activeLineData = useStore((s) => s.activeLineData)
   const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
   const currentVariable = useStore((s) => s.currentVariable)
   const colormap = useVariableColormap()
-
-  const activeRegion = hoveredRegion ?? selectedRegion
-  const activeLineData =
-    activeRegion !== null ? selectedLines[activeRegion] : null
 
   if (!activeLineData || !activeLineData.data) {
     return null
@@ -356,7 +346,7 @@ const Timeseries = ({
           />
           {Object.keys(selectedLines).length && (
             <>
-              {showActive && <ActiveLine selectedLines={selectedLines} />}
+              {showActive && <ActiveLine />}
               {xSelector && mousePosition && renderXSelector(mousePosition)}
               <TimeIndicator yLimits={yLimits} isOverview={isOverview} />
               {xSelector &&
@@ -371,7 +361,7 @@ const Timeseries = ({
           )}
         </Plot>
         {!xSelector && renderDataBadge()}
-        {showActive && <OverviewBadge selectedLines={selectedLines} />}
+        {showActive && <OverviewBadge />}
         {regionDataLoading && (
           <Box
             sx={{
