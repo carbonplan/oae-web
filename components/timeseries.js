@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Box, Spinner } from 'theme-ui'
-import { alpha } from '@theme-ui/color'
 import {
   AxisLabel,
   Chart,
@@ -15,8 +14,9 @@ import {
 } from '@carbonplan/charts'
 import { Badge } from '@carbonplan/components'
 
-import useStore from '../store'
-import { formatValue } from '../utils'
+import useStore, { variables } from '../store'
+import { formatValue, useVariableColormap } from '../utils'
+import { getColorForValue } from '../utils/color'
 
 const renderPoint = (point) => {
   const { x, y, color } = point
@@ -35,7 +35,6 @@ const renderPoint = (point) => {
 const renderDataBadge = (point) => {
   if (!point || !point.text) return null
   const { x, y, color, text } = point
-  const fullColor = alpha(color, 1)
   return (
     <Point x={x} y={y} align={'center'} width={2}>
       <Badge
@@ -43,7 +42,7 @@ const renderDataBadge = (point) => {
           fontSize: 1,
           height: '20px',
           mt: 2,
-          bg: fullColor,
+          bg: color,
         }}
       >
         {text}
@@ -148,15 +147,38 @@ const ActiveLine = () => {
 const OverviewBadge = () => {
   const activeLineData = useStore((s) => s.activeLineData)
   const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
+  const currentVariable = useStore((s) => s.currentVariable)
+  const colormap = useVariableColormap()
+
   if (!activeLineData || !activeLineData.data) {
     return null
   }
-  const { color } = activeLineData
   const data = activeLineData.data[overviewElapsedTime]
+  const color = getColorForValue(data[1], colormap, currentVariable)
   const x = data[0]
   const y = data[1]
   const point = { x, y, color, text: formatValue(y) }
   return renderDataBadge(point)
+}
+
+const TimeIndicator = ({ yLimits, isOverview = false }) => {
+  const overviewElapsedTime = useStore((s) => s.overviewElapsedTime)
+  const detailElapsedTime = useStore((s) => s.detailElapsedTime)
+  const elapsedYears = isOverview
+    ? (overviewElapsedTime + 1) / 12
+    : (detailElapsedTime + 1) / 12
+
+  if (elapsedYears === undefined) return null
+  return (
+    <Line
+      data={[
+        [elapsedYears, yLimits[0]],
+        [elapsedYears, yLimits[1]],
+      ]}
+      color='primary'
+      style={{ strokeDasharray: '2 4' }}
+    />
+  )
 }
 
 const Timeseries = ({
@@ -167,7 +189,6 @@ const Timeseries = ({
   handleClick,
   handleHover,
   point,
-  elapsedYears,
   colormap,
   opacity,
   showActive = false,
@@ -181,6 +202,8 @@ const Timeseries = ({
   const [isHovering, setIsHovering] = useState(false)
   const [xSelectorValue, setXSelectorValue] = useState(null)
   const currentVariable = useStore((s) => s.currentVariable)
+  const variableFamily = useStore((s) => s.variableFamily)
+  const isOverview = variables[variableFamily].overview
 
   const xYearsMonth = (x) => {
     const years = Math.floor(x)
@@ -325,14 +348,7 @@ const Timeseries = ({
             <>
               {showActive && <ActiveLine />}
               {xSelector && mousePosition && renderXSelector(mousePosition)}
-              <Line
-                data={[
-                  [elapsedYears, yLimits[0]],
-                  [elapsedYears, yLimits[1]],
-                ]}
-                color='primary'
-                style={{ strokeDasharray: '2 4' }}
-              />
+              <TimeIndicator yLimits={yLimits} isOverview={isOverview} />
               {xSelector &&
                 isHovering &&
                 renderPoint({

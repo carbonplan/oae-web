@@ -1,17 +1,10 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
-import { Box, Divider, Flex, Label, useThemeUI } from 'theme-ui'
-import { alpha } from '@theme-ui/color'
+import { Box, Divider, Flex, useThemeUI } from 'theme-ui'
 import { useThemedColormap } from '@carbonplan/colormaps'
 
 import useStore, { variables } from '../store'
 import Timeseries from './timeseries'
-import {
-  openZarr,
-  getChunk,
-  getTimeSeriesData,
-  downloadCsv,
-  getColorForValue,
-} from '../utils'
+import { openZarr, getChunk, getTimeSeriesData, downloadCsv } from '../utils'
 import DownloadCSV from './download-csv'
 import Checkbox from './checkbox'
 
@@ -38,7 +31,6 @@ const OverviewChart = ({ sx }) => {
     (state) => state.setFilterToRegionsInView
   )
   const regionsInView = useStore((state) => state.regionsInView)
-  const overviewElapsedTime = useStore((state) => state.overviewElapsedTime)
   const currentVariable = useStore((state) => state.currentVariable)
   const variableFamily = useStore((state) => state.variableFamily)
   const setActiveLineData = useStore((state) => state.setActiveLineData)
@@ -80,14 +72,6 @@ const OverviewChart = ({ sx }) => {
       const transformed = timeSeriesData.reduce((acc, regionData, index) => {
         acc[index] = {
           id: index,
-          color: alpha(
-            getColorForValue(
-              regionData[overviewElapsedTime][1],
-              colormap,
-              currentVariable
-            ),
-            0.1
-          )(theme),
           activeColor: theme.rawColors?.primary,
           strokeWidth: 2,
           data: regionData,
@@ -122,7 +106,7 @@ const OverviewChart = ({ sx }) => {
       }
     })
     return selected
-  }, [regionsInView, filterToRegionsInView, overviewLineData, selectedRegion])
+  }, [regionsInView, filterToRegionsInView, overviewLineData])
 
   const handleClick = useCallback(
     (e) => {
@@ -198,7 +182,6 @@ const OverviewChart = ({ sx }) => {
               : currentVariable.unit,
         }}
         selectedLines={selectedLines}
-        elapsedYears={(overviewElapsedTime + 1) / 12}
         colormap={colormap}
         opacity={0.1}
         handleClick={hideFilter ? undefined : handleClick}
