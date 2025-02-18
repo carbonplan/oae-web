@@ -358,13 +358,19 @@ const Regions = () => {
   }, [selectedRegion, selectedRegionCenter, map, setSelectedRegionCenter])
 
   useEffect(() => {
-    if (map && map.getSource('regions') && map.getLayer('regions-line')) {
+    if (map?.getSource('regions')) {
       map.setPaintProperty('regions-line', 'line-color', lineColor)
       map.setPaintProperty('regions-hover', 'line-color', lineHighlightColor)
       map.setPaintProperty(
         'regions-selected',
         'line-color',
         theme.rawColors.primary
+      )
+      map.setPaintProperty('regions-fill', 'fill-color', colorExpression)
+      map.setPaintProperty(
+        'selected-region-fill',
+        'fill-color',
+        colorExpression
       )
     }
   }, [map, theme])
