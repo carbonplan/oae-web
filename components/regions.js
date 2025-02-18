@@ -61,8 +61,137 @@ const Regions = () => {
     return fillColorExpression
   }, [safeColorMap, colorLimits, transparent])
 
+  const addRegions = async () => {
+    try {
+      if (!map.getSource('regions')) {
+        map.addSource('regions', {
+          type: 'vector',
+          promoteId: 'polygon_id',
+          tiles: [
+            'https://carbonplan-oae-efficiency.s3.us-west-2.amazonaws.com/region-tiles/{z}/{x}/{y}.pbf',
+          ],
+          maxzoom: 0,
+          minzoom: 0,
+        })
+
+        map.addLayer({
+          id: 'regions-fill',
+          type: 'fill',
+          source: 'regions',
+          'source-layer': 'regions',
+          paint: {
+            'fill-color': colorExpression,
+            'fill-outline-color': transparent,
+          },
+        })
+
+        map.addLayer({
+          id: 'regions-line',
+          type: 'line',
+          source: 'regions',
+          'source-layer': 'regions',
+          paint: {
+            'line-color': lineColor,
+            'line-width': 1,
+          },
+        })
+
+        map.addLayer({
+          id: 'regions-hover',
+          type: 'line',
+          source: 'regions',
+          'source-layer': 'regions',
+          paint: {
+            'line-color': lineHighlightColor,
+            'line-width': [
+              'case',
+              ['boolean', ['feature-state', 'hover'], false],
+              2,
+              0,
+            ],
+          },
+        })
+
+        map.addLayer({
+          id: 'selected-region-fill',
+          type: 'fill',
+          source: 'regions',
+          'source-layer': 'regions',
+          paint: {
+            'fill-color': colorExpression,
+            'fill-outline-color': transparent,
+            'fill-opacity': [
+              'case',
+              [
+                'all',
+                ['boolean', ['feature-state', 'selected'], false],
+                ['boolean', ['feature-state', 'overview'], false],
+              ],
+              1,
+              0,
+            ],
+          },
+        })
+
+        map.addLayer({
+          id: 'regions-selected',
+          type: 'line',
+          source: 'regions',
+          'source-layer': 'regions',
+          paint: {
+            'line-color': theme.rawColors?.primary,
+            'line-width': [
+              'case',
+              ['boolean', ['feature-state', 'selected'], false],
+              2,
+              0,
+            ],
+          },
+        })
+
+        map.on('mousemove', 'regions-fill', handleMouseMove)
+        map.on('mouseleave', 'regions-fill', handleMouseLeave)
+        map.on('click', 'regions-fill', handleClick)
+      }
+    } catch (error) {
+      console.error('Error adding regions:', error)
+    }
+  }
+
   useEffect(() => {
-    if (!map?.getSource('regions')) return
+    addRegions()
+    return () => {
+      if (map && map.getSource('regions')) {
+        map.off('mousemove', 'regions-fill', handleMouseMove)
+        map.off('mouseleave', 'regions-fill', handleMouseLeave)
+        map.off('click', 'regions-fill', handleClick)
+
+        map.removeFeatureState({
+          source: 'regions',
+          sourceLayer: 'regions',
+        })
+
+        if (map.getLayer('regions-fill')) {
+          map.removeLayer('regions-fill')
+        }
+        if (map.getLayer('regions-line')) {
+          map.removeLayer('regions-line')
+        }
+        if (map.getLayer('regions-hover')) {
+          map.removeLayer('regions-hover')
+        }
+        if (map.getLayer('regions-selected')) {
+          map.removeLayer('regions-selected')
+        }
+        if (map.getLayer('selected-region-fill')) {
+          map.removeLayer('selected-region-fill')
+        }
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!map?.getSource('regions')) addRegions()
     const idArray = Array.from({ length: 690 }, (_, i) => i)
     idArray.forEach((id) => {
       const currentValue =
@@ -108,134 +237,6 @@ const Regions = () => {
       setSelectedRegionGeojson(feature)
     }
   }
-
-  const addRegions = async () => {
-    try {
-      if (!map.getSource('regions')) {
-        map.addSource('regions', {
-          type: 'vector',
-          promoteId: 'polygon_id',
-          tiles: [
-            'https://carbonplan-oae-efficiency.s3.us-west-2.amazonaws.com/region-tiles/{z}/{x}/{y}.pbf',
-          ],
-          maxzoom: 0,
-          minzoom: 0,
-        })
-      }
-
-      map.addLayer({
-        id: 'regions-fill',
-        type: 'fill',
-        source: 'regions',
-        'source-layer': 'regions',
-        paint: {
-          'fill-color': colorExpression,
-          'fill-outline-color': transparent,
-        },
-      })
-
-      map.addLayer({
-        id: 'regions-line',
-        type: 'line',
-        source: 'regions',
-        'source-layer': 'regions',
-        paint: {
-          'line-color': lineColor,
-          'line-width': 1,
-        },
-      })
-
-      map.addLayer({
-        id: 'regions-hover',
-        type: 'line',
-        source: 'regions',
-        'source-layer': 'regions',
-        paint: {
-          'line-color': lineHighlightColor,
-          'line-width': [
-            'case',
-            ['boolean', ['feature-state', 'hover'], false],
-            2,
-            0,
-          ],
-        },
-      })
-
-      map.addLayer({
-        id: 'selected-region-fill',
-        type: 'fill',
-        source: 'regions',
-        'source-layer': 'regions',
-        paint: {
-          'fill-color': colorExpression,
-          'fill-outline-color': transparent,
-          'fill-opacity': [
-            'case',
-            [
-              'all',
-              ['boolean', ['feature-state', 'selected'], false],
-              ['boolean', ['feature-state', 'overview'], false],
-            ],
-            1,
-            0,
-          ],
-        },
-      })
-
-      map.addLayer({
-        id: 'regions-selected',
-        type: 'line',
-        source: 'regions',
-        'source-layer': 'regions',
-        paint: {
-          'line-color': theme.rawColors?.primary,
-          'line-width': [
-            'case',
-            ['boolean', ['feature-state', 'selected'], false],
-            2,
-            0,
-          ],
-        },
-      })
-
-      map.on('mousemove', 'regions-fill', handleMouseMove)
-      map.on('mouseleave', 'regions-fill', handleMouseLeave)
-      map.on('click', 'regions-fill', handleClick)
-    } catch (error) {
-      console.error('Error adding regions:', error)
-    }
-  }
-
-  useEffect(() => {
-    addRegions()
-    return () => {
-      if (map && map.getSource('regions')) {
-        map.off('mousemove', 'regions-fill', handleMouseMove)
-        map.off('mouseleave', 'regions-fill', handleMouseLeave)
-        map.off('click', 'regions-fill', handleClick)
-
-        map.removeFeatureState({
-          source: 'regions',
-        })
-
-        if (map.getLayer('regions-fill')) {
-          map.removeLayer('regions-fill')
-        }
-        if (map.getLayer('regions-line')) {
-          map.removeLayer('regions-line')
-        }
-        if (map.getLayer('regions-hover')) {
-          map.removeLayer('regions-hover')
-        }
-        if (map.getLayer('regions-selected')) {
-          map.removeLayer('regions-selected')
-        }
-        if (map.getLayer('selected-region-fill')) {
-          map.removeLayer('selected-region-fill')
-        }
-      }
-    }
-  }, [])
 
   useEffect(() => {
     if (map && map.getSource('regions')) {
